@@ -132,6 +132,13 @@ function renderLabeledText(
   const size = style.size * scale;
   const lineGap = style.leading * scale - size;
   const opts = { width, lineGap };
+
+  // heightOfString uses the document's current font settings. The first
+  // labeled verse after a song title previously inherited the title's larger
+  // bold font for measurement, even though the verse itself was drawn using
+  // the smaller body font. That advanced the cursor too far and left a large
+  // gap before the next verse in the same subcolumn.
+  doc.font(italic ? "Times-Italic" : style.font).fontSize(size);
   const height = doc.heightOfString(`${label} ${text}`, opts);
   doc.font("Times-Bold").fontSize(size).fillColor("black");
   doc.text(`${label} `, x, y, { ...opts, continued: true });
