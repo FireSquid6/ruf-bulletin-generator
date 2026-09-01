@@ -149,15 +149,13 @@ function renderImage(
   maxWidth: number,
   maxHeight: number,
 ): number {
-  // `fit` scales the image proportionally inside the box; `align` centers it.
-  doc.image(imagePath, x, y, {
-    fit: [maxWidth, maxHeight],
-    align: "center",
-    valign: "top",
-  } as never);
   const { width: iw, height: ih } = imageSize(imagePath);
   const ratio = Math.min(maxWidth / iw, maxHeight / ih);
-  return y + ih * ratio;
+  const w = iw * ratio;
+  const h = ih * ratio;
+  // Center horizontally within the column (x..x+width), not the fit box.
+  doc.image(imagePath, x + (width - w) / 2, y, { width: w, height: h });
+  return y + h;
 }
 
 function imageSize(imagePath: string): { width: number; height: number } {
@@ -336,10 +334,15 @@ function renderBlock(
     case "branding": {
       const imagePath = resolvePath(block.path as string, yamlDir);
       if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
+      const isBranding = block.type === "branding";
       const maxWidth = Math.min(width, Number(block.max_width_mm ?? width / MM) * MM);
-      const maxHeight = Math.min(height, Number(block.max_height_mm ?? height / MM) * MM);
+      const maxHeightDefault = isBranding ? height * 0.4 : height;
+      const maxHeight = Math.min(
+        height,
+        block.max_height_mm !== undefined ? Number(block.max_height_mm) * MM : maxHeightDefault,
+      );
       const bottom = renderImage(doc, imagePath, x, y, width, maxWidth, maxHeight);
-      return bottom + 2 * MM;
+      return bottom + (isBranding ? 6 : 2) * MM;
     }
     case "qr": {
       const imagePath = resolvePath(block.path as string, yamlDir);
