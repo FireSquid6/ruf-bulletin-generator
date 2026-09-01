@@ -1,0 +1,177 @@
+# RUF bulletin example -- dummy song text (real hymn lyrics are copyrighted).
+# Swap in your licensed/authorized text per week; structure stays the same.
+
+metadata:
+  title: "RUF Bulletin - Example"
+  author: "Reformed University Fellowship"
+  subject: "Weekly bulletin"
+
+layout:
+  margin_mm: 10
+  gutter_mm: 8
+
+output: ../output/bulletin.pdf
+
+pages:
+  # ---------- Front side (two columns) ----------
+  - columns:
+      # Left column: opening song + QR
+      - - type: scripture
+          label: "Sermon"
+          reference: "James 1:1"
+          text: "James, a servant of God and of the Lord Jesus Christ, to the twelve tribes in the Dispersion: Greetings."
+        - type: song
+          title: "Song One Title (Dummy)"
+          columns: 1
+          parts:
+            - text: |
+                Dummy verse one, line one
+                Dummy verse one, line two
+                Dummy verse one, line three
+                Dummy verse one, line four
+            - text: |
+                Dummy verse two, line one
+                Dummy verse two, line two
+                Dummy verse two, line three
+                Dummy verse two, line four
+            - style: chorus
+              text: |
+                This is the dummy chorus
+                It repeats between verses
+                This is the dummy chorus
+                With italic styling
+            - text: |
+                Dummy verse three, line one
+                Dummy verse three, line two
+                Dummy verse three, line three
+                Dummy verse three, line four
+            - text: |
+                Dummy verse four, line one
+                Dummy verse four, line two
+                Dummy verse four, line three
+                Dummy verse four, line four
+        - type: qr
+          caption: "Join the GroupMe!"
+          path: ../assets/groupme-qr.png
+          size_mm: 26
+
+      # Right column: branding + announcements + contacts
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 40
+          max_height_mm: 40
+        - type: announcements
+          title: "Announcements"
+          date: "August 26, 2026"
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "Game Night - Friday 9/4 at 7pm in the SUB! Free pizza!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (555) 555-0100"
+            - "Follow RUF on Instagram @BaylorRUF"
+            - "Prayer group: Foster at 7 PM"
+            - "Small groups: check the group me!"
+        - type: contacts
+          items:
+            - name: "Will Won"
+              detail: "(555) 555-0101"
+            - name: "Staff Name Two"
+              detail: "(555) 555-0102"
+            - name: "Staff Name Three"
+              detail: "(555) 555-0103"
+
+  # ---------- Back side (two columns) ----------
+  - columns:
+      # Left column: opening hymn + order of service + scripture
+      - - type: song
+          title: "Song Two Title (Dummy)"
+          columns: 1
+          parts:
+            - text: |
+                Dummy hymn verse one, line one
+                Dummy hymn verse one, line two
+                Dummy hymn verse one, line three
+                Dummy hymn verse one, line four
+            - text: |
+                Dummy hymn verse two, line one
+                Dummy hymn verse two, line two
+                Dummy hymn verse two, line three
+                Dummy hymn verse two, line four
+            - text: |
+                Dummy hymn verse three, line one
+                Dummy hymn verse three, line two
+                Dummy hymn verse three, line three
+                Dummy hymn verse three, line four
+            - text: |
+                Dummy hymn verse four, line one
+                Dummy hymn verse four, line two
+                Dummy hymn verse four, line three
+                Dummy hymn verse four, line four
+        - type: heading
+          text: "Welcome and Announcements"
+        - type: heading
+          text: "Greet Your Neighbor!"
+        - type: scripture
+          label: "Scripture Reading"
+          reference: "1 Corinthians 2:14-16 (KJV)"
+          text: "But the natural man receiveth not the things of the Spirit of God: for they are foolishness unto him: neither can he know them, because they are spiritually discerned. But he that is spiritual judgeth all things, yet he himself is judged of no man. For who hath known the mind of the Lord, that he may instruct him? But we have the mind of Christ."
+
+      # Right column: two closing songs
+      - - type: song
+          title: "Song Three Title (Dummy)"
+          columns: 2
+          parts:
+            - label: "1."
+              text: |
+                Dummy verse one, line one
+                Dummy verse one, line two
+                Dummy verse one, line three
+                Dummy verse one, line four
+            - label: "2."
+              text: |
+                Dummy verse two, line one
+                Dummy verse two, line two
+                Dummy verse two, line three
+                Dummy verse two, line four
+            - label: "3."
+              text: |
+                Dummy verse three, line one
+                Dummy verse three, line two
+                Dummy verse three, line three
+                Dummy verse three, line four
+            - label: "4."
+              text: |
+                Dummy verse four, line one
+                Dummy verse four, line two
+                Dummy verse four, line three
+                Dummy verse four, line four
+        - type: heading
+          text: "Prayer"
+        - type: song
+          title: "Song Four Title (Dummy)"
+          columns: 2
+          parts:
+            - label: "1."
+              text: |
+                Dummy verse one, line one
+                Dummy verse one, line two
+                Dummy verse one, line three
+                Dummy verse one, line four
+            - label: "2."
+              text: |
+                Dummy verse two, line one
+                Dummy verse two, line two
+                Dummy verse two, line three
+                Dummy verse two, line four
+            - label: "3."
+              text: |
+                Dummy verse three, line one
+                Dummy verse three, line two
+                Dummy verse three, line three
+                Dummy verse three, line four
+            - label: "4."
+              text: |
+                Dummy verse four, line one
+                Dummy verse four, line two
+                Dummy verse four, line three
+                Dummy verse four, line four

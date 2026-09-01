@@ -1,0 +1,1 @@
+Bulletin generator for RUF.
