@@ -7,8 +7,8 @@ metadata:
   subject: "Weekly bulletin"
 
 layout:
-  margin_mm: 10
-  gutter_mm: 8
+  margin_mm: 7
+  gutter_mm: 14
 
 output: ../output/bulletin.pdf
 

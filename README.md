@@ -47,7 +47,7 @@ Top level:
 | Key | Meaning |
 | --- | --- |
 | `metadata` | `title`, `author`, `subject` for the PDF |
-| `layout` | `margin_mm` (default 10), `gutter_mm` (default 8) |
+| `layout` | `margin_mm` (default 7), `gutter_mm` (default 14); for two columns, half the gutter matches each outer margin at the fold |
 | `output` | Output PDF path, relative to the YAML file |
 | `pages` | List of 1-2 sides; each has `columns` (list of block lists) and optional `column_weights` |
 

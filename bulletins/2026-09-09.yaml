@@ -1,0 +1,176 @@
+metadata:
+  title: "RUF Bulletin - September 9, 2026"
+  author: "Reformed University Fellowship"
+  subject: "Weekly bulletin"
+
+layout:
+  margin_mm: 7
+  gutter_mm: 14
+
+output: ../output/bulletin-2026-09-09.pdf
+
+pages:
+  # ---------- Front side (two columns) ----------
+  - columns:
+      # Left column: sermon text + opening song + QR
+      - - type: scripture
+          label: "Sermon"
+          reference: "James 1:18-27"
+          text: "(18) Of his own will he brought us forth by the word of truth, that we should be a kind of firstfruits of his creatures. (19) Know this, my beloved brothers: let every person be quick to hear, slow to speak, slow to anger; (20) for the anger of man does not produce the righteousness of God. (21) Therefore put away all filthiness and rampant wickedness and receive with meekness the implanted word, which is able to save your souls. (22) But be doers of the word, and not hearers only, deceiving yourselves. (23) For if anyone is a hearer of the word and not a doer, he is like a man who looks intently at his natural face in a mirror. (24) For he looks at himself and goes away and at once forgets what he was like. (25) But the one who looks into the perfect law, the law of liberty, and perseveres, being no hearer who forgets but a doer who acts, he will be blessed in his doing. (26) If anyone thinks he is religious and does not bridle his tongue but deceives his heart, this person's religion is worthless. (27) Religion that is pure and undefiled before God the Father is this: to visit orphans and widows in their affliction, and to keep oneself unstained from the world."
+        - type: song
+          title: "Hast Thou Heard Him"
+          columns: 2
+          parts:
+            - text: |
+                Hast thou heard Him, seen Him, known Him?
+                Is not thine a captured heart? 
+                Chief among ten thousand own Him, 
+                Joyful choose the better part. 
+            - style: chorus
+              text: |
+                Captivated by His beauty, 
+                Worthy tribute haste to bring. 
+                Let His peerless worth constrain thee,
+                Crown Him now unrivaled King. 
+            - text: |
+                What can strip the seeming beauty,
+                From the idols of the earth? 
+                Not a sense of right or duty, 
+                But the sight of peerless worth. 
+            - text: |
+                'Tis that look that melted Peter,
+                ’Tis that face that Stephen saw, 
+                'Tis that heart that wept with Mary, 
+                Can alone from idols draw.
+        - type: qr
+          caption: "Join the GroupMe!"
+          path: ../assets/groupme-qr.png
+          size_mm: 26
+
+      # Right column: branding + announcements + contacts
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: "Announcements"
+          date: "September 9, 2026"
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Follow RUF on Instagram @BaylorRUF"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalmns Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
+        - type: contacts
+          items:
+            - name: "Way Rutherford"
+              detail: "(502) 403-8765"
+            - name: "Lauren Danforth"
+              detail: "(920) 918-7330"
+            - name: "Will Won"
+              detail: "(254) 239-7227"
+
+  # ---------- Back side (two columns) ----------
+  - columns:
+      # Left column: second song + order of service + scripture
+      - - type: song
+          title: "On Jordan's Stormy Banks"
+          columns: 1
+          parts:
+            - text: |
+                On Jordan’s stormy banks I stand,
+                And cast a wishful eye
+                To Canaan’s fair and happy land,
+                Where my possessions lie.
+            - text: |
+                All o’er those wide extended plains,
+                Shines one eternal day;
+                There God the Son forever reigns,
+                And scatters night away.
+            - style: chorus
+              text: |
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land,
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land.
+            - text: |
+                No chilling winds nor poisonous breath
+                Can reach that healthful shore;
+                Sickness, sorrow, pain and death,
+                Are felt and feared no more.
+            - text: |
+                When shall I reach that happy place,
+                And be forever blessed?
+                When shall I see my Father’s face,
+                And in His bosom rest?
+        - type: heading
+          text: "Welcome and Announcements"
+        - type: heading
+          text: "Greet Your Neighbor!"
+        - type: scripture
+          label: "Scripture Reading"
+          reference: "Proverbs 17:3"
+          text: "The crucible is for silver, and the furnace is for gold, and the Lord tests hearts."
+      # Right column: two closing songs
+      - - type: song
+          title: "His Mercy is More"
+          columns: 1
+          parts:
+            - text: |
+                What love could remember, no wrongs we have done
+                Omniscient, all-knowing, He counts not their sum
+                Thrown into a sea, without bottom or shore
+                Our sins they are many, His mercy is more
+            - text: |
+                What patience would wait, as we constantly roam
+                What Father so tender, is calling us home
+                He welcomes the weakest, the vilest, the poor
+                Our sins they are many, His mercy is more
+            - style: chorus
+              text: |
+                Praise the Lord, His mercy is more
+                Stronger than darkness, new every morn
+                Our sins they are many, His mercy is more
+            - text: |
+                What riches of kindness, He lavished on us
+                His blood was the payment, His life was the cost
+                We stood 'neath a debt, we could never afford
+                Our sins they are many, His mercy is more
+        - type: heading
+          text: "Prayer"
+        - type: song
+          title: "Tis So Sweet"
+          columns: 2
+          parts:
+            - text: |
+                ‘Tis so sweet to trust in Jesus
+                Just to take Him at His Word;
+                Just to rest upon His promise,
+                And to know, “Thus saith the Lord!”
+            - style: chorus
+              text: |
+                Jesus, Jesus, how I trust him! 
+                How I've proved him o'er and o'er! 
+                Jesus, Jesus, precious Jesus! 
+                O for grace to trust him more!
+            - text: |
+                O how sweet to trust in Jesus
+                Just to trust His cleansing blood;
+                Just in simple faith to plunge me
+                ‘Neath the healing, cleansing flood!
+            - text: |
+                Yes, ‘tis sweet to trust in Jesus,
+                Just from sin and self to cease; 
+                Just from Jesus simply taking
+                Life and rest, and joy and peace
+            - text: |
+                I’m so glad I learned to trust Him,
+                Precious Jesus, Savior, Friend;
+                And I know that He is with me,
+                Will be with me to the end.

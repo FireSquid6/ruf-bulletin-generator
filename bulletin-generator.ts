@@ -16,13 +16,13 @@ import PDFDocument from "pdfkit";
 const MM = 72 / 25.4; // points per mm
 const PAGE_W = 841.89; // A4 landscape, points
 const PAGE_H = 595.28;
-const DEFAULT_MARGIN_MM = 10;
-const DEFAULT_GUTTER_MM = 8;
+const DEFAULT_MARGIN_MM = 7;
+const DEFAULT_GUTTER_MM = 14;
 const SHRINK_SCALES = [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
 
 // ---------- types ----------
 
-type StyleName = "body" | "small" | "title" | "section" | "callout" | "center" | "right";
+type StyleName = "body" | "small" | "smallBold" | "title" | "section" | "callout" | "center" | "right";
 
 interface StyleDef {
   font: string;
@@ -58,6 +58,7 @@ interface Spec {
 const STYLES: Record<StyleName, StyleDef> = {
   body: { font: "Times-Roman", size: 11, leading: 13.2, spaceAfter: 2.5 },
   small: { font: "Times-Roman", size: 9.5, leading: 11.1, spaceAfter: 1.5 },
+  smallBold: { font: "Times-Bold", size: 9.5, leading: 11.1, spaceAfter: 1.5 },
   title: { font: "Times-Bold", size: 15.5, leading: 17.8, spaceAfter: 2 },
   section: { font: "Times-Bold", size: 13, leading: 15.2, spaceAfter: 2 },
   callout: { font: "Times-Bold", size: 12.5, leading: 14.7, spaceAfter: 2 },
@@ -307,7 +308,7 @@ function renderContacts(doc: Doc, block: Block, x: number, y: number, width: num
   let bottom = y;
   contacts.forEach((contact, index) => {
     const cx = x + index * colWidth;
-    let cy = renderText(doc, contact.name ?? "", cx, y, colWidth - 2 * MM, "small", scale);
+    let cy = renderText(doc, contact.name ?? "", cx, y, colWidth - 2 * MM, "smallBold", scale);
     cy = renderText(doc, contact.detail ?? "", cx, cy - 1.5 * MM * scale, colWidth - 2 * MM, "small", scale);
     bottom = Math.max(bottom, cy);
   });
