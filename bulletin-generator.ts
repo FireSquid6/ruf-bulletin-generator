@@ -56,13 +56,13 @@ interface Spec {
 }
 
 const STYLES: Record<StyleName, StyleDef> = {
-  body: { font: "Times-Roman", size: 9.5, leading: 11.4, spaceAfter: 2.5 },
-  small: { font: "Times-Roman", size: 8.2, leading: 9.6, spaceAfter: 1.5 },
-  title: { font: "Times-Bold", size: 13.5, leading: 15.5, spaceAfter: 2 },
-  section: { font: "Times-Bold", size: 11.5, leading: 13.5, spaceAfter: 2 },
-  callout: { font: "Times-Bold", size: 11, leading: 13, spaceAfter: 2 },
-  center: { font: "Times-Bold", size: 10, leading: 12, spaceAfter: 1.5, align: "center" },
-  right: { font: "Times-Bold", size: 9.5, leading: 11.4, spaceAfter: 0, align: "right" },
+  body: { font: "Times-Roman", size: 11, leading: 13.2, spaceAfter: 2.5 },
+  small: { font: "Times-Roman", size: 9.5, leading: 11.1, spaceAfter: 1.5 },
+  title: { font: "Times-Bold", size: 15.5, leading: 17.8, spaceAfter: 2 },
+  section: { font: "Times-Bold", size: 13, leading: 15.2, spaceAfter: 2 },
+  callout: { font: "Times-Bold", size: 12.5, leading: 14.7, spaceAfter: 2 },
+  center: { font: "Times-Bold", size: 11.5, leading: 13.7, spaceAfter: 1.5, align: "center" },
+  right: { font: "Times-Bold", size: 11, leading: 13.2, spaceAfter: 0, align: "right" },
 };
 
 const BLOCK_TYPES = new Set([
