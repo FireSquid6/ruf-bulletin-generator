@@ -43,6 +43,12 @@ interface Block {
   [key: string]: unknown;
 }
 
+interface QrItem {
+  path?: string;
+  caption?: string;
+  size_mm?: number;
+}
+
 interface SpecPage {
   columns: Block[][];
   column_weights?: number[];
@@ -216,12 +222,17 @@ function renderSong(doc: Doc, block: Block, x: number, y: number, width: number,
   if (columnCount !== 1 && columnCount !== 2) {
     throw new Error(`Song '${title}' columns must be 1 or 2`);
   }
+  const songScale = Number(block.scale ?? 1);
+  if (!Number.isFinite(songScale) || songScale <= 0) {
+    throw new Error(`Song '${title}' scale must be a positive number`);
+  }
+  const effectiveScale = scale * songScale;
 
   let cursor = renderText(doc, title, x, y, width, "section", scale);
 
   if (columnCount === 1) {
     for (const part of parts) {
-      cursor = renderPart(doc, part, x, cursor, width, "body", scale);
+      cursor = renderPart(doc, part, x, cursor, width, "body", effectiveScale);
     }
     return cursor;
   }
@@ -231,9 +242,9 @@ function renderSong(doc: Doc, block: Block, x: number, y: number, width: number,
   const groups = balancedParts(parts, 2);
   let yLeft = cursor;
   let yRight = cursor;
-  for (const part of groups[0]) yLeft = renderPart(doc, part, x, yLeft, subWidth, "small", scale);
+  for (const part of groups[0]) yLeft = renderPart(doc, part, x, yLeft, subWidth, "small", effectiveScale);
   for (const part of groups[1]) {
-    yRight = renderPart(doc, part, x + subWidth + gap, yRight, subWidth, "small", scale);
+    yRight = renderPart(doc, part, x + subWidth + gap, yRight, subWidth, "small", effectiveScale);
   }
   return Math.max(yLeft, yRight);
 }
@@ -353,12 +364,23 @@ function renderBlock(
       return bottom + (isBranding ? 6 : 2) * MM;
     }
     case "qr": {
-      const imagePath = resolvePath(block.path as string, yamlDir);
-      if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
-      const size = Math.min(width, Number(block.size_mm ?? 28) * MM);
-      let cursor = y;
-      if (block.caption) cursor = renderText(doc, block.caption as string, x, cursor, width, "center", scale);
-      const bottom = renderImage(doc, imagePath, x, cursor, width, size, size);
+      const items = ((block.items as QrItem[] | undefined) ?? [block as QrItem]);
+      if (items.length === 0) throw new Error("A QR block requires at least one item");
+      const gap = 4 * MM;
+      const itemWidth = (width - gap * (items.length - 1)) / items.length;
+      let bottom = y;
+
+      items.forEach((item, index) => {
+        if (!item.path) throw new Error("A QR item requires a path");
+        const imagePath = resolvePath(item.path, yamlDir);
+        if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
+        const itemX = x + index * (itemWidth + gap);
+        const size = Math.min(itemWidth, Number(item.size_mm ?? block.size_mm ?? 28) * MM);
+        let cursor = y;
+        if (item.caption) cursor = renderText(doc, item.caption, itemX, cursor, itemWidth, "center", scale);
+        bottom = Math.max(bottom, renderImage(doc, imagePath, itemX, cursor, itemWidth, size, size));
+      });
+
       return bottom + 1.5 * MM;
     }
     case "spacer":

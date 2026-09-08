@@ -80,6 +80,27 @@ describe("generate", () => {
     expect(bytes.toString("latin1").match(/\/Type \/Page[^s]/g)?.length).toBe(2);
   });
 
+  test("renders multiple QR codes in one row", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: qr",
+        "          items:",
+        "            - caption: GroupMe",
+        `              path: ${path.resolve(import.meta.dirname, "../assets/groupme-qr.png")}`,
+        "            - caption: Prayer Requests",
+        `              path: ${path.resolve(import.meta.dirname, "../assets/prayer-group-qr.png")}`,
+        "",
+      ].join("\n"),
+    );
+    const destination = await generate(spec, path.join(dir, "out.pdf"));
+    expect(fs.existsSync(destination)).toBe(true);
+    expect(fs.readFileSync(destination).length).toBeGreaterThan(5_000);
+  });
+
   test("rejects a song without a title or parts", async () => {
     const dir = fs.mkdtempSync("/tmp/ruf-test-");
     const spec = writeSpec(
@@ -94,6 +115,24 @@ describe("generate", () => {
       ].join("\n"),
     );
     await expect(generate(spec, path.join(dir, "out.pdf"))).rejects.toThrow();
+  });
+
+  test("rejects a non-positive song scale", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: song",
+        "          title: Test Song",
+        "          scale: 0",
+        "          parts:",
+        "            - text: Test verse",
+        "",
+      ].join("\n"),
+    );
+    await expect(generate(spec, path.join(dir, "out.pdf"))).rejects.toThrow("scale must be a positive number");
   });
 
   test("rejects column_weights that do not match columns", async () => {

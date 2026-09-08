@@ -55,14 +55,14 @@ Block types:
 
 | Type | Fields | Notes |
 | --- | --- | --- |
-| `song` | `title`, `parts`, `columns` (1 or 2) | Parts are auto-balanced; in a 2-column song, verse text is laid out side by side with smaller type |
+| `song` | `title`, `parts`, `columns` (1 or 2), `scale` | Parts are auto-balanced; `scale` multiplies the lyrics' font size and spacing without changing the title (default 1) |
 | `scripture` | `reference`, `text`, `label`, `text_style` | Default label is "Scripture Reading"; the text is wrapped in curly quotes |
 | `announcements` | `title`, `date`, `items` | String items, or `{title, text}` pairs rendered with a bold lead-in; `date` sits right-aligned on the header row |
 | `contacts` | `items: [{name, detail}]` | Rendered as evenly spaced columns |
 | `heading` | `text`, `style` | Callout-style bold heading (order-of-service markers like "Prayer") |
 | `text` | `text`, `style` | Plain paragraph |
 | `image` / `branding` | `path`, `max_width_mm`, `max_height_mm` | Path relative to the YAML file |
-| `qr` | `path`, `caption`, `size_mm` | Caption centered above the QR image |
+| `qr` | `path`, `caption`, `size_mm`, or `items: [{path, caption, size_mm}]` | One QR, or multiple evenly spaced in a row; each caption is centered above its image |
 | `spacer` | `height_mm` | Vertical gap |
 
 Song `parts` entries: `text` (newlines preserved), optional `label` (e.g. `"1."`,

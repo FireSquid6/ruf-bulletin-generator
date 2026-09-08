@@ -43,9 +43,12 @@ pages:
                 'Tis that heart that wept with Mary, 
                 Can alone from idols draw.
         - type: qr
-          caption: "Join the GroupMe!"
-          path: ../assets/groupme-qr.png
           size_mm: 26
+          items:
+            - caption: "Join the GroupMe!"
+              path: ../assets/groupme-qr.png
+            - caption: "Prayer Requests"
+              path: ../assets/prayer-group-qr.png
 
       # Right column: branding + announcements + contacts
       - - type: branding
@@ -60,6 +63,7 @@ pages:
             - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
             - "Redeemer Waco - text Remington for rides at (970) 939-3493"
             - "Follow RUF on Instagram @BaylorRUF"
+            - "Fall Conference - October 9-11"
             - "Prayer group: Foster at 7 PM"
             - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
             - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
@@ -147,6 +151,7 @@ pages:
         - type: song
           title: "Tis So Sweet"
           columns: 2
+          scale: 1.2
           parts:
             - text: |
                 ‘Tis so sweet to trust in Jesus
