@@ -1,7 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
-import { validateSpec, generate } from "../bulletin-generator";
+import {
+  arrangeFoldedPages,
+  generate,
+  planFoldedFlow,
+  validateSpec,
+} from "../bulletin-generator";
 
 const EXAMPLE_YAML = path.resolve(import.meta.dirname, "../example/example-dummy.yaml");
 
@@ -41,6 +46,76 @@ describe("generate", () => {
   test("accepts a minimal valid spec", () => {
     expect(() => validateSpec({ pages: [{ columns: [[{ type: "text", text: "hi" }]] }] })).not.toThrow();
   });
+
+  test("accepts cover and flow without manual pages", () => {
+    expect(() => validateSpec({
+      cover: [{ type: "text", text: "cover" }],
+      flow: [{ type: "text", text: "content" }],
+    })).not.toThrow();
+  });
+
+  test("requires a complete, unambiguous folded layout", () => {
+    expect(() => validateSpec({ cover: [], flow: [], pages: [{ columns: [[]] }] })).toThrow();
+    expect(() => validateSpec({ cover: [] })).toThrow();
+    expect(() => validateSpec({
+      folded: true,
+      pages: [{ columns: [[], []] }],
+    })).toThrow("exactly two pages");
+  });
+});
+
+describe("folded flow", () => {
+  test("places panels in folded reading order with the cover at page one right", () => {
+    const first = { type: "text", text: "first" };
+    const second = { type: "text", text: "second" };
+    const last = { type: "text", text: "last" };
+    const cover = [{ type: "text", text: "cover" }];
+    const pages = arrangeFoldedPages(cover, [[first], [second], [last]]);
+
+    expect(pages).toEqual([[[last], cover], [[first], [second]]]);
+  });
+
+  test("flows whole blocks in order and maximizes a common scale", () => {
+    const blocks = Array.from({ length: 5 }, (_, index) => ({
+      type: "spacer",
+      height_mm: 30,
+      id: index,
+    }));
+    const plan = planFoldedFlow([], blocks, 0, 0, 200, 180, import.meta.dirname);
+
+    expect(plan.scale).toBe(4);
+    expect(plan.columns.map((column) => column.map((block) => block.id))).toEqual([
+      [0, 1],
+      [2, 3],
+      [4],
+    ]);
+  });
+
+  test("grows text beyond its base size when the panels have room", () => {
+    const plan = planFoldedFlow(
+      [{ type: "text", text: "Readable body text ".repeat(10) }],
+      [],
+      0,
+      0,
+      200,
+      300,
+      import.meta.dirname,
+    );
+
+    expect(plan.scale).toBeGreaterThan(1);
+  });
+
+  test("rejects content that overflows even at the minimum scale", () => {
+    expect(() => planFoldedFlow(
+      [],
+      [{ type: "spacer", height_mm: 100 }],
+      0,
+      0,
+      200,
+      100,
+      import.meta.dirname,
+    )).toThrow("minimum font scale");
+  });
 });
 
 describe("generate", () => {
@@ -77,6 +152,26 @@ describe("generate", () => {
     const bytes = fs.readFileSync(destination);
     expect(bytes.length).toBeGreaterThan(10_000); // logo + QR embedded
     // Two content sides
+    expect(bytes.toString("latin1").match(/\/Type \/Page[^s]/g)?.length).toBe(2);
+  });
+
+  test("renders the direct cover and flow format as two physical sides", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "cover:",
+        "  - type: heading",
+        "    text: Cover",
+        "flow:",
+        "  - type: text",
+        "    text: Flowing content",
+        "",
+      ].join("\n"),
+    );
+    const destination = await generate(spec, path.join(dir, "out.pdf"));
+    const bytes = fs.readFileSync(destination);
+
     expect(bytes.toString("latin1").match(/\/Type \/Page[^s]/g)?.length).toBe(2);
   });
 

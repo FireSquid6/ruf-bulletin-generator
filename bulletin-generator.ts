@@ -16,9 +16,12 @@ import PDFDocument from "pdfkit";
 const MM = 72 / 25.4; // points per mm
 const PAGE_W = 841.89; // A4 landscape, points
 const PAGE_H = 595.28;
-const DEFAULT_MARGIN_MM = 7;
+const DEFAULT_HORIZONTAL_MARGIN_MM = 7;
+const DEFAULT_VERTICAL_MARGIN_MM = 4;
 const DEFAULT_GUTTER_MM = 14;
-const SHRINK_SCALES = [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5];
+const MIN_FONT_SCALE = 0.5;
+const MAX_FONT_SCALE = 4;
+const SCALE_SEARCH_STEPS = 16;
 
 // ---------- types ----------
 
@@ -56,9 +59,29 @@ interface SpecPage {
 
 interface Spec {
   metadata?: Record<string, string>;
-  layout?: { margin_mm?: number; gutter_mm?: number };
+  layout?: {
+    margin_mm?: number;
+    horizontal_margin_mm?: number;
+    vertical_margin_mm?: number;
+    gutter_mm?: number;
+  };
   output?: string;
-  pages: SpecPage[];
+  folded?: boolean;
+  cover?: Block[];
+  flow?: Block[];
+  pages?: SpecPage[];
+}
+
+export interface FoldedFlowPlan {
+  scale: number;
+  columns: [Block[], Block[], Block[]];
+}
+
+export function arrangeFoldedPages(
+  cover: Block[],
+  columns: FoldedFlowPlan["columns"],
+): [[Block[], Block[]], [Block[], Block[]]] {
+  return [[columns[2], cover], [columns[0], columns[1]]];
 }
 
 const STYLES: Record<StyleName, StyleDef> = {
@@ -242,9 +265,9 @@ function renderSong(doc: Doc, block: Block, x: number, y: number, width: number,
   const groups = balancedParts(parts, 2);
   let yLeft = cursor;
   let yRight = cursor;
-  for (const part of groups[0]) yLeft = renderPart(doc, part, x, yLeft, subWidth, "small", effectiveScale);
+  for (const part of groups[0]) yLeft = renderPart(doc, part, x, yLeft, subWidth, "body", effectiveScale);
   for (const part of groups[1]) {
-    yRight = renderPart(doc, part, x + subWidth + gap, yRight, subWidth, "small", effectiveScale);
+    yRight = renderPart(doc, part, x + subWidth + gap, yRight, subWidth, "body", effectiveScale);
   }
   return Math.max(yLeft, yRight);
 }
@@ -420,9 +443,8 @@ function columnFits(
   height: number,
   yamlDir: string,
   scale: number,
-  bottomLimit: number,
 ): boolean {
-  const probe = new PDFDocument({ size: [PAGE_W, PAGE_H], compress: false }) as Doc;
+  const probe = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0, compress: false }) as Doc;
   let overflowed = false;
   const addPage = probe.addPage.bind(probe);
   probe.addPage = (() => {
@@ -431,14 +453,164 @@ function columnFits(
   }) as typeof probe.addPage;
 
   const bottom = renderColumn(probe, blocks, x, yTop, width, height, yamlDir, scale);
-  return !overflowed && bottom >= bottomLimit;
+  return !overflowed && bottom <= yTop + height + 2;
+}
+
+function partitionFlow(
+  flow: Block[],
+  x: number,
+  yTop: number,
+  width: number,
+  height: number,
+  yamlDir: string,
+  scale: number,
+): [Block[], Block[], Block[]] | null {
+  const columns: Block[][] = [];
+  let start = 0;
+
+  for (let columnIndex = 0; columnIndex < 3; columnIndex++) {
+    let end = start;
+    while (
+      end < flow.length &&
+      columnFits(flow.slice(start, end + 1), x, yTop, width, height, yamlDir, scale)
+    ) {
+      end++;
+    }
+    columns.push(flow.slice(start, end));
+    start = end;
+  }
+
+  return start === flow.length ? columns as [Block[], Block[], Block[]] : null;
+}
+
+function foldedPlanAtScale(
+  cover: Block[],
+  flow: Block[],
+  x: number,
+  yTop: number,
+  width: number,
+  height: number,
+  yamlDir: string,
+  scale: number,
+): FoldedFlowPlan | null {
+  if (!columnFits(cover, x, yTop, width, height, yamlDir, scale)) return null;
+  const columns = partitionFlow(flow, x, yTop, width, height, yamlDir, scale);
+  return columns ? { scale, columns } : null;
+}
+
+export function planFoldedFlow(
+  cover: Block[],
+  flow: Block[],
+  x: number,
+  yTop: number,
+  width: number,
+  height: number,
+  yamlDir: string,
+): FoldedFlowPlan {
+  let low = MIN_FONT_SCALE;
+  let lowPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, low);
+  if (!lowPlan) {
+    throw new Error(`Bulletin content does not fit at the minimum font scale (${MIN_FONT_SCALE})`);
+  }
+
+  let high = 1;
+  let highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, high);
+  if (highPlan) {
+    low = high;
+    lowPlan = highPlan;
+    while (high < MAX_FONT_SCALE) {
+      high = Math.min(high * 2, MAX_FONT_SCALE);
+      highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, high);
+      if (!highPlan) break;
+      low = high;
+      lowPlan = highPlan;
+      if (high === MAX_FONT_SCALE) return lowPlan;
+    }
+  }
+
+  for (let step = 0; step < SCALE_SEARCH_STEPS; step++) {
+    const scale = (low + high) / 2;
+    const plan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, scale);
+    if (plan) {
+      low = scale;
+      lowPlan = plan;
+    } else {
+      high = scale;
+    }
+  }
+
+  return lowPlan;
+}
+
+function largestColumnScale(
+  blocks: Block[],
+  x: number,
+  yTop: number,
+  width: number,
+  height: number,
+  yamlDir: string,
+): number {
+  if (!columnFits(blocks, x, yTop, width, height, yamlDir, MIN_FONT_SCALE)) {
+    throw new Error(`Column content does not fit at the minimum font scale (${MIN_FONT_SCALE})`);
+  }
+
+  let low = MIN_FONT_SCALE;
+  let high = 1;
+  if (columnFits(blocks, x, yTop, width, height, yamlDir, high)) {
+    low = high;
+    while (high < MAX_FONT_SCALE) {
+      high = Math.min(high * 2, MAX_FONT_SCALE);
+      if (!columnFits(blocks, x, yTop, width, height, yamlDir, high)) break;
+      low = high;
+      if (high === MAX_FONT_SCALE) return high;
+    }
+  }
+
+  for (let step = 0; step < SCALE_SEARCH_STEPS; step++) {
+    const scale = (low + high) / 2;
+    if (columnFits(blocks, x, yTop, width, height, yamlDir, scale)) low = scale;
+    else high = scale;
+  }
+  return low;
 }
 
 // ---------- validation ----------
 
 export function validateSpec(spec: unknown): asserts spec is Spec {
   if (typeof spec !== "object" || spec === null) throw new Error("The YAML root must be a mapping");
-  const pages = (spec as Spec).pages;
+  const typedSpec = spec as Spec;
+  const usesFoldedFlow = typedSpec.cover !== undefined || typedSpec.flow !== undefined;
+
+  const validateBlocks = (blocks: unknown[], location: string) => {
+    for (const block of blocks) {
+      if (
+        typeof block !== "object" ||
+        block === null ||
+        typeof (block as Block).type !== "string" ||
+        !BLOCK_TYPES.has((block as Block).type)
+      ) {
+        throw new Error(
+          `${location} has an invalid block` +
+            (block && typeof block === "object" && "type" in block
+              ? ` (unknown type '${(block as Block).type}')`
+              : ""),
+        );
+      }
+    }
+  };
+
+  if (usesFoldedFlow) {
+    if (typedSpec.pages !== undefined || typedSpec.folded !== undefined) {
+      throw new Error("Use either 'cover' and 'flow' or 'pages', not both");
+    }
+    if (!Array.isArray(typedSpec.cover)) throw new Error("'cover' must be a list of blocks");
+    if (!Array.isArray(typedSpec.flow)) throw new Error("'flow' must be a list of blocks");
+    validateBlocks(typedSpec.cover, "Cover");
+    validateBlocks(typedSpec.flow, "Flow");
+    return;
+  }
+
+  const pages = typedSpec.pages;
   if (!Array.isArray(pages) || pages.length < 1 || pages.length > 2) {
     throw new Error("'pages' must contain one or two sides for one physical sheet");
   }
@@ -454,23 +626,12 @@ export function validateSpec(spec: unknown): asserts spec is Spec {
       if (!Array.isArray(column)) {
         throw new Error(`Page ${pageNumber + 1}, column ${columnIndex + 1} must be a list`);
       }
-      for (const block of column) {
-        if (
-          typeof block !== "object" ||
-          block === null ||
-          typeof block.type !== "string" ||
-          !BLOCK_TYPES.has(block.type)
-        ) {
-          throw new Error(
-            `Page ${pageNumber + 1}, column ${columnIndex + 1} has an invalid block` +
-              (block && typeof block === "object" && "type" in block
-                ? ` (unknown type '${(block as Block).type}')`
-                : ""),
-          );
-        }
-      }
+      validateBlocks(column, `Page ${pageNumber + 1}, column ${columnIndex + 1}`);
     });
   });
+  if (typedSpec.folded && (pages.length !== 2 || pages.some((page) => page.columns.length !== 2))) {
+    throw new Error("A folded pages layout requires exactly two pages with two columns each");
+  }
 }
 
 // ---------- generation ----------
@@ -485,12 +646,16 @@ export async function generate(yamlPath: string, outputOverride?: string, debug 
   const destination = outputOverride ?? resolvePath(configuredOutput, yamlDir);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
 
-  const margin = Number(spec.layout?.margin_mm ?? DEFAULT_MARGIN_MM) * MM;
+  const horizontalMargin = Number(
+    spec.layout?.horizontal_margin_mm ?? spec.layout?.margin_mm ?? DEFAULT_HORIZONTAL_MARGIN_MM,
+  ) * MM;
+  const verticalMargin = Number(
+    spec.layout?.vertical_margin_mm ?? spec.layout?.margin_mm ?? DEFAULT_VERTICAL_MARGIN_MM,
+  ) * MM;
   const gutter = Number(spec.layout?.gutter_mm ?? DEFAULT_GUTTER_MM) * MM;
-  const contentHeight = PAGE_H - 2 * margin;
-  const bottomLimit = margin - 2; // small tolerance
+  const contentHeight = PAGE_H - 2 * verticalMargin;
 
-  const doc = new PDFDocument({ size: [PAGE_W, PAGE_H], compress: true }) as Doc;
+  const doc = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0, compress: true }) as Doc;
   const metadata = spec.metadata ?? {};
   doc.info.Title = metadata.title ?? "RUF Bulletin";
   doc.info.Author = metadata.author ?? "Reformed University Fellowship";
@@ -498,36 +663,76 @@ export async function generate(yamlPath: string, outputOverride?: string, debug 
   const stream = fs.createWriteStream(destination);
   doc.pipe(stream);
 
-  spec.pages.forEach((page, pageIndex) => {
-    if (pageIndex > 0) doc.addPage();
+  const drawGuide = (x: number, width: number) => {
+    if (!debug) return;
+    doc.save().strokeColor("#c9c9c9").lineWidth(0.5)
+      .rect(x, verticalMargin, width, contentHeight).stroke().restore();
+  };
 
-    const columns = page.columns;
-    const weights = page.column_weights ?? columns.map(() => 1);
-    if (weights.length !== columns.length || weights.some((w) => Number(w) <= 0)) {
-      throw new Error("column_weights must be positive and match the number of columns");
-    }
-    const availableWidth = PAGE_W - 2 * margin - gutter * (columns.length - 1);
-    const totalWeight = weights.reduce((sum, w) => sum + Number(w), 0);
-    const widths = weights.map((w) => (availableWidth * Number(w)) / totalWeight);
+  const foldedCover = spec.cover ?? (spec.folded ? spec.pages![0].columns[1] : undefined);
+  const foldedFlow = spec.flow ?? (spec.folded
+    ? [
+        ...spec.pages![1].columns[0],
+        ...spec.pages![1].columns[1],
+        ...spec.pages![0].columns[0],
+      ]
+    : undefined);
 
-    let x = margin;
-    for (const [index, blocks] of columns.entries()) {
-      const width = widths[index];
-      // Pick the largest scale that keeps this column on the sheet.
-      let chosen = SHRINK_SCALES[SHRINK_SCALES.length - 1];
-      for (const scale of SHRINK_SCALES) {
-        if (columnFits(blocks, x, margin, width, contentHeight, yamlDir, scale, bottomLimit)) {
-          chosen = scale;
-          break;
-        }
+  if (foldedCover && foldedFlow) {
+    const width = (PAGE_W - 2 * horizontalMargin - gutter) / 2;
+    const leftX = horizontalMargin;
+    const rightX = leftX + width + gutter;
+    const plan = planFoldedFlow(
+      foldedCover,
+      foldedFlow,
+      leftX,
+      verticalMargin,
+      width,
+      contentHeight,
+      yamlDir,
+    );
+    const pages = arrangeFoldedPages(foldedCover, plan.columns);
+
+    renderColumn(doc, pages[0][0], leftX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    renderColumn(doc, pages[0][1], rightX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    drawGuide(leftX, width);
+    drawGuide(rightX, width);
+
+    doc.addPage();
+    renderColumn(doc, pages[1][0], leftX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    renderColumn(doc, pages[1][1], rightX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    drawGuide(leftX, width);
+    drawGuide(rightX, width);
+  } else {
+    spec.pages!.forEach((page, pageIndex) => {
+      if (pageIndex > 0) doc.addPage();
+
+      const columns = page.columns;
+      const weights = page.column_weights ?? columns.map(() => 1);
+      if (weights.length !== columns.length || weights.some((w) => Number(w) <= 0)) {
+        throw new Error("column_weights must be positive and match the number of columns");
       }
-      renderColumn(doc, blocks, x, margin, width, contentHeight, yamlDir, chosen);
-      if (debug) {
-        doc.save().strokeColor("#c9c9c9").lineWidth(0.5).rect(x, margin, width, contentHeight).stroke().restore();
+      const availableWidth = PAGE_W - 2 * horizontalMargin - gutter * (columns.length - 1);
+      const totalWeight = weights.reduce((sum, w) => sum + Number(w), 0);
+      const widths = weights.map((w) => (availableWidth * Number(w)) / totalWeight);
+
+      let x = horizontalMargin;
+      for (const [index, blocks] of columns.entries()) {
+        const width = widths[index];
+        const chosen = largestColumnScale(
+          blocks,
+          x,
+          verticalMargin,
+          width,
+          contentHeight,
+          yamlDir,
+        );
+        renderColumn(doc, blocks, x, verticalMargin, width, contentHeight, yamlDir, chosen);
+        drawGuide(x, width);
+        x += width + gutter;
       }
-      x += width + gutter;
-    }
-  });
+    });
+  }
 
   doc.end();
   await new Promise<void>((resolve, reject) => {

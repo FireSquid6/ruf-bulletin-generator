@@ -33,12 +33,47 @@ bun test
 ## Layout model
 
 - One physical sheet, landscape A4 (297 x 210 mm), printable duplex.
-- Up to 2 pages in `pages:` (front and back sides).
-- Each side is an independent set of 1-3 columns.
-- `column_weights` (optional) sets relative column widths, e.g. `[2, 1]`.
-- If a column's content is too tall, the generator steps its scale down
-  (100% -> 50% in 5% steps) until it fits the sheet. If text is overly small,
-  move blocks between columns.
+- Folded bulletins have a fixed cover at page 1 right. Content then reads through
+  page 2 left, page 2 right, and page 1 left.
+- Flowing blocks stay intact and automatically move between the three content
+  panels. Songs, scripture, and other blocks are never split midway.
+- The generator finds the largest common font scale that fits the cover and all
+  three content panels. This keeps body text consistent throughout a given week
+  while preserving the size ratios between body text, titles, and headings.
+- The default top and bottom margins are 4mm. Horizontal margins remain 7mm.
+
+The preferred folded format declares the fixed cover and ordered content directly:
+
+```yaml
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+
+cover:
+  - type: branding
+    path: ../assets/ruf-baylor-logo.png
+  - type: announcements
+    items:
+      - "Weekly announcement"
+  - type: contacts
+    items:
+      - name: "Staff Name"
+        detail: "(555) 555-0100"
+
+flow:
+  - type: song
+    title: "Opening Song"
+    parts:
+      - text: "Lyrics"
+  - type: scripture
+    reference: "John 1:1"
+    text: "Scripture text"
+```
+
+Existing two-page, two-column files can set `folded: true`. The generator treats
+page 1 right as the cover and combines the other blocks in physical reading order
+before redistributing them automatically.
 
 ## YAML reference
 
@@ -47,15 +82,18 @@ Top level:
 | Key | Meaning |
 | --- | --- |
 | `metadata` | `title`, `author`, `subject` for the PDF |
-| `layout` | `margin_mm` (default 7), `gutter_mm` (default 14); for two columns, half the gutter matches each outer margin at the fold |
+| `layout` | `horizontal_margin_mm` (default 7), `vertical_margin_mm` (default 4), and `gutter_mm` (default 14); `margin_mm` remains available to set both margins together |
 | `output` | Output PDF path, relative to the YAML file |
-| `pages` | List of 1-2 sides; each has `columns` (list of block lists) and optional `column_weights` |
+| `cover` | Fixed page-1-right blocks for the preferred folded format |
+| `flow` | Blocks in reading order for automatic placement across the other three panels |
+| `folded` | Set to `true` to apply folded flow to a legacy two-page, two-column `pages` layout |
+| `pages` | Legacy list of 1-2 sides; each has `columns` and optional `column_weights` |
 
 Block types:
 
 | Type | Fields | Notes |
 | --- | --- | --- |
-| `song` | `title`, `parts`, `columns` (1 or 2), `scale` | Parts are auto-balanced; `scale` multiplies the lyrics' font size and spacing without changing the title (default 1) |
+| `song` | `title`, `parts`, `columns` (1 or 2), `scale` | Parts are auto-balanced; lyrics use the standard body size by default, while an explicit `scale` adjusts only the lyrics |
 | `scripture` | `reference`, `text`, `label`, `text_style` | Default label is "Scripture Reading"; the text is wrapped in curly quotes |
 | `announcements` | `title`, `date`, `items` | String items, or `{title, text}` pairs rendered with a bold lead-in; `date` sits right-aligned on the header row |
 | `contacts` | `items: [{name, detail}]` | Rendered as evenly spaced columns |

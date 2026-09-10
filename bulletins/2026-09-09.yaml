@@ -4,8 +4,11 @@ metadata:
   subject: "Weekly bulletin"
 
 layout:
-  margin_mm: 7
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
   gutter_mm: 14
+
+folded: true
 
 output: ../output/bulletin-2026-09-09.pdf
 
@@ -151,7 +154,6 @@ pages:
         - type: song
           title: "Tis So Sweet"
           columns: 2
-          scale: 1.2
           parts:
             - text: |
                 ‘Tis so sweet to trust in Jesus
