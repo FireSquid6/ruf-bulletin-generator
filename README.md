@@ -10,7 +10,7 @@ branding are all data; the generator handles the layout.
 bun install
 
 # Generate the example bulletin (dummy song text)
-bun run bulletin-generator.ts example/example-dummy.yaml
+bun run src/cli.ts example/example-dummy.yaml
 
 # Output: output/bulletin.pdf
 ```
@@ -18,9 +18,9 @@ bun run bulletin-generator.ts example/example-dummy.yaml
 CLI options:
 
 ```bash
-bun run bulletin-generator.ts bulletin.yaml    # write to spec's output: path
-bun run bulletin-generator.ts bulletin.yaml -o out.pdf
-bun run bulletin-generator.ts bulletin.yaml --debug   # draw column guides
+bun run src/cli.ts bulletin.yaml    # write to spec's output: path
+bun run src/cli.ts bulletin.yaml -o out.pdf
+bun run src/cli.ts bulletin.yaml --debug   # draw column guides
 ```
 
 Type-check and run tests:
@@ -113,12 +113,21 @@ you can keep weekly YAMLs in `bulletins/` sharing the same `../assets/`.
 ## Files
 
 ```
-bulletin-generator.ts         # the generator (Bun + pdfkit + js-yaml)
+src/cli.ts                    # Commander CLI entry point
+src/index.ts                  # public generator API
+src/generate.ts               # YAML-to-PDF orchestration
+src/layout.ts                 # fitting, scaling, and folded flow
+src/render.ts                 # PDF block and column rendering
+src/validation.ts             # YAML specification validation
+src/constants.ts              # page dimensions and typography
+src/types.ts                  # shared specification types
+src/paths.ts                  # YAML-relative path resolution
+src/images.ts                 # image dimension detection
 tests/bulletin-generator.test.ts
 example/example-dummy.yaml    # example weekly spec (dummy song text)
 assets/ruf-baylor-logo.png    # extracted from the example bulletin
 assets/groupme-qr.png         # extracted from the example bulletin
-example/                     # original reference PDF + DOCX
+example/                      # original reference PDF + DOCX
 output/                       # generated PDFs
 ```
 

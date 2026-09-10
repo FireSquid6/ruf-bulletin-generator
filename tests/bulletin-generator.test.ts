@@ -6,7 +6,7 @@ import {
   generate,
   planFoldedFlow,
   validateSpec,
-} from "../bulletin-generator";
+} from "../src";
 
 const EXAMPLE_YAML = path.resolve(import.meta.dirname, "../example/example-dummy.yaml");
 

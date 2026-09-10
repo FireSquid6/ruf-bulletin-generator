@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "generate": "bun run bulletin-generator.ts example/example-dummy.yaml",
+    "bulletin": "bun run src/cli.ts",
+    "generate": "bun run src/cli.ts example/example-dummy.yaml",
     "test": "bun test"
   },
   "dependencies": {
+    "commander": "^15.0.0",
     "js-yaml": "^4.1.0",
     "pdfkit": "^0.15.0"
   },
