@@ -28,15 +28,15 @@ export interface StyleDef {
 }
 
 export const STYLES: Record<StyleName, StyleDef> = {
-  body: { font: "Times-Roman", size: 11, leading: 13.2, spaceAfter: 2.5 },
-  bodyBold: { font: "Times-Bold", size: 11, leading: 13.2, spaceAfter: 2.5 },
-  small: { font: "Times-Roman", size: 9.5, leading: 11.1, spaceAfter: 1.5 },
-  smallBold: { font: "Times-Bold", size: 9.5, leading: 11.1, spaceAfter: 1.5 },
-  title: { font: "Times-Bold", size: 15.5, leading: 17.8, spaceAfter: 2 },
+  body: { font: "Times-Roman", size: 13, leading: 13.2, spaceAfter: 2.5 },
+  bodyBold: { font: "Times-Bold", size: 13, leading: 13.2, spaceAfter: 2.5 },
+  small: { font: "Times-Roman", size: 10, leading: 11.1, spaceAfter: 1.5 },
+  smallBold: { font: "Times-Bold", size: 10, leading: 11.1, spaceAfter: 1.5 },
+  title: { font: "Times-Bold", size: 16, leading: 17.8, spaceAfter: 2 },
   section: { font: "Times-Bold", size: 13, leading: 15.2, spaceAfter: 2 },
   callout: { font: "Times-Bold", size: 12.5, leading: 14.7, spaceAfter: 2 },
-  center: { font: "Times-Bold", size: 11.5, leading: 13.7, spaceAfter: 1.5, align: "center" },
-  right: { font: "Times-Bold", size: 11, leading: 13.2, spaceAfter: 0, align: "right" },
+  center: { font: "Times-Bold", size: 12, leading: 13.7, spaceAfter: 1.5, align: "center" },
+  right: { font: "Times-Bold", size: 12, leading: 13.2, spaceAfter: 0, align: "right" },
 };
 
 export const BLOCK_TYPES = new Set([
