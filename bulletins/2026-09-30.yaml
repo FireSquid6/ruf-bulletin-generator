@@ -1,0 +1,206 @@
+metadata:
+  title: "RUF Bulletin - September 30, 2026"
+  author: "Reformed University Fellowship"
+  subject: "Weekly bulletin"
+
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+
+folded: true
+
+output: ../output/bulletin-2026-09-30.pdf
+
+pages:
+  # ---------- Front side (two columns) ----------
+  - columns:
+      # Left column: sermon text + opening song + QR
+      - - type: scripture
+          label: "Sermon"
+          reference: "James 2:14-26"
+          text: "(14) What good is it, my brothers, if someone says he has faith but does not have works? Can that faith save him? (15) If a brother or sister is poorly clothed and lacking in daily food, (16) and one of you says to them, “Go in peace, be warmed and filled,” without giving them the things needed for the body, what good is that? (17) So also faith by itself, if it does not have works, is dead. (18) But someone will say, “You have faith and I have works.” Show me your faith apart from your works, and I will show you my faith by my works. (19) You believe that God is one; you do well. Even the demons believe—and shudder! (20) Do you want to be shown, you foolish person, that faith apart from works is useless? (21) Was not Abraham our father justified by works when he offered up his son Isaac on the altar? (22) You see that faith was active along with his works, and faith was completed by his works; (23) and the Scripture was fulfilled that says, “Abraham believed God, and it was counted to him as righteousness”—and he was called a friend of God. (24) You see that a person is justified by works and not by faith alone. (25) And in the same way was not also Rahab the prostitute justified by works when she received the messengers and sent them out by another way? (26) For as the body apart from the spirit is dead, so also faith apart from works is dead."
+        - type: song
+          title: "Jesus Thank You"
+          scale: 1.1
+          columns: 1
+          parts:
+            - text: |
+                The mystery of the cross I cannot comprehend
+                The agonies of Calvary
+                You the perfect Holy One, crushed Your Son
+                Who drank the bitter cup reserved for me
+            - style: chorus
+              text: |
+                Your blood has washed away my sin
+                Jesus, thank You
+                The Father’s wrath completely satisfied
+                Jesus, thank You
+                Once Your enemy, now seated at Your table
+                Jesus, thank You
+            - text: |
+                By Your perfect sacrifice I’ve been brought near
+                Your enemy You’ve made Your friend
+                Pouring out the riches of Your glorious grace
+                Your mercy and Your kindness know no end
+            - text: |
+                Lover of my soul
+                I want to live for You
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: "Join the GroupMe!"
+              path: ../assets/groupme-qr.png
+            - caption: "Prayer Requests"
+              path: ../assets/prayer-group-qr.png
+
+      # Right column: branding + announcements + contacts
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: "Announcements"
+          date: "September 30, 2026"
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Fall Conference - October 9-11"
+            - "RUF IM Flag Football Team - Text (512) 571-0405"
+            - "Girls Craft Night - October 2nd 6pm"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalm Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
+        - type: contacts
+          items:
+            - name: "Way Rutherford"
+              detail: "(502) 403-8765"
+            - name: "Lauren Danforth"
+              detail: "(920) 918-7330"
+            - name: "Will Won"
+              detail: "(254) 239-7227"
+
+  # ---------- Back side (two columns) ----------
+  - columns:
+      # Left column: second song + order of service + scripture
+      - - type: song
+          title: "We Will Feast in the House of Zion"
+          scale: 1.1
+          columns: 1
+          parts:
+            - style: "chorus"
+              text: |
+                We will feast in the house of Zion
+                We will sing with our hearts restored
+                "He has done great things," we will say together
+                We will feast and weep no more
+            - text: |
+              We will not be burned by the fire
+              He is the Lord, our God
+              We are not consumed by the flood
+              Upheld, protected, gathered up
+            - text: |
+              In the dark of night, before the dawn
+              My soul, be not afraid
+              For the promised morning, O how long?
+              O God of Jacob, be my strength
+        - type: heading
+          text: "Welcome and Announcements"
+        - type: heading
+          text: "Greet Your Neighbor!"
+        - type: scripture
+          label: "Scripture Reading"
+          scale: 1.1
+          reference: "Psalm 8"
+          text: |
+            (1) O Lord, our Lord,
+                how majestic is your name in all the earth!
+            You have set your glory above the heavens.
+            (2) Out of the mouth of babies and infants,
+            you have established strength because of your foes,
+                to still the enemy and the avenger.
+            (3) When I look at your heavens, the work of your fingers,
+                the moon and the stars, which you have set in place,
+            (4) what is man that you are mindful of him,
+                and the son of man that you care for him?
+            (5) Yet you have made him a little lower than the heavenly beings
+                and crowned him with glory and honor.
+            (6) You have given him dominion over the works of your hands;
+                you have put all things under his feet,
+            (7) all sheep and oxen,
+                and also the beasts of the field,
+            (8) the birds of the heavens, and the fish of the sea,
+                whatever passes along the paths of the seas.
+            (9) O Lord, our Lord,
+                how majestic is your name in all the earth!
+      # Right column: two closing songs
+      - - type: song
+          title: "This is My Father's World"
+          columns: 2
+          scale: 1.1
+          parts:
+            - text: |
+                This is my Father's world,
+                And to my listening ears
+                All nature sings, and round me rings
+                The music of the spheres.
+                This is my Father's world:
+                I rest me in the thought
+                Of rocks and trees, of skies and seas--
+                His hand the wonders wrought.
+            - text: |
+                This is my Father's world:
+                The birds their carols raise,
+                The morning light, the lily white,
+                Declare their Maker's praise.
+                This is my Father's world:
+                He shines in all that's fair;
+                In the rustling grass I hear Him pass,
+                He speaks to me everywhere.
+            - text: |
+                This is my Father's world:
+                O let me ne'er forget
+                That though the wrong seems oft so strong,
+                God is the Ruler yet.
+                This is my Father's world:
+                Why should my heart be sad?
+                The Lord is King: let the heavens ring!
+                God reigns; let earth be glad!
+        - type: heading
+          text: "Prayer"
+        - type: song
+          title: "On Jordan's Stormy Banks"
+          scale: 1.1
+          columns: 1
+          parts:
+            - text: |
+                On Jordan’s stormy banks I stand,
+                And cast a wishful eye
+                To Canaan’s fair and happy land,
+                Where my possessions lie.
+            - text: |
+                All o’er those wide extended plains,
+                Shines one eternal day;
+                There God the Son forever reigns,
+                And scatters night away.
+            - style: chorus
+              text: |
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land,
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land.
+            - text: |
+                No chilling winds nor poisonous breath
+                Can reach that healthful shore;
+                Sickness, sorrow, pain and death,
+                Are felt and feared no more.
+            - text: |
+                When shall I reach that happy place,
+                And be forever blessed?
+                When shall I see my Father’s face,
+                And in His bosom rest?
