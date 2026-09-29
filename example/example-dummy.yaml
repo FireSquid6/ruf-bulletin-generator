@@ -24,35 +24,7 @@ pages:
           reference: "James 1:1"
           text: "James, a servant of God and of the Lord Jesus Christ, to the twelve tribes in the Dispersion: Greetings."
         - type: song
-          title: "Song One Title (Dummy)"
-          columns: 1
-          parts:
-            - text: |
-                Dummy verse one, line one
-                Dummy verse one, line two
-                Dummy verse one, line three
-                Dummy verse one, line four
-            - text: |
-                Dummy verse two, line one
-                Dummy verse two, line two
-                Dummy verse two, line three
-                Dummy verse two, line four
-            - style: chorus
-              text: |
-                This is the dummy chorus
-                It repeats between verses
-                This is the dummy chorus
-                With italic styling
-            - text: |
-                Dummy verse three, line one
-                Dummy verse three, line two
-                Dummy verse three, line three
-                Dummy verse three, line four
-            - text: |
-                Dummy verse four, line one
-                Dummy verse four, line two
-                Dummy verse four, line three
-                Dummy verse four, line four
+          song_ref: example_song
         - type: qr
           caption: "Join the GroupMe!"
           path: ../assets/groupme-qr.png

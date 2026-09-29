@@ -13,12 +13,25 @@ import {
 import { arrangeFoldedPages, largestColumnScale, planFoldedFlow } from "./layout";
 import { resolvePath } from "./paths";
 import { renderColumn, type Doc } from "./render";
+import { hasSongReferences, loadSongStore, resolveSongReferences } from "./song-store";
+import type { Spec } from "./types";
 import { validateSpec } from "./validation";
 
-export async function generate(yamlPath: string, outputOverride?: string, debug = false): Promise<string> {
+export async function generate(
+  yamlPath: string,
+  outputOverride?: string,
+  debug = false,
+  storePath?: string,
+): Promise<string> {
   const raw = fs.readFileSync(yamlPath, "utf-8");
-  const spec = YAML.load(raw) as unknown;
-  validateSpec(spec);
+  const parsedSpec = YAML.load(raw) as unknown;
+  validateSpec(parsedSpec);
+  let spec: Spec = parsedSpec;
+
+  if (storePath !== undefined || hasSongReferences(spec)) {
+    const resolvedStorePath = path.resolve(storePath ?? "store/song-store.yaml");
+    spec = resolveSongReferences(spec, loadSongStore(resolvedStorePath));
+  }
 
   const yamlDir = path.dirname(path.resolve(yamlPath));
   const configuredOutput = spec.output ?? "bulletin.pdf";

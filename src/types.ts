@@ -4,6 +4,17 @@ export interface SongPart {
   style?: string;
 }
 
+export interface StoredSong {
+  title: string;
+  parts: SongPart[];
+  columns?: number;
+  scale?: number;
+}
+
+export interface SongStore {
+  songs: Record<string, StoredSong>;
+}
+
 export interface Block {
   type: string;
   [key: string]: unknown;
