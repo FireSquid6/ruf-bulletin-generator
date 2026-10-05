@@ -20,6 +20,7 @@ CLI options:
 ```bash
 bun run src/cli.ts bulletin.yaml    # write to spec's output: path
 bun run src/cli.ts bulletin.yaml -o out.pdf
+bun run src/cli.ts bulletin.yaml --store path/to/song-store.yaml
 bun run src/cli.ts bulletin.yaml --debug   # draw column guides
 ```
 
@@ -63,9 +64,7 @@ cover:
 
 flow:
   - type: song
-    title: "Opening Song"
-    parts:
-      - text: "Lyrics"
+    song_ref: opening_song
   - type: scripture
     reference: "John 1:1"
     text: "Scripture text"
@@ -74,6 +73,43 @@ flow:
 Existing two-page, two-column files can set `folded: true`. The generator treats
 page 1 right as the cover and combines the other blocks in physical reading order
 before redistributing them automatically.
+
+## Song store
+
+Songs can be kept in a keyed YAML store instead of copied into each bulletin:
+
+```yaml
+songs:
+  opening_song:
+    title: "Opening Song"
+    columns: 2
+    scale: 0.95
+    parts:
+      - label: "1."
+        text: |
+          First verse lyrics
+      - style: chorus
+        text: |
+          Chorus lyrics
+```
+
+Reference a stored song anywhere a song block is accepted:
+
+```yaml
+- type: song
+  song_ref: opening_song
+  columns: 1
+```
+
+The generator uses `--store <filepath>` when supplied. Otherwise, a bulletin that
+contains `song_ref` uses `./store/song-store.yaml`. Both paths are relative to the
+current working directory. A missing store, an unknown song key, or an invalid
+store produces an error before PDF rendering begins. Inline song blocks continue
+to work without a store.
+
+Store entries may provide `columns` and `scale` defaults. A reference may override
+those two presentation fields, but cannot provide `title` or `parts`; those always
+come from the store. Song keys are case-sensitive.
 
 ## YAML reference
 
@@ -93,7 +129,7 @@ Block types:
 
 | Type | Fields | Notes |
 | --- | --- | --- |
-| `song` | `title`, `parts`, `columns` (1 or 2), `scale` | Parts are auto-balanced; lyrics use the standard body size by default, while an explicit `scale` adjusts only the lyrics |
+| `song` | `song_ref`, or inline `title` and `parts`; `columns` (1 or 2), `scale` | Stored songs are looked up by exact key; parts are auto-balanced; lyrics use the standard body size by default, while an explicit `scale` adjusts only the lyrics |
 | `scripture` | `reference`, `text`, `label`, `text_style` | Default label is "Scripture Reading"; the text is wrapped in curly quotes |
 | `announcements` | `title`, `date`, `items` | String items, or `{title, text}` pairs rendered with a bold lead-in; `date` sits right-aligned on the header row |
 | `contacts` | `items: [{name, detail}]` | Rendered as evenly spaced columns |
@@ -107,8 +143,9 @@ Song `parts` entries: `text` (newlines preserved), optional `label` (e.g. `"1."`
 rendered bold), optional `style: chorus` (renders italic). For 2-column songs,
 parts are split into two balanced sub-columns in reading order.
 
-Relative paths (images, output) resolve against the YAML file's directory, so
-you can keep weekly YAMLs in `bulletins/` sharing the same `../assets/`.
+Relative image and configured output paths resolve against the bulletin YAML's
+directory, so weekly YAMLs in `bulletins/` can share the same `../assets/`. CLI
+`--output` and `--store` paths resolve against the current working directory.
 
 ## Files
 
@@ -116,6 +153,7 @@ you can keep weekly YAMLs in `bulletins/` sharing the same `../assets/`.
 src/cli.ts                    # Commander CLI entry point
 src/index.ts                  # public generator API
 src/generate.ts               # YAML-to-PDF orchestration
+src/song-store.ts             # song store validation and reference resolution
 src/layout.ts                 # fitting, scaling, and folded flow
 src/render.ts                 # PDF block and column rendering
 src/validation.ts             # YAML specification validation
@@ -125,6 +163,7 @@ src/paths.ts                  # YAML-relative path resolution
 src/images.ts                 # image dimension detection
 tests/bulletin-generator.test.ts
 example/example-dummy.yaml    # example weekly spec (dummy song text)
+store/song-store.yaml         # default reusable song store
 assets/ruf-baylor-logo.png    # extracted from the example bulletin
 assets/groupme-qr.png         # extracted from the example bulletin
 example/                      # original reference PDF + DOCX

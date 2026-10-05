@@ -5,6 +5,9 @@ import {
   arrangeFoldedPages,
   generate,
   planFoldedFlow,
+  resolveSongReferences,
+  type SongStore,
+  validateSongStore,
   validateSpec,
 } from "../src";
 
@@ -13,6 +16,12 @@ const EXAMPLE_YAML = path.resolve(import.meta.dirname, "../example/example-dummy
 function writeSpec(dir: string, specText: string): string {
   const filePath = path.join(dir, "spec.yaml");
   fs.writeFileSync(filePath, specText, "utf-8");
+  return filePath;
+}
+
+function writeStore(dir: string, storeText: string): string {
+  const filePath = path.join(dir, "song-store.yaml");
+  fs.writeFileSync(filePath, storeText, "utf-8");
   return filePath;
 }
 
@@ -61,6 +70,62 @@ describe("generate", () => {
       folded: true,
       pages: [{ columns: [[], []] }],
     })).toThrow("exactly two pages");
+  });
+});
+
+describe("song store", () => {
+  const store: SongStore = {
+    songs: {
+      test_song: {
+        title: "Stored Song",
+        columns: 2,
+        scale: 0.9,
+        parts: [{ text: "Stored lyrics" }],
+      },
+    },
+  };
+
+  test("validates stored song content", () => {
+    expect(() => validateSongStore(store)).not.toThrow();
+    expect(() => validateSongStore({ songs: { broken: { title: "Broken", parts: [] } } }))
+      .toThrow("non-empty parts list");
+    expect(() => validateSongStore({
+      songs: { broken: { title: "Broken", parts: [{ text: "Hi", style: "loud" }] } },
+    })).toThrow("unsupported style");
+  });
+
+  test("resolves references in folded flow and legacy pages", () => {
+    const folded = resolveSongReferences({
+      cover: [{ type: "song", song_ref: "test_song", columns: 1 }],
+      flow: [{ type: "song", song_ref: "test_song" }],
+    }, store);
+    const legacy = resolveSongReferences({
+      pages: [{ columns: [[{ type: "song", song_ref: "test_song", scale: 0.75 }]] }],
+    }, store);
+
+    expect(folded.cover?.[0]).toEqual({
+      type: "song",
+      title: "Stored Song",
+      parts: [{ text: "Stored lyrics" }],
+      columns: 1,
+      scale: 0.9,
+    });
+    expect(folded.flow?.[0].columns).toBe(2);
+    expect(legacy.pages?.[0].columns[0][0].scale).toBe(0.75);
+  });
+
+  test("rejects missing and ambiguous song references with their location", () => {
+    expect(() => resolveSongReferences({
+      flow: [{ type: "song", song_ref: "missing" }],
+      cover: [],
+    }, store)).toThrow("Song 'missing' referenced by Flow block 1 was not found");
+    expect(() => resolveSongReferences({
+      flow: [{ type: "song", song_ref: "toString" }],
+      cover: [],
+    }, store)).toThrow("Song 'toString' referenced by Flow block 1 was not found");
+    expect(() => resolveSongReferences({
+      pages: [{ columns: [[{ type: "song", song_ref: "test_song", title: "Override" }]] }],
+    }, store)).toThrow("Page 1, column 1 block 1 cannot combine song_ref with title or parts");
   });
 });
 
@@ -173,6 +238,112 @@ describe("generate", () => {
     const bytes = fs.readFileSync(destination);
 
     expect(bytes.toString("latin1").match(/\/Type \/Page[^s]/g)?.length).toBe(2);
+  });
+
+  test("renders a song from an explicit store", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: song",
+        "          song_ref: stored_song",
+        "          columns: 1",
+        "",
+      ].join("\n"),
+    );
+    const storePath = writeStore(
+      dir,
+      [
+        "songs:",
+        "  stored_song:",
+        "    title: Stored Song",
+        "    columns: 2",
+        "    parts:",
+        "      - text: Stored lyrics",
+        "",
+      ].join("\n"),
+    );
+
+    const destination = await generate(spec, path.join(dir, "out.pdf"), false, storePath);
+    expect(fs.existsSync(destination)).toBe(true);
+  });
+
+  test("uses the default store for song references", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: song",
+        "          song_ref: example_song",
+        "",
+      ].join("\n"),
+    );
+
+    const destination = await generate(spec, path.join(dir, "out.pdf"));
+    expect(fs.existsSync(destination)).toBe(true);
+  });
+
+  test("reports missing stores and songs before rendering", async () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: song",
+        "          song_ref: absent",
+        "",
+      ].join("\n"),
+    );
+    const storePath = writeStore(dir, "songs: {}\n");
+
+    await expect(generate(spec, path.join(dir, "out.pdf"), false, storePath))
+      .rejects.toThrow("Song 'absent'");
+    await expect(generate(spec, path.join(dir, "out.pdf"), false, path.join(dir, "missing.yaml")))
+      .rejects.toThrow("Unable to read song store");
+  });
+
+  test("forwards --store through the CLI", () => {
+    const dir = fs.mkdtempSync("/tmp/ruf-test-");
+    const spec = writeSpec(
+      dir,
+      [
+        "pages:",
+        "  - columns:",
+        "      - - type: song",
+        "          song_ref: cli_song",
+        "",
+      ].join("\n"),
+    );
+    const storePath = writeStore(
+      dir,
+      [
+        "songs:",
+        "  cli_song:",
+        "    title: CLI Song",
+        "    parts:",
+        "      - text: CLI lyrics",
+        "",
+      ].join("\n"),
+    );
+    const out = path.join(dir, "cli.pdf");
+    const result = Bun.spawnSync([
+      process.execPath,
+      "run",
+      path.resolve(import.meta.dirname, "../src/cli.ts"),
+      spec,
+      "--output",
+      out,
+      "--store",
+      storePath,
+    ]);
+
+    expect(result.exitCode, result.stderr.toString()).toBe(0);
+    expect(fs.existsSync(out)).toBe(true);
   });
 
   test("renders multiple QR codes in one row", async () => {
