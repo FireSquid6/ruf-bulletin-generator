@@ -18,7 +18,7 @@ pages:
       # Left column: sermon text + opening song + QR
       - - type: scripture
           label: "Sermon"
-          reference: "James 2:14-26"
+          reference: "James 3:1-18"
           text: "(1) Not many of you should become teachers, my brothers, for you know that we who teach will be judged with greater strictness. (2) For we all stumble in many ways. And if anyone does not stumble in what he says, he is a perfect man, able also to bridle his whole body. (3) If we put bits into the mouths of horses so that they obey us, we guide their whole bodies as well. (4) Look at the ships also: though they are so large and are driven by strong winds, they are guided by a very small rudder wherever the will of the pilot directs. (5) So also the tongue is a small member, yet it boasts of great things. How great a forest is set ablaze by such a small fire! (6) And the tongue is a fire, a world of unrighteousness. The tongue is set among our members, staining the whole body, setting on fire the entire course of life, and set on fire by hell. (7) For every kind of beast and bird, of reptile and sea creature, can be tamed and has been tamed by mankind, (8) but no human being can tame the tongue. It is a restless evil, full of deadly poison. (9) With it we bless our Lord and Father, and with it we curse people who are made in the likeness of God. (10) From the same mouth come blessing and cursing. My brothers, these things ought not to be so. (11) Does a spring pour forth from the same opening both fresh and salt water? (12) Can a fig tree, my brothers, bear olives, or a grapevine produce figs? Neither can a salt pond yield fresh water. (13) Who is wise and understanding among you? By his good conduct let him show his works in the meekness of wisdom. (14) But if you have bitter jealousy and selfish ambition in your hearts, do not boast and be false to the truth. (15) This is not the wisdom that comes down from above, but is earthly, unspiritual, demonic. (16) For where jealousy and selfish ambition exist, there will be disorder and every vile practice. (17) But the wisdom from above is first pure, then peaceable, gentle, open to reason, full of mercy and good fruits, impartial and sincere. (18) And a harvest of righteousness is sown in peace by those who make peace."
         - type: song
           title: "We Will Feast in the House of Zion"
@@ -31,12 +31,14 @@ pages:
                 We will sing with our hearts restored
                 "He has done great things," we will say together
                 We will feast and weep no more
-            - text: |
+            - label: "1."
+              text: |
                 We will not be burned by the fire
                 He is the Lord, our God
                 We are not consumed by the flood
                 Upheld, protected, gathered up
-            - text: |
+            - label: "2."
+              text: |
                 In the dark of night, before the dawn
                 My soul, be not afraid
                 For the promised morning, O how long?
@@ -86,7 +88,8 @@ pages:
           scale: 1.1
           columns: 1
           parts:
-            - text: |
+            - label: "1."
+              text: |
                 All praise to Him, the God of light
                 Who formed the mountains by His might
                 All praise to Him who names the stars
@@ -95,7 +98,8 @@ pages:
                 Who guides the galaxies above
                 Yet bends to hear our every prayer
                 With sovereign pow'r and tender care
-            - text: |
+            - label: "2."
+              text: |
                 All praise to Him whose love is seen
                 In Christ the Son, the Servant King
                 Who left behind His glorious throne
@@ -104,7 +108,8 @@ pages:
                 To bear our sorrow, sin, and shame
                 Who lived to die, who died to rise
                 The all-sufficient sacrifice
-            - text: |
+            - label: "3."
+              text: |
                 All praise to Him whose pow'r imparts
                 The love of God within our hearts
                 The Spirit of all truth and peace
@@ -128,7 +133,8 @@ pages:
           columns: 2
           scale: 1.1
           parts:
-            - text: |
+            - label: "1."
+              text: |
                 How deep the Father’s love for us,
                 How vast beyond all measure,
                 That He should give His only Son
@@ -137,7 +143,8 @@ pages:
                 The Father turns His face away,
                 As wounds which mar the Chosen One
                 Bring many sons to glory.
-            - text: |
+            - label: "2."
+              text: |
                 Behold the man upon a cross,
                 My sin upon His shoulders;
                 Ashamed, I hear my mocking voice
@@ -146,7 +153,8 @@ pages:
                 Until it was accomplished;
                 His dying breath has brought me life –
                 I know that it is finished.
-            - text: |
+            - label: "3."
+              text: |
                 I will not boast in anything,
                 No gifts, no power, no wisdom;
                 But I will boast in Jesus Christ,
@@ -162,7 +170,8 @@ pages:
           scale: 1.1
           columns: 2
           parts:
-            - text: |
+            - label: "1."
+              text: |
                 Before the throne of God above
                 I have a strong and perfect plea
                 A great High Priest whose name is love
@@ -172,7 +181,8 @@ pages:
                 I know that while in heav’n He stands
                 No tongue can bid me thence depart
                 No tongue can bid me thence depart
-            - text: |
+            - label: "2."
+              text: |
                 When Satan tempts me to despair
                 And tells me of the guilt within
                 Upward I look and see Him there
@@ -182,7 +192,8 @@ pages:
                 For God the Just is satisfied
                 To look on Him and pardon me
                 To look on Him and pardon me
-            - text: |
+            - label: "3."
+              text: |
                 Behold Him there, the risen Lamb
                 My perfect, spotless Righteousness
                 The great unchangeable I AM
