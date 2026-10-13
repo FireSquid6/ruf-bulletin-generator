@@ -1,0 +1,233 @@
+metadata:
+  title: "RUF Bulletin - October 14, 2026"
+  author: "Reformed University Fellowship"
+  subject: "Weekly bulletin"
+
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+
+folded: true
+
+output: ../output/bulletin-2026-10-14.pdf
+
+pages:
+  # ---------- Front side (two columns) ----------
+  - columns:
+      # Left column: sermon text + opening song + QR
+      - - type: scripture
+          label: "Sermon"
+          reference: "James 4:1-10"
+          text: "(1) What causes quarrels and what causes fights among you? Is it not this, that your passions are at war within you? (2) You desire and do not have, so you murder. You covet and cannot obtain, so you fight and quarrel. You do not have, because you do not ask. (3) You ask and do not receive, because you ask wrongly, to spend it on your passions. (4) You adulterous people! Do you not know that friendship with the world is enmity with God? Therefore whoever wishes to be a friend of the world makes himself an enemy of God. (5) Or do you suppose it is to no purpose that the Scripture says, “He yearns jealously over the spirit that he has made to dwell in us”? (6) But he gives more grace. Therefore it says, “God opposes the proud but gives grace to the humble.” (7) Submit yourselves therefore to God. Resist the devil, and he will flee from you. (8) Draw near to God, and he will draw near to you. Cleanse your hands, you sinners, and purify your hearts, you double-minded. (9) Be wretched and mourn and weep. Let your laughter be turned to mourning and your joy to gloom. (10) Humble yourselves before the Lord, and he will exalt you."
+        - type: song
+          title: "It Is Well"
+          scale: 1.1
+          columns: 2
+          parts:
+            - label: "1."
+              text: |
+                When peace, like a river,
+                Attendeth my way,
+                When sorrows like sea billows roll;
+                Whatever my lot,
+                Thou hast taught me to say,
+            - style: chorus
+              text: |
+                It is well, with my soul.
+                It is well, it is well, with my soul.
+            - label: "2."
+              text: |
+                Though Satan should buffet,
+                Though trials should come,
+                Let this blest assurance control,
+                That Christ has regarded
+                My helpless estate,
+                And hath shed His own blood for my soul.
+            - label: "3."
+              text: |
+                My sin, oh, the bliss
+                Of this glorious thought!
+                My sin, not in part but the whole,
+                Is nailed to the cross,
+                And I bear it no more,
+                Praise the Lord, praise the Lord, O my soul!
+            - label: "4."
+              text: |
+                And Lord, haste the day
+                When my faith shall be sight,
+                The clouds be rolled back as a scroll;
+                The trump shall resound,
+                And the Lord shall descend,
+                Even so, it is well with my soul.
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: "Join the GroupMe!"
+              path: ../assets/groupme-qr.png
+            - caption: "Prayer Requests"
+              path: ../assets/prayer-group-qr.png
+
+      # Right column: branding + announcements + contacts
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: "Announcements"
+          date: "October 14 2026"
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalm Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
+        - type: contacts
+          items:
+            - name: "Way Rutherford"
+              detail: "(502) 403-8765"
+            - name: "Lauren Danforth"
+              detail: "(920) 918-7330"
+            - name: "Will Won"
+              detail: "(254) 239-7227"
+
+  # ---------- Back side (two columns) ----------
+  - columns:
+      # Left column: second song + order of service + scripture
+      - - type: song
+          title: "On Jordan's Stormy Banks"
+          scale: 1.1
+          columns: 1
+          parts:
+            - label: "1."
+              text: |
+                On Jordan’s stormy banks I stand,
+                And cast a wishful eye
+                To Canaan’s fair and happy land,
+                Where my possessions lie.
+            - label: "2."
+              text: |
+                All o’er those wide extended plains,
+                Shines one eternal day;
+                There God the Son forever reigns,
+                And scatters night away.
+            - style: chorus
+              text: |
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land,
+                I am bound (I am bound) 
+                I am bound (I am bound)
+                I am bound for promised land.
+            - label: "3."
+              text: |
+                No chilling winds nor poisonous breath
+                Can reach that healthful shore;
+                Sickness, sorrow, pain and death,
+                Are felt and feared no more.
+            - label: "4."
+              text: |
+                When shall I reach that happy place,
+                And be forever blessed?
+                When shall I see my Father’s face,
+                And in His bosom rest?
+        - type: heading
+          text: "Welcome and Announcements"
+        - type: heading
+          text: "Greet Your Neighbor!"
+        - type: scripture
+          label: "Scripture Reading"
+          scale: 1.1
+          reference: "Ecclesiastes 3:9-11"
+          text: "(9) What gain has the worker from his toil? (10) I have seen the business that God has given to the children of man to be busy with. (11) He has made everything beautiful in its time. Also, he has put eternity into man's heart, yet so that he cannot find out what God has done from the beginning to the end. (12) I perceived that there is nothing better for them than to be joyful and to do good as long as they live; (13) also that everyone should eat and drink and take pleasure in all his toil-this is God's gift to man."
+      # Right column: two closing songs
+      - - type: song
+          title: "Your Will Be Done"
+          columns: 2
+          scale: 1.1
+          parts:
+            - label: "1."
+              text: |
+                Your will be done, my God and father
+                As in Heaven, so on earth
+                My heart is drawn to self exalting
+                Help me seek Your kingdom first
+                As Jesus walked, so I shall walk
+                Held by Your same unchanging love
+                Be still my soul
+                Oh, lift your voice and pray
+                Father not my will but Yours be done
+            - label: "2."
+              text: |
+                How in that garden he persisted
+                I may never fully know
+                The fearful weight of true obedience
+                It was held by him alone
+                What wondrous faith, to bear that cross
+                To bear my sin, what wondrous love
+                My hope was sure
+                When there my Saviour prayed
+                Father not my will but Yours be done
+            - label: "3."
+              text: |
+                When I am lost, when I am broken
+                In the night of fear and doubt
+                Still I will trust in my good Father
+                Yes, to one great King I bow!
+                As Jesus rose, so I shall rise
+                In ransomed glory at the throne
+                My heart restored
+                With all your saints I sing
+                Father, not my will but Yours be done
+            - label: "4."
+              text: |
+                As we go forth, our God and Father
+                Lead us daily in the fight
+                That all the world might see Your glory
+                And Your Name be lifted high
+                And in this Name we overcome
+                For You shall see us safely home
+                Now as your church
+                We lift our voice and pray
+                Father, not my will but Yours be done
+        - type: heading
+          text: "Prayer"
+        - type: song
+          title: "This is My Father's World"
+          scale: 1.1
+          columns: 2
+          parts:
+            - label: "1."
+              text: |
+                This is my Father's world,
+                And to my listening ears
+                All nature sings, and round me rings
+                The music of the spheres.
+                This is my Father's world:
+                I rest me in the thought
+                Of rocks and trees, of skies and seas--
+                His hand the wonders wrought.
+            - label: "2."
+              text: |
+                This is my Father's world:
+                The birds their carols raise,
+                The morning light, the lily white,
+                Declare their Maker's praise.
+                This is my Father's world:
+                He shines in all that's fair;
+                In the rustling grass I hear Him pass,
+                He speaks to me everywhere.
+            - label: "3."
+              text: |
+                This is my Father's world:
+                O let me ne'er forget
+                That though the wrong seems oft so strong,
+                God is the Ruler yet.
+                This is my Father's world:
+                Why should my heart be sad?
+                The Lord is King: let the heavens ring!
+                God reigns; let earth be glad!
+
