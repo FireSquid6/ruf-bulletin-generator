@@ -1,11 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
+import YAML from "js-yaml";
 import {
   arrangeFoldedPages,
   generate,
   planFoldedFlow,
   resolveSongReferences,
+  loadSongStore,
   type SongStore,
   validateSongStore,
   validateSpec,
@@ -74,6 +76,87 @@ describe("generate", () => {
 });
 
 describe("song store", () => {
+  test("covers existing weekly songs with numbered verses and unnumbered choruses", () => {
+    const root = path.resolve(import.meta.dirname, "..");
+    const store = loadSongStore(path.join(root, "store/song-store.yaml"));
+    const referenced = new Set<string>();
+
+    for (const file of fs.readdirSync(path.join(root, "bulletins")).filter((name) => name.endsWith(".yaml") && name <= "2026-10-07.yaml")) {
+      const spec = YAML.load(fs.readFileSync(path.join(root, "bulletins", file), "utf8"));
+      validateSpec(spec);
+      const resolved = resolveSongReferences(spec, store);
+      const blocks = resolved.pages!.flatMap((page) => page.columns.flat());
+      const originals = (spec as typeof resolved).pages!.flatMap((page) => page.columns.flat());
+      for (const block of originals.filter((item) => item.type === "song")) {
+        expect(typeof block.song_ref, file).toBe("string");
+        expect(block.title, file).toBeUndefined();
+        expect(block.parts, file).toBeUndefined();
+        referenced.add(block.song_ref as string);
+      }
+      expect(blocks.filter((block) => block.type === "song").length).toBe(4);
+    }
+
+    expect(referenced.size).toBe(23);
+    for (const key of referenced) expect(store.songs[key], key).toBeDefined();
+    for (const key of ["sweet_comfort", "yet_not_i_but_through_christ_in_me"]) {
+      expect(store.songs[key].parts).toHaveLength(4);
+      expect(store.songs[key].parts.every((part) => part.style === undefined)).toBe(true);
+    }
+    for (const [key, song] of Object.entries(store.songs)) {
+      let verse = 0;
+      for (const part of song.parts) {
+        if (part.style === "chorus") expect(part.label, key).toBeUndefined();
+        else if (part.label === "Bridge") continue;
+        else expect(part.label, key).toBe(`${++verse}.`);
+      }
+    }
+  });
+
+  test("future bulletins follow the worship plan, with missing songs left as references", () => {
+    const root = path.resolve(import.meta.dirname, "..");
+    const store = loadSongStore(path.join(root, "store/song-store.yaml"));
+    const notInSheet = new Set(["here_is_love", "be_unto_your_name"]);
+    const weeks = [
+      ["2026-10-14", "James 4:1-10", "Proverbs 4:23-27", "it_is_well", "on_jordan_s_stormy_banks", "your_will_be_done", "this_is_my_father_s_world"],
+      ["2026-10-21", "James 4:11-17", "Jeremiah 9:23-24", "how_deep_the_father_s_love", "his_mercy_is_more", "sweet_comfort", "yet_not_i_but_through_christ_in_me"],
+      ["2026-10-28", "James 5:1-6", "1 Timothy 6:6-10", "he_will_hold_me_fast", "great_is_thy_faithfulness", "in_christ_alone", "hast_thou_heard_him"],
+      ["2026-11-04", "James 5:7-12", "Psalm 37:7-9", "come_behold_the_wondrous_mystery", "o_love_that_will_not_let_me_go", "a_christian_s_daily_prayer", "all_praise_to_him"],
+      ["2026-11-11", "James 5:13-20", "1 Kings 17:17-24", "goodness_of_jesus", "on_jordan_s_stormy_banks", "here_is_love", "jesus_paid_it_all"],
+      ["2026-11-18", "Jude 1-25", "2 Peter 1:3-8", "we_will_feast_in_the_house_of_zion", "be_unto_your_name", "sweet_comfort", "arise_my_soul_arise"],
+    ];
+
+    for (const [date, sermon, reading, ...songs] of weeks) {
+      const spec = YAML.load(fs.readFileSync(path.join(root, "bulletins", `${date}.yaml`), "utf8"));
+      validateSpec(spec);
+      const blocks = spec.pages!.flatMap((page) => page.columns.flat());
+      const scriptures = blocks.filter((block) => block.type === "scripture");
+      expect(scriptures.map((block) => block.reference)).toEqual([sermon, reading]);
+      for (const scripture of scriptures) {
+        expect(typeof scripture.text).toBe("string");
+        expect((scripture.text as string).match(/\(\d+\) /g)?.length).toBeGreaterThan(0);
+      }
+      expect(((scriptures[1].text as string).match(/\(\d+\) /g) ?? []).length).toBeLessThanOrEqual(15);
+      expect(blocks.filter((block) => block.type === "song").map((block) => block.song_ref)).toEqual(songs);
+      for (const key of songs) {
+        expect(Object.hasOwn(store.songs, key), key).toBe(!notInSheet.has(key));
+      }
+      for (const song of blocks.filter((block) => block.type === "song" && Object.hasOwn(store.songs, block.song_ref as string))) {
+        expect(resolveSongReferences({ pages: [{ columns: [[song]] }] }, store).pages![0].columns[0][0].title)
+          .toBe(store.songs[song.song_ref as string].title);
+      }
+    }
+  });
+
+  test("imports the distinct songs from the song sheet without replacing weekly entries", () => {
+    const store = loadSongStore(path.resolve(import.meta.dirname, "../store/song-store.yaml"));
+    expect(Object.keys(store.songs)).toHaveLength(83);
+    for (const key of [
+      "build_my_life", "praise_to_the_lord_joyful_joyful", "he_will_hold_me_fast",
+      "in_christ_alone", "your_will_be_done", "o_come_to_the_alter",
+      "a_christian_s_daily_prayer", "i_am_not_my_own", "servant_king", "speak_o_lord",
+    ]) expect(store.songs[key], key).toBeDefined();
+  });
+
   const store: SongStore = {
     songs: {
       test_song: {

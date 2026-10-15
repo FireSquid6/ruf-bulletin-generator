@@ -21,39 +21,7 @@ pages:
           reference: "James 3:13-18"
           text: "(13) Who is wise and understanding among you? By his good conduct let him show his works in the meekness of wisdom. (14) But if you have bitter jealousy and selfish ambition in your hearts, do not boast and be false to the truth. (15) This is not the wisdom that comes down from above, but is earthly, unspiritual, demonic. (16) For where jealousy and selfish ambition exist, there will be disorder and every vile practice. (17) But the wisdom from above is first pure, then peaceable, gentle, open to reason, full of mercy and good fruits, impartial and sincere. (18) And a harvest of righteousness is sown in peace by those who make peace."
         - type: song
-          title: "All Sufficient Merit"
-          scale: 1
-          columns: 2
-          parts:
-            - label: "1."
-              text: |
-                All-sufficient merit shining like the sun
-                A fortune I inherit by no work I have done
-                My righteousness I forfeit at my Savior's cross
-                Where all-sufficient merit did what I could not
-            - label: "2."
-              text: |
-                In love, He condescended, eternal now in time
-                A life without a blemish, the Maker made to die
-                The law could never save us, our lawlessness had won
-                Until the pure and spotless Lamb had finally come
-            - style: "chorus"
-              text: |
-                It is done, it is finished, no more debt I owe
-                Paid in full, all-sufficient merit now my own
-            - label: "3."
-              text: |
-                I lay down my garments, any empty boast
-                Good works now corrupted by the sinful host
-                Dressed in my Lord Jesus, a crimson robe made white
-                No more fear of judgment, His righteousness is mine
-            - label: "4."
-              text: |
-                All-sufficient merit, firm in life and death
-                The joy of my salvation shall be my final breath
-                When I stand accepted before the throne of God
-                I'll gaze upon my Jesus and thank Him for the cross
-                Yes, I'll thank You for the cross
+          song_ref: all_sufficient_merit
         - type: qr
           size_mm: 26
           items:
@@ -95,34 +63,7 @@ pages:
   - columns:
       # Left column: second song + order of service + scripture
       - - type: song
-          title: "How Firm a Foundation"
-          scale: 1.1
-          columns: 1
-          parts:
-            - label: "1."
-              text: |
-                How firm a foundation, ye saints of the Lord,
-                is laid for your faith in God's excellent Word!
-                What more can be said than to you God hath said,
-                to you who for refuge to Jesus have fled?
-            - label: "2."
-              text: |
-                Fear not, I am with thee, O be not dismayed,
-                for I am thy God, and will still give thee aid;
-                I'll strengthen thee, help thee, and cause thee to stand,
-                upheld by my righteous, omnipotent hand.
-            - label: "3."
-              text: |
-                When through fiery trials thy pathway shall lie,
-                my grace, all sufficient, shall be thy supply;
-                the flame shall not hurt thee; I only design
-                thy dross to consume, and thy gold to refine.
-            - label: "4."
-              text: |
-                The soul that on Jesus hath leaned for repose,
-                I will not, I will not desert to its foes;
-                that soul, though all hell should endeavor to shake,
-                I'll never, no, never, no, never forsake."
+          song_ref: how_firm_a_foundation_2026-10-07
         - type: heading
           text: "Welcome and Announcements"
         - type: heading
@@ -134,79 +75,8 @@ pages:
           text: "(22) But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faithfulness, (23) gentleness, self-control; against such things there is no law. (24) And those who belong to Christ Jesus have crucified the flesh with its passions and desires. (25) If we live by the Spirit, let us also keep in step with the Spirit. (26) Let us not become conceited, provoking one another, envying one another."
       # Right column: two closing songs
       - - type: song
-          title: "Come Behold the Wondrous Mystery"
-          columns: 2
-          scale: 1.1
-          parts:
-            - label: "1."
-              text: |
-                Come behold the wondrous mystery
-                In the dawning of the King
-                He the theme of heaven's praises
-                Robed in frail humanity
-                In our longing, in our darkness
-                Now the light of life has come
-                Look to Christ who condescended
-                Took on flesh to ransom us
-            - label: "2."
-              text: |
-                Come behold the wondrous mystery
-                He the perfect Son of Man
-                In His living, in his suffering
-                Never trace nor stain of sin
-                See the true and better Adam
-                Come to save the hell-bound man
-                Christ the great and sure fulfillment
-                Of the law, in Him we stand
-            - label: "3."
-              text: |
-                Come behold the wondrous mystery
-                Christ the Lord upon the tree
-                In the stead of ruined sinners
-                Hangs the Lamb in victory
-                See the price of our redemption
-                See the Father's plan unfold
-                Bringing many sons to glory
-                Grace unmeasured, love untold
-            - label: "4."
-              text: |
-                Come behold the wondrous mystery
-                Slain by death, the God of life
-                But no grave could e'er restrain him
-                Praise the Lord, He is alive
-                What a foretaste of deliverance
-                How unwavering our hope
-                Christ in power resurrected
-                As will we be when He comes
+          song_ref: come_behold_the_wondrous_mystery
         - type: heading
           text: "Prayer"
         - type: song
-          title: "Goodness of Jesus"
-          scale: 1.1
-          columns: 2
-          parts:
-            - label: "1."
-              text: |
-                Come you weary heart now to Jesus
-                Come you anxious soul now and see
-                There is perfect love and comfort in your tears
-                Rest here in His wondrous peace
-            - style: "chorus"
-              text: |
-                Oh the goodness, the goodness of Jesus
-                Satisfied he is all that I need
-                May it be, come what may, that I rest all my days
-                In the goodness of Jesus
-            - label: "2."
-              text: |
-                Come find what this world cannot offer
-                Come and find your joy here complete
-                Taste the living water, never thirst again
-                Rest here in His wondrous peace
-            - label: "3."
-              text: |
-                Come and find your hope now in Jesus
-                He is all he said he would be
-                Grace is overflowing from the Saviour’s heart
-                Rest here in His wondrous peace
-
+          song_ref: goodness_of_jesus

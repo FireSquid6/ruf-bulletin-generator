@@ -1,0 +1,59 @@
+metadata:
+  title: RUF Bulletin - October 28, 2026
+  author: Reformed University Fellowship
+  subject: Weekly bulletin
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+folded: true
+output: ../output/bulletin-2026-10-28.pdf
+pages:
+  - columns:
+      - - type: scripture
+          label: Sermon
+          reference: James 5:1-6
+          text: (1) Come now, you rich, weep and howl for the miseries that are coming upon you. (2) Your riches have rotted and your garments are moth-eaten. (3) Your gold and silver have corroded, and their corrosion will be evidence against you and will eat your flesh like fire. You have laid up treasure in the last days. (4) Behold, the wages of the laborers who mowed your fields, which you kept back by fraud, are crying out against you, and the cries of the harvesters have reached the ears of the Lord of hosts. (5) You have lived on the earth in luxury and in self-indulgence. You have fattened your hearts in a day of slaughter. (6) You have condemned and murdered the righteous person. He does not resist you.
+        - type: song
+          song_ref: he_will_hold_me_fast
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: Join the GroupMe!
+              path: ../assets/groupme-qr.png
+            - caption: Prayer Requests
+              path: ../assets/prayer-group-qr.png
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: Announcements
+          date: October 28, 2026
+          items: []
+        - type: contacts
+          items:
+            - name: Way Rutherford
+              detail: (502) 403-8765
+            - name: Lauren Danforth
+              detail: (920) 918-7330
+            - name: Will Won
+              detail: (254) 239-7227
+  - columns:
+      - - type: song
+          song_ref: great_is_thy_faithfulness
+        - type: heading
+          text: Welcome and Announcements
+        - type: heading
+          text: Greet Your Neighbor!
+        - type: scripture
+          label: Scripture Reading
+          scale: 1.1
+          reference: 1 Timothy 6:6-10
+          text: (6) But godliness with contentment is great gain, (7) for we brought nothing into the world, and we cannot take anything out of the world. (8) But if we have food and clothing, with these we will be content. (9) But those who desire to be rich fall into temptation, into a snare, into many senseless and harmful desires that plunge people into ruin and destruction. (10) For the love of money is a root of all kinds of evils. It is through this craving that some have wandered away from the faith and pierced themselves with many pangs.
+      - - type: song
+          song_ref: in_christ_alone
+        - type: heading
+          text: Prayer
+        - type: song
+          song_ref: hast_thou_heard_him

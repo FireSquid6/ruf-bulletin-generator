@@ -1,0 +1,59 @@
+metadata:
+  title: RUF Bulletin - October 21, 2026
+  author: Reformed University Fellowship
+  subject: Weekly bulletin
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+folded: true
+output: ../output/bulletin-2026-10-21.pdf
+pages:
+  - columns:
+      - - type: scripture
+          label: Sermon
+          reference: James 4:11-17
+          text: (11) Do not speak evil against one another, brothers. The one who speaks against a brother or judges his brother, speaks evil against the law and judges the law. But if you judge the law, you are not a doer of the law but a judge. (12) There is only one lawgiver and judge, he who is able to save and to destroy. But who are you to judge your neighbor? (13) Come now, you who say, “Today or tomorrow we will go into such and such a town and spend a year there and trade and make a profit”— (14) yet you do not know what tomorrow will bring. What is your life? For you are a mist that appears for a little time and then vanishes. (15) Instead you ought to say, “If the Lord wills, we will live and do this or that.” (16) As it is, you boast in your arrogance. All such boasting is evil. (17) So whoever knows the right thing to do and fails to do it, for him it is sin.
+        - type: song
+          song_ref: how_deep_the_father_s_love
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: Join the GroupMe!
+              path: ../assets/groupme-qr.png
+            - caption: Prayer Requests
+              path: ../assets/prayer-group-qr.png
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: Announcements
+          date: October 21, 2026
+          items: []
+        - type: contacts
+          items:
+            - name: Way Rutherford
+              detail: (502) 403-8765
+            - name: Lauren Danforth
+              detail: (920) 918-7330
+            - name: Will Won
+              detail: (254) 239-7227
+  - columns:
+      - - type: song
+          song_ref: his_mercy_is_more
+        - type: heading
+          text: Welcome and Announcements
+        - type: heading
+          text: Greet Your Neighbor!
+        - type: scripture
+          label: Scripture Reading
+          scale: 1.1
+          reference: Jeremiah 9:23-24
+          text: "(23) Thus says the Lord: “Let not the wise man boast in his wisdom, let not the mighty man boast in his might, let not the rich man boast in his riches, (24) but let him who boasts boast in this, that he understands and knows me, that I am the Lord who practices steadfast love, justice, and righteousness in the earth. For in these things I delight, declares the Lord.”"
+      - - type: song
+          song_ref: sweet_comfort
+        - type: heading
+          text: Prayer
+        - type: song
+          song_ref: yet_not_i_but_through_christ_in_me

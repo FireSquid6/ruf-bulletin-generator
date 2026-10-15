@@ -1,14 +1,16 @@
 songs:
   example_song:
-    title: "Song One Title (Dummy)"
+    title: Song One Title (Dummy)
     columns: 1
     parts:
-      - text: |
+      - label: "1."
+        text: |
           Dummy verse one, line one
           Dummy verse one, line two
           Dummy verse one, line three
           Dummy verse one, line four
-      - text: |
+      - label: "2."
+        text: |
           Dummy verse two, line one
           Dummy verse two, line two
           Dummy verse two, line three
@@ -19,13 +21,3067 @@ songs:
           It repeats between verses
           This is the dummy chorus
           With italic styling
-      - text: |
+      - label: "3."
+        text: |
           Dummy verse three, line one
           Dummy verse three, line two
           Dummy verse three, line three
           Dummy verse three, line four
-      - text: |
+      - label: "4."
+        text: |
           Dummy verse four, line one
           Dummy verse four, line two
           Dummy verse four, line three
           Dummy verse four, line four
+  his_glory_and_my_good:
+    title: His Glory and My Good
+    columns: 2
+    parts:
+      - label: "1."
+        text: |
+          I have seen my Father's glory
+          Revealed in Jesus Christ
+          And the more that I behold Him
+          The more He satisfies
+          When I gaze upon His beauty
+          When I see Him as I should
+          Then my eyes are lifted upward
+          For His glory and my good
+      - label: "2."
+        text: |
+          There is hope in every trial
+          For I can trust the Lord
+          He will turn my heart towards Him
+          And help me bear the thorn
+          So in faith I follow Jesus
+          On the road not understood
+          For I know that He is working
+          For His glory and my good
+      - label: "3."
+        text: |
+          To our God be the glory
+          To our God be praise
+          He alone, the name above all names
+          I will boast ever only in the Lord my God
+          For I know His glory is my good
+      - label: "4."
+        text: |
+          See the open arms of Jesus
+          Upon the cross that day
+          What they understood as weakness
+          Deserves my every praise
+          For the charge that was against me
+          It was nailed into the wood
+          Yes I know that He has saved me
+          For His glory and my good
+      - label: "5."
+        text: |
+          Would I gladly be made nothing
+          That Christ would be made more
+          Would I seek the only kingdom
+          That far outweighs them all
+          I will stand before my Father
+          Where the faithful saints have stood
+          And with joy my heart shall praise Him
+          For His glory and my good
+  steadfast:
+    title: Steadfast
+    columns: 2
+    parts:
+      - label: "1."
+        text: |
+          I will build my house whether storm or drought
+          On the rock that does not move
+          I will set my hope in Your love, O Lord
+          And Your faithfulness will prove
+      - label: "2."
+        text: |
+          By the word You spoke, all the starry host
+          Are called out by name each night
+          In Your watchful care, I will rest secure
+          As You lead us with Your light
+      - label: "3."
+        text: |
+          I will not trust in the strength of kings
+          On Your promise, I will stand
+          I will shout for joy, I will raise my voice
+          Hallelujah to the Lamb
+      - label: "4."
+        text: |
+          In the moment of emptiness, all was fulfilled
+          In the hour of darkness, Your light was revealed
+          In the presence of death, Your life was affirmed
+          In the absence of holiness, You are still God
+      - style: chorus
+        text: |
+          You are steadfast, steadfast
+  o_love_that_will_not_let_me_go:
+    title: O Love That Will Not Let Me Go
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          O Love that will not let me go,
+          I rest my weary soul in thee;
+          I give thee back the life I owe,
+          That in thine ocean depths its flow
+          May richer, fuller be.
+      - label: "2."
+        text: |
+          O light that followest all my way,
+          I yield my flickering torch to thee;
+          My heart restores its borrowed ray,
+          That in thy sunshine's blaze its day
+          May brighter, fairer be.
+      - label: "3."
+        text: |
+          O Joy that seekest me through pain,
+          I cannot close my heart to thee;
+          I trace the rainbow through the rain,
+          And feel the promise is not vain,
+          That morn shall tearless be.
+      - label: "4."
+        text: |
+          O Cross that liftest up my head,
+          I dare not ask to fly from thee;
+          I lay in dust life's glory dead,
+          And from the ground there blossoms red
+          Life that shall endless be.
+  it_is_well:
+    title: It Is Well
+    columns: 2
+    parts:
+      - label: "1."
+        text: |
+          When peace, like a river,
+          Attendeth my way,
+          When sorrows like sea billows roll;
+          Whatever my lot,
+          Thou hast taught me to say,
+      - style: chorus
+        text: |
+          It is well, with my soul.
+          It is well, it is well, with my soul.
+      - label: "2."
+        text: |
+          Though Satan should buffet,
+          Though trials should come,
+          Let this blest assurance control,
+          That Christ has regarded
+          My helpless estate,
+          And hath shed His own blood for my soul.
+      - label: "3."
+        text: |
+          My sin, oh, the bliss
+          Of this glorious thought!
+          My sin, not in part but the whole,
+          Is nailed to the cross,
+          And I bear it no more,
+          Praise the Lord, praise the Lord, O my soul!
+      - label: "4."
+        text: |
+          And Lord, haste the day
+          When my faith shall be sight,
+          The clouds be rolled back as a scroll;
+          The trump shall resound,
+          And the Lord shall descend,
+          Even so, it is well with my soul.
+  tis_so_sweet:
+    title: Tis So Sweet
+    columns: 2
+    parts:
+      - label: "1."
+        text: |
+          ‘Tis so sweet to trust in Jesus
+          Just to take Him at His Word;
+          Just to rest upon His promise,
+          And to know, “Thus saith the Lord!”
+      - style: chorus
+        text: |
+          Jesus, Jesus, how I trust him!
+          How I've proved him o'er and o'er!
+          Jesus, Jesus, precious Jesus!
+          O for grace to trust him more!
+      - label: "2."
+        text: |
+          O how sweet to trust in Jesus
+          Just to trust His cleansing blood;
+          Just in simple faith to plunge me
+          ‘Neath the healing, cleansing flood!
+      - label: "3."
+        text: |
+          Yes, ‘tis sweet to trust in Jesus,
+          Just from sin and self to cease;
+          Just from Jesus simply taking
+          Life and rest, and joy and peace
+      - label: "4."
+        text: |
+          I’m so glad I learned to trust Him,
+          Precious Jesus, Savior, Friend;
+          And I know that He is with me,
+          Will be with me to the end.
+  his_mercy_is_more:
+    title: His Mercy is More
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          What love could remember, no wrongs we have done
+          Omniscient, all-knowing, He counts not their sum
+          Thrown into a sea, without bottom or shore
+          Our sins they are many, His mercy is more
+      - label: "2."
+        text: |
+          What patience would wait, as we constantly roam
+          What Father so tender, is calling us home
+          He welcomes the weakest, the vilest, the poor
+          Our sins they are many, His mercy is more
+      - style: chorus
+        text: |
+          Praise the Lord, His mercy is more
+          Stronger than darkness, new every morn
+          Our sins they are many, His mercy is more
+      - label: "3."
+        text: |
+          What riches of kindness, He lavished on us
+          His blood was the payment, His life was the cost
+          We stood 'neath a debt, we could never afford
+          Our sins they are many, His mercy is more
+  on_jordan_s_stormy_banks:
+    title: On Jordan's Stormy Banks
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          On Jordan’s stormy banks I stand,
+          And cast a wishful eye
+          To Canaan’s fair and happy land,
+          Where my possessions lie.
+      - label: "2."
+        text: |
+          All o’er those wide extended plains,
+          Shines one eternal day;
+          There God the Son forever reigns,
+          And scatters night away.
+      - style: chorus
+        text: |
+          I am bound (I am bound)
+          I am bound (I am bound)
+          I am bound for promised land,
+          I am bound (I am bound)
+          I am bound (I am bound)
+          I am bound for promised land.
+      - label: "3."
+        text: |
+          No chilling winds nor poisonous breath
+          Can reach that healthful shore;
+          Sickness, sorrow, pain and death,
+          Are felt and feared no more.
+      - label: "4."
+        text: |
+          When shall I reach that happy place,
+          And be forever blessed?
+          When shall I see my Father’s face,
+          And in His bosom rest?
+  hast_thou_heard_him:
+    title: Hast Thou Heard Him
+    columns: 2
+    parts:
+      - label: "1."
+        text: |
+          Hast thou heard Him, seen Him, known Him?
+          Is not thine a captured heart?
+          Chief among ten thousand own Him,
+          Joyful choose the better part.
+      - style: chorus
+        text: |
+          Captivated by His beauty,
+          Worthy tribute haste to bring.
+          Let His peerless worth constrain thee,
+          Crown Him now unrivaled King.
+      - label: "2."
+        text: |
+          What can strip the seeming beauty,
+          From the idols of the earth?
+          Not a sense of right or duty,
+          But the sight of peerless worth.
+      - label: "3."
+        text: |
+          'Tis that look that melted Peter,
+          ’Tis that face that Stephen saw,
+          'Tis that heart that wept with Mary,
+          Can alone from idols draw.
+  jesus_paid_it_all:
+    title: Jesus Paid it All
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          I hear the Savior say,
+          “Thy strength indeed is small,
+          Child of weakness, watch and pray,
+          Find in Me thine all in all.”
+      - style: chorus
+        text: |
+          Jesus paid it all,
+          All to Him I owe;
+          Sin had left a crimson stain,
+          He washed it white as snow.
+      - label: "2."
+        text: |
+          Lord, now indeed I find
+          Thy pow'r and Thine alone,
+          Can change the leper's spots
+          And melt the heart of stone.
+      - label: "3."
+        text: |
+          For nothing good have I
+          Where-by Thy grace to claim;
+          I'll wash my garments white
+          In the blood of Calv'ry's Lamb.
+      - label: "4."
+        text: |
+          And when, before the throne,
+          I stand in Him complete,
+          "Jesus died my soul to save,"
+          My lips shall still repeat.
+  all_glory_be_to_christ:
+    title: All Glory Be To Christ
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Should nothing of our efforts stand,
+          No legacy survive,
+          Unless the Lord does raise the house,
+          In vain its builders strive.
+      - label: "2."
+        text: |
+          To you who boast tomorrow’s gain,
+          Tell me, what is your life?
+          A mist, it vanishes at dawn,
+          All glory be to Christ!
+      - style: chorus
+        text: |
+          All glory be to Christ our King,
+          All glory be to Christ.
+          His rule and reign we'll ever sing,
+          All glory be to Christ!
+      - label: "3."
+        text: |
+          His will be done, His kingdom come,
+          On earth as is above.
+          Who is Himself our daily bread,
+          Praise Him the Lord of love.
+      - label: "4."
+        text: |
+          Let living waters satisfy
+          The thirsty without price.
+          Come eat of Him, our Living Bread,
+          All glory be to Christ!
+      - label: "5."
+        text: |
+          When on the day, the great I Am,
+          The Faithful and the True,
+          The Lamb who was for sinners slain,
+          Is making all things new.
+      - label: "6."
+        text: |
+          Behold our God shall live with us
+          And be our steadfast light
+          And we shall e’er his people be
+          All glory be to Christ!
+  how_firm_a_foundation:
+    title: How Firm a Foundation
+    columns: 1
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          How firm a foundation, ye saints of the Lord,
+          is laid for your faith in God's excellent Word!
+          What more can be said than to you God hath said,
+          to you who for refuge to Jesus have fled?
+      - label: "2."
+        text: |
+          "Fear not, I am with thee, O be not dismayed,
+          for I am thy God, and will still give thee aid;
+          I'll strengthen thee, help thee, and cause thee to stand,
+          upheld by my righteous, omnipotent hand.
+      - label: "3."
+        text: |
+          "When through fiery trials thy pathway shall lie,
+          my grace, all sufficient, shall be thy supply;
+          the flame shall not hurt thee; I only design
+          thy dross to consume, and thy gold to refine.
+      - label: "4."
+        text: |
+          "The soul that on Jesus hath leaned for repose,
+          I will not, I will not desert to its foes;
+          that soul, though all hell should endeavor to shake,
+          I'll never, no, never, no, never forsake.
+  great_is_thy_faithfulness:
+    title: Great is Thy Faithfulness
+    columns: 1
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Great is thy faithfulness, O God, my Father;
+          There is no shadow of turning with thee.
+          Thou changest not, thy compassions, they fail not;
+          As thou hast been, thou forever wilt be.
+      - style: chorus
+        text: |
+          Great is thy faithfulness,
+          Great is thy faithfulness,
+          Morning by morning new mercies I see.
+          All I have needed thy hand hast provided;
+          Great is thy faithfulness,
+          Lord unto me.
+      - label: "2."
+        text: |
+          Summer and winter and springtime and harvest,
+          Sun, moon, and stars in their courses above
+          Join with all nature in manifold witness
+          To thy great faithfulness, mercy, and love.
+      - label: "3."
+        text: |
+          Pardon for sin and a peace that endureth,
+          Thine own dear presence to cheer and to guide;
+          Strength for today and bright hope for tomorrow,
+          Blessings all mine and ten thousand beside.
+  this_is_my_father_s_world:
+    title: This is My Father's World
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          This is my Father's world,
+          And to my listening ears
+          All nature sings, and round me rings
+          The music of the spheres.
+          This is my Father's world:
+          I rest me in the thought
+          Of rocks and trees, of skies and seas--
+          His hand the wonders wrought.
+      - label: "2."
+        text: |
+          This is my Father's world:
+          The birds their carols raise,
+          The morning light, the lily white,
+          Declare their Maker's praise.
+          This is my Father's world:
+          He shines in all that's fair;
+          In the rustling grass I hear Him pass,
+          He speaks to me everywhere.
+      - label: "3."
+        text: |
+          This is my Father's world:
+          O let me ne'er forget
+          That though the wrong seems oft so strong,
+          God is the Ruler yet.
+          This is my Father's world:
+          Why should my heart be sad?
+          The Lord is King: let the heavens ring!
+          God reigns; let earth be glad!
+  arise_my_soul_arise:
+    title: Arise My Soul Arise
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Arise, my soul, arise,
+          shake off your guilty fears;
+          The bleeding sacrifice,
+          in my behalf appears;
+          Before the throne my Surety stands,
+          Before the throne my Surety stands,
+          My name is written on His hands.
+      - style: chorus
+        text: |
+          Arise (arise), arise (arise), arise
+          Arise, my soul, arise.
+          Arise (arise), arise (arise), arise
+          Arise, my soul, arise.
+          Shake off your guilty fears and rise
+      - label: "2."
+        text: |
+          He ever lives above,
+          for me to intercede;
+          His all redeeming love,
+          His precious blood, to plead;
+          His blood atoned for every race,
+          His blood atoned for every race,
+          And sprinkles now the throne of grace.
+      - label: "3."
+        text: |
+          Five bleeding wounds He bears;
+          received on Calvary;
+          They pour effectual prayers;
+          they strongly plead for me:
+          "Forgive him, O forgive," they cry,
+          "Forgive him, O forgive," they cry,
+          "Nor let that ransomed sinner die!"
+      - label: "4."
+        text: |
+          The Father hears Him pray,
+          His dear anointed One;
+          He cannot turn away
+          the presence of His Son;
+          The Spirit answers to the blood,
+          The Spirit answers to the blood
+          And tells me I am born of God.
+      - label: "5."
+        text: |
+          My God is reconciled;
+          His pardoning voice I hear;
+          He owns me for His child;
+          I can no longer fear
+          With confidence I now draw nigh,
+          With confidence I now draw nigh,
+          And "Father, Abba, Father," cry.
+  jesus_thank_you:
+    title: Jesus Thank You
+    columns: 1
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          The mystery of the cross I cannot comprehend
+          The agonies of Calvary
+          You the perfect Holy One, crushed Your Son
+          Who drank the bitter cup reserved for me
+      - style: chorus
+        text: |
+          Your blood has washed away my sin
+          Jesus, thank You
+          The Father’s wrath completely satisfied
+          Jesus, thank You
+          Once Your enemy, now seated at Your table
+          Jesus, thank You
+      - label: "2."
+        text: |
+          By Your perfect sacrifice I’ve been brought near
+          Your enemy You’ve made Your friend
+          Pouring out the riches of Your glorious grace
+          Your mercy and Your kindness know no end
+      - label: "3."
+        text: |
+          Lover of my soul
+          I want to live for You
+  behold_the_throne_of_god_above:
+    title: Behold the Throne of God Above
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Before the throne of God above
+          I have a strong and perfect plea
+          A great High Priest whose name is love
+          Who ever lives and pleads for me
+          My name is graven on His hands
+          My name is written on His heart
+          I know that while in heav’n He stands
+          No tongue can bid me thence depart
+          No tongue can bid me thence depart
+      - label: "2."
+        text: |
+          When Satan tempts me to despair
+          And tells me of the guilt within
+          Upward I look and see Him there
+          Who made an end to all my sin
+          Because the sinless Savior died
+          My sinful soul is counted free
+          For God the Just is satisfied
+          To look on Him and pardon me
+          To look on Him and pardon me
+      - label: "3."
+        text: |
+          Behold Him there, the risen Lamb
+          My perfect, spotless Righteousness
+          The great unchangeable I AM
+          The King of glory and of grace
+          One with Himself, I cannot die
+          My soul is purchased by His blood
+          My life is hid with Christ on high
+          With Christ my Savior and my God
+          With Christ my Savior and my God
+  how_deep_the_father_s_love:
+    title: How Deep the Father's Love
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          How deep the Father’s love for us,
+          How vast beyond all measure,
+          That He should give His only Son
+          To make a wretch His treasure.
+          How great the pain of searing loss –
+          The Father turns His face away,
+          As wounds which mar the Chosen One
+          Bring many sons to glory.
+      - label: "2."
+        text: |
+          Behold the man upon a cross,
+          My sin upon His shoulders;
+          Ashamed, I hear my mocking voice
+          Call out among the scoffers.
+          It was my sin that held Him there
+          Until it was accomplished;
+          His dying breath has brought me life –
+          I know that it is finished.
+      - label: "3."
+        text: |
+          I will not boast in anything,
+          No gifts, no power, no wisdom;
+          But I will boast in Jesus Christ,
+          His death and resurrection.
+          Why should I gain from His reward?
+          I cannot give an answer;
+          But this I know with all my heart –
+          His wounds have paid my ransom.
+  all_praise_to_him:
+    title: All Praise to Him
+    columns: 1
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          All praise to Him, the God of light
+          Who formed the mountains by His might
+          All praise to Him who names the stars
+          That sing His fame in skies afar
+          All praise to Him who reigns in love
+          Who guides the galaxies above
+          Yet bends to hear our every prayer
+          With sovereign pow'r and tender care
+      - label: "2."
+        text: |
+          All praise to Him whose love is seen
+          In Christ the Son, the Servant King
+          Who left behind His glorious throne
+          To pay the ransom for His own
+          All praise to Him who humbly came
+          To bear our sorrow, sin, and shame
+          Who lived to die, who died to rise
+          The all-sufficient sacrifice
+      - label: "3."
+        text: |
+          All praise to Him whose pow'r imparts
+          The love of God within our hearts
+          The Spirit of all truth and peace
+          The fount of joy and holiness
+          To Father, Son, and Spirit now
+          Our souls we lift, our wills we bow
+          To You, the triune God, we raise
+          With loving hearts our song of praise
+  we_will_feast_in_the_house_of_zion:
+    title: We Will Feast in the House of Zion
+    columns: 2
+    scale: 1.1
+    parts:
+      - style: chorus
+        text: |
+          We will feast in the house of Zion
+          We will sing with our hearts restored
+          "He has done great things," we will say together
+          We will feast and weep no more
+      - label: "1."
+        text: |
+          We will not be burned by the fire
+          He is the Lord, our God
+          We are not consumed by the flood
+          Upheld, protected, gathered up
+      - label: "2."
+        text: |
+          In the dark of night, before the dawn
+          My soul, be not afraid
+          For the promised morning, O how long?
+          O God of Jacob, be my strength
+  goodness_of_jesus:
+    title: Goodness of Jesus
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Come you weary heart now to Jesus
+          Come you anxious soul now and see
+          There is perfect love and comfort in your tears
+          Rest here in His wondrous peace
+      - style: chorus
+        text: |
+          Oh the goodness, the goodness of Jesus
+          Satisfied he is all that I need
+          May it be, come what may, that I rest all my days
+          In the goodness of Jesus
+      - label: "2."
+        text: |
+          Come find what this world cannot offer
+          Come and find your joy here complete
+          Taste the living water, never thirst again
+          Rest here in His wondrous peace
+      - label: "3."
+        text: |
+          Come and find your hope now in Jesus
+          He is all he said he would be
+          Grace is overflowing from the Saviour’s heart
+          Rest here in His wondrous peace
+  come_behold_the_wondrous_mystery:
+    title: Come Behold the Wondrous Mystery
+    columns: 2
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          Come behold the wondrous mystery
+          In the dawning of the King
+          He the theme of heaven's praises
+          Robed in frail humanity
+          In our longing, in our darkness
+          Now the light of life has come
+          Look to Christ who condescended
+          Took on flesh to ransom us
+      - label: "2."
+        text: |
+          Come behold the wondrous mystery
+          He the perfect Son of Man
+          In His living, in his suffering
+          Never trace nor stain of sin
+          See the true and better Adam
+          Come to save the hell-bound man
+          Christ the great and sure fulfillment
+          Of the law, in Him we stand
+      - label: "3."
+        text: |
+          Come behold the wondrous mystery
+          Christ the Lord upon the tree
+          In the stead of ruined sinners
+          Hangs the Lamb in victory
+          See the price of our redemption
+          See the Father's plan unfold
+          Bringing many sons to glory
+          Grace unmeasured, love untold
+      - label: "4."
+        text: |
+          Come behold the wondrous mystery
+          Slain by death, the God of life
+          But no grave could e'er restrain him
+          Praise the Lord, He is alive
+          What a foretaste of deliverance
+          How unwavering our hope
+          Christ in power resurrected
+          As will we be when He comes
+  how_firm_a_foundation_2026-10-07:
+    title: How Firm a Foundation
+    columns: 1
+    scale: 1.1
+    parts:
+      - label: "1."
+        text: |
+          How firm a foundation, ye saints of the Lord,
+          is laid for your faith in God's excellent Word!
+          What more can be said than to you God hath said,
+          to you who for refuge to Jesus have fled?
+      - label: "2."
+        text: |
+          Fear not, I am with thee, O be not dismayed,
+          for I am thy God, and will still give thee aid;
+          I'll strengthen thee, help thee, and cause thee to stand,
+          upheld by my righteous, omnipotent hand.
+      - label: "3."
+        text: |
+          When through fiery trials thy pathway shall lie,
+          my grace, all sufficient, shall be thy supply;
+          the flame shall not hurt thee; I only design
+          thy dross to consume, and thy gold to refine.
+      - label: "4."
+        text: |
+          The soul that on Jesus hath leaned for repose,
+          I will not, I will not desert to its foes;
+          that soul, though all hell should endeavor to shake,
+          I'll never, no, never, no, never forsake."
+  all_sufficient_merit:
+    title: All Sufficient Merit
+    columns: 2
+    scale: 1
+    parts:
+      - label: "1."
+        text: |
+          All-sufficient merit shining like the sun
+          A fortune I inherit by no work I have done
+          My righteousness I forfeit at my Savior's cross
+          Where all-sufficient merit did what I could not
+      - label: "2."
+        text: |
+          In love, He condescended, eternal now in time
+          A life without a blemish, the Maker made to die
+          The law could never save us, our lawlessness had won
+          Until the pure and spotless Lamb had finally come
+      - style: chorus
+        text: |
+          It is done, it is finished, no more debt I owe
+          Paid in full, all-sufficient merit now my own
+      - label: "3."
+        text: |
+          I lay down my garments, any empty boast
+          Good works now corrupted by the sinful host
+          Dressed in my Lord Jesus, a crimson robe made white
+          No more fear of judgment, His righteousness is mine
+      - label: "4."
+        text: |
+          All-sufficient merit, firm in life and death
+          The joy of my salvation shall be my final breath
+          When I stand accepted before the throne of God
+          I'll gaze upon my Jesus and thank Him for the cross
+          Yes, I'll thank You for the cross
+  yet_not_i_but_through_christ_in_me:
+    title: Yet Not I But Through Christ in Me
+    parts:
+      - label: "1."
+        text: |
+          What gift of grace is Jesus, my redeemer
+          There is no more for heaven now to give
+          He is my joy, my righteousness, and freedom
+          My steadfast love, my deep and boundless peace
+          To this I hold, my hope is only Jesus
+          For my life is wholly bound to His
+          Oh, how strange and divine, I can sing: All is mine!
+          Yet not I, but through Christ in me
+      - label: "2."
+        text: |
+          The night is dark but I am not forsaken
+          For by my side, the Saviour He will stay
+          I labour on in weakness and rejoicing
+          For in my need, His power is displayed
+          To this I hold, my Shepherd will defend me
+          Through the deepest valley, He will lead
+          Oh, the night has been won, and I shall overcome
+          Yet not I, but through Christ in me
+      - label: "3."
+        text: |
+          No fate I dread, I know I am forgiven
+          The future sure, the price it has been paid
+          For Jesus bled and suffered for my pardon
+          And He was raised to overthrow the grave
+          To this I hold, my sin has been defeated
+          Jesus now and ever is my plea
+          Oh, the chains are released, I can sing: I am free!
+          Yet not I, but through Christ in me
+      - label: "4."
+        text: |
+          With every breath, I long to follow Jesus
+          For He has said that He will bring me home
+          And day by day I know He will renew me
+          Until I stand with joy before the throne
+          To this I hold, my hope is only Jesus
+          All the glory evermore to Him
+          When the race is complete, still my lips shall repeat
+          Yet not I, but through Christ in me
+  sweet_comfort:
+    title: Sweet Comfort
+    parts:
+      - label: "1."
+        text: |
+          Whatever my God ordains is right
+          His holy will abides
+          I will be still whate'er He does
+          And follow where He guides
+
+          Sweet comfort, sweet comfort
+          Yet shall fill my heart
+          Sweet comfort, sweet comfort
+          Sorrow shall depart
+      - label: "2."
+        text: |
+          Whatever my God ordains is right
+          He makes my feet to stand
+          Though sorrow, need, or death be mine
+          He holds me in His hand
+      - label: "3."
+        text: |
+          This bitter cup, I take it
+          My fainting heart restored
+          So here I stand, unshaken
+          I trust upon the Lord
+      - label: "4."
+        text: |
+          He is my God, though dark my road
+          He holds me, I shall not fall
+          Whatever my God ordains is right
+          To Him, I leave it all
+  build_my_life:
+    title: Build My Life
+    parts:
+      - label: "1."
+        text: |
+          Worthy of every song we could ever sing
+          Worthy of all the praise we could ever bring
+          Worthy of every breath we could ever breathe
+          We live for you
+      - label: "2."
+        text: |
+          Jesus, the name above every other name
+          Jesus, the only one who could save
+          Worthy of every breathe we could ever breathe
+          We live for you
+          Oh, we live for you
+      - style: chorus
+        text: |
+          Holy, there is no one like you
+          There is none besides you
+          Open up my eyes in wonder
+          And show me who you are and fill me
+          With your heart and lead me
+          In your love to those around me
+      - label: "3."
+        text: |
+          Worthy of every song we could ever sing
+          Worthy of all the praise we could ever bring
+          Worthy of every breath we could ever breathe
+          We live for you
+      - label: "4."
+        text: |
+          Jesus, the name above every other name
+          Jesus, the only one who could save
+          Worthy of every breathe we could ever breathe
+          We live for you
+          Oh, we live for you, Holy
+      - label: Bridge
+        text: |
+          And I will build my life upon your love, it is a firm foundation
+          And I will put my trust in your alone
+          And I will not be shaken
+      - label: "5."
+        text: |
+          Jesus, the name above every other name
+          Jesus, the only one who could save
+          Worthy of every breathe we could ever breathe
+          We live for you
+          Oh, we live for you, Holy
+  praise_to_the_lord_joyful_joyful:
+    title: Praise to the Lord (Joyful Joyful)
+    parts:
+      - label: "1."
+        text: |
+          Praise to the Lord, the Almighty
+          The King of creation
+          O my soul, praise Him, for He is
+          Your health and salvation
+          Come all who hear, now to His temple draw near
+          Join me in glad adoration
+      - label: "2."
+        text: |
+          Praise to the Lord, above all things
+          So wondrously reigning
+          Shelters thee under His wings and
+          So gently sustaining
+          Have you not seen all that is needful has been
+          Sent by his gracious ordaining
+      - label: "3."
+        text: |
+          Praise to the Lord, who will prosper
+          Your work and defend you
+          Surely His goodness and mercy
+          Shall daily attend you
+          Ponder anew what the Almighty can do
+          If with His love He befriends you
+      - style: chorus
+        text: |
+          Joyful, joyful, we adore Thee
+          God of glory, Lord of love
+          Hearts unfold like flowers before Thee
+          Op’ning to the sun above
+      - label: "4."
+        text: |
+          Praise to the Lord, oh let all that
+          Is in me adore Him
+          All that hath life and breath come now
+          With praises before Him
+          Let the amen sound from His people again
+          Gladly forever adore Him
+  lord_from_sorrows_deep_i_call:
+    title: Lord From Sorrows Deep I Call
+    parts:
+      - label: "1."
+        text: |
+          Lord, from sorrows deep I call
+          When my hope is shaken
+          Torn and ruined from the fall
+          Hear my desperation
+          For so long I’ve pled and prayed
+          God, come to my rescue
+          Even so the thorn remains
+          Still my heart will praise You
+      - label: "2."
+        text: |
+          Storms within my troubled soul
+          Questions without answers
+          On my faith these billows roll
+          God, be now my shelter
+          Why are you cast down my soul?
+          Hope in Him who saves you
+          When the fires have all grown cold
+          Cause this heart to praise You
+      - style: chorus
+        text: |
+          O, my soul, put your hope in God!
+          My help, my Rock, I will praise Him!
+          Sing, oh, sing through the raging storm!
+          You’re still my God, my salvation!
+      - label: "3."
+        text: |
+          Should my life be torn from me
+          Even worldly pleasure
+          When all I possess is grief
+          God, be then my treasure
+          Be my vision in the night
+          Be my hope and refuge
+          Till my faith is turned to sight
+          Lord, my heart will praise You
+      - label: "4."
+        text: |
+          And, oh, my soul, put your hope in God
+          My help, my Rock, I will praise Him
+          Sing, oh, sing through the raging storm
+          You’re still my God, my salvation
+  new_doxology:
+    title: New Doxology
+    parts:
+      - label: "1."
+        text: |
+          Praise God from Whom all blessings flow
+          Praise Him, all creatures here below
+          Praise Him above, ye heavenly hosts
+          Praise Father, Son, and Holy Ghost
+      - label: "2."
+        text: |
+          Let earth and heavenly saints proclaim
+          The power and might of His great Name
+          Let us exalt on bended knee
+          Praise God, the Holy Trinity
+      - style: chorus
+        text: |
+          Praise God, praise God, praise God, Who saved
+          my soul
+          Praise God, praise God, praise God from Whom
+          all blessings flow
+      - label: "3."
+        text: |
+          Praise to the King, his throne transcends
+          His crown and Kingdom never end
+          Now throughout eternity
+          I’ll praise the One Who died for me
+      - label: "4."
+        text: |
+          Praise God from Whom all blessings flow
+          Praise Him, all creatures here below
+          Praise Him above, ye heavenly hosts
+          Praise Father, Son, and Holy Ghost
+  o_lord_my_rock_and_my_redeemer:
+    title: O Lord My Rock and My Redeemer
+    parts:
+      - label: "1."
+        text: |
+          O Lord, my Rock and my Redeemer
+          Greatest treasure of my longing soul
+          My God, like You there is no other
+          True delight is found in You alone
+
+          Your grace, a well too deep to fathom
+          Your love exceeds the heaven’s reach
+          Your truth, a found of perfect wisdom
+          My highest good and my unending need
+      - label: "2."
+        text: |
+          O Lord, my Rock and Redeemer
+          Strong defender of my weary heart
+          My sword to fight the cruel deceiver
+          And my shield against his hateful darts
+
+          My song, when enemies surround me
+          My hope, when tides of sorrow rise
+          My, joy, when trials are abounding
+          Your faithfulness, my refuge in the night
+      - label: "3."
+        text: |
+          O Lord, my Rock and my Redeemer
+          Gracious Savior of my ruined life
+          My guilt and cross laid on Your shoulders
+          In my place You suffered bled and died
+
+          You rose, the grave and death are conquered
+          You broke my bonds of sin and shame
+          You rose, the grave and death are conquered
+          You broke my bonds of sin and shame
+
+          O Lord, my Rock and my Redeemer
+          May all my days bring glory to Your Name
+          May all my days bring glory to Your Name
+  good_good_father:
+    title: Good Good Father
+    parts:
+      - label: "1."
+        text: |
+          Oh, I’ve heard a thousand stories of what they think You’re like
+          But I’ve heard the tender whisper of love in the dead of night
+          And You tell me that You’re pleased and that I’m never alone
+      - style: chorus
+        text: |
+          You’re a good, good Father
+          It’s who You are, it’s who You are, it’s who You are
+          And I’m loved by You
+          It’s who I am, it’s who I am, it’s who I am
+      - label: "2."
+        text: |
+          Oh, and I’ve seen many searching for answers far and wide
+          But I know we’re all searching for answers only You provide
+          ‘Cause You know just what we need before we say a word
+      - label: "3."
+        text: |
+          Because You are perfect in all of Your ways
+          You are perfect in all of Your ways
+          You are perfect in all of Your ways to us
+          You are perfect in all of Your ways
+          Oh, You’re perfect in all of Your ways
+          You are perfect in all of Your ways to us
+      - label: "4."
+        text: |
+          Oh, it’s love so undeniable
+          I, I can hardly speak
+          Peace so unexplainable
+          I, I can hardly think
+          As You call me deeper still
+          As You call me deeper still
+          As you call me deeper still into love, love, love
+  he_will_hold_me_fast:
+    title: He Will Hold Me Fast
+    parts:
+      - label: "1."
+        text: |
+          When I fear my faith will fail
+          Christ will hold me fast
+          When the tempter would prevail
+          He will hold me fast
+
+          I could never keep my hold
+          Through life’s fearful path
+          For my love is often cold
+          He must hold me fast
+      - style: chorus
+        text: |
+          He will hold me fast
+          He will hold me fast
+          For my Savior loves me so
+          He will hold me fast
+      - label: "2."
+        text: |
+          Those He saves are His delight
+          Christ will hold me fast
+          Precious in His holy sight
+          He will hold me fast
+
+          He’ll not let my soul be lost
+          His promises shall last
+          Bought by Him at such a cost
+          He will hold me fast
+      - label: "3."
+        text: |
+          For my life He bled and died
+          Christ will hold me fast
+          Justice has been satisfied
+          He will hold me fast
+
+          Raised with Him to endless life
+          He will hold me fast
+          Till our faith is turned to sight
+          When he comes at last
+  in_christ_alone:
+    title: In Christ Alone
+    parts:
+      - label: "1."
+        text: |
+          In Christ alone my hope is found
+          He is my light, my strength, my song
+          This cornerstone, this solid ground
+          Firm through the fiercest drought and storm
+          What heights of love, what depths of peace
+          When fears are stilled, when strivings cease
+          My comforter, my all in all
+          Here in the love of Christ I stand
+      - label: "2."
+        text: |
+          In Christ alone who took on flesh
+          Fullness of God in helpless babe
+          This gift of love and righteousness
+          Scorned by the ones He came to save
+          Till on that cross as Jesus died
+          The wrath of God was satisfied
+          For every sin on Him was laid
+          Here in the death of Christ I live
+      - label: "3."
+        text: |
+          There in the ground His body lay
+          Light of the world by darkness slain
+          Then bursting forth in glorious day
+          Up from the grave He rose again
+          And as He stands in victory
+          Sin’s curse has lost its grip on me
+          For I am His and He is mine
+          Bought with the precious blood of Christ
+      - label: "4."
+        text: |
+          No guilt in life, no fear in death
+          This is the power of Christ in me
+          From life’s first cry to final breath
+          Jesus commands my destiny
+          No power of hell, no scheme of man
+          Can ever pluck me from His hand
+          Till He returns or calls me home
+          Here in the power of Christ I’ll stand
+          Here in the power of Christ I’ll stand
+  lord_i_need_you:
+    title: Lord, I Need You
+    parts:
+      - label: "1."
+        text: |
+          Lord I come, I confess
+
+          Bowing here, I find my rest
+
+          Without You, I fall apart
+
+          You’re the one that guides my heart
+      - style: chorus
+        text: |
+          Lord, I need You, oh, I need You
+
+          Every hour, I need You
+
+          My one defense, my righteousness
+
+          Oh God, how I need You
+      - label: "2."
+        text: |
+          Where sins run deep, Your grace is more
+
+          Where grace is found is where You are
+
+          And where You are, Lord, I am free
+
+          Holiness is Christ in me
+      - label: "3."
+        text: |
+          So teach my song to rise to You
+
+          When temptation comes my way
+
+          And when I cannot stand, I’ll fall on You
+
+          Jesus, You’re my hope and stay
+  yes_i_will:
+    title: Yes I Will
+    parts:
+      - label: "1."
+        text: |
+          I count on one thing
+          The same God that never fails
+          Will not fail me now
+          You won’t fail me now
+          In the waiting
+          The same God who’s never late
+          Is working all things out
+          You’re working all things out
+      - style: chorus
+        text: |
+          Yes I will, lift You high in the lowest valley
+          Yes I will, bless Your name
+          Oh, yes I will, sing for joy when my heart is heavy
+          All my days, oh yes I will
+      - label: "2."
+        text: |
+          I count on one thing
+          The same God that never fails
+          Will not fail me now
+          You won’t fail me now
+          In the waiting
+          The same God who’s never late
+          Is working all things out
+          You’re working all things out
+      - label: "3."
+        text: |
+          And I choose to praise
+          To glorify, glorify
+          The Name of all names
+          That nothing can stand against
+  jesus_i_my_cross_have_taken:
+    title: Jesus I My Cross Have Taken
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Jesus, I my cross have taken,
+          All to leave and follow Thee
+          Destitute, despised, forsaken,
+          Thou from hence my all shall be
+          Perish every fond ambition
+          All I’ve sought or hoped or known
+          Yet how rich is my condition!
+          God and heaven are still my own
+      - label: "2."
+        text: |
+          Let the world despise and leave me,
+          They have left my Savior, too
+          Human hearts and looks deceive me;
+          Thou are not, like them, untrue
+          O while Thou dost smile upon me,
+          God of wisdom, love, and might,
+          Foes may hate and friends disown me,
+          Show Thy face and all is bright
+      - label: "3."
+        text: |
+          Man may trouble and distress me,
+          ‘Twill but drive me to Thy breast
+          Life with trials hard may press me;
+          Heaven will bring me sweeter rest
+          Oh, ‘tis not in grief to harm me
+          While Thy love is left to me;
+          Oh, ‘twere not in joy to charm me,
+          Were that joy unmixed with Thee
+      - label: "4."
+        text: |
+          Go, then, earthly fame and treasure,
+          Come disaster, scorn and pain
+          In Thy service, pain is pleasure,
+          With Thy favor, loss is gain
+          I have called Thee Abba Father,
+          I have stayed my heart on Thee
+          Storms may howl, and clouds may gather;
+          All must work for good to me
+      - label: "5."
+        text: |
+          Soul, then know thy full salvation
+          Rise o’er sin and fear and care
+          Joy to find in every station,
+          Something still to do or bear
+          Think what Spirit dwells within thee,
+          Think what Father’s smile are thine,
+          Think that Jesus died to win thee,
+          Child of heaven, canst thou repine
+      - label: "6."
+        text: |
+          Haste thee on from grace to glory,
+          Armed by faith, and winged by prayer
+          Heaven’s eternal days before thee,
+          God’s own hand shall guide us there
+          Soon shall close thy earthly mission,
+          Soon shall pass thy pilgrim days,
+          Hope shall change to glad fruition,
+          Faith to sight, and prayer to praise
+  who_you_say_i_am:
+    title: Who You Say I Am
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Who am I that the highest King
+          Would welcome me
+          I was lost but He brought me in
+          Oh His love for me
+          Oh His love for me
+      - style: chorus
+        text: |
+          Who the Son sets free
+          Oh is free indeed
+          I’m a child of God
+          Yes I am
+      - label: "2."
+        text: |
+          Free at last
+          He has ransomed me
+          His grace runs deep
+          While I was a slave to sin
+          Jesus died for me
+      - style: chorus
+        text: |
+          Who the Son sets free
+          Oh is free indeed
+          I’m a child of God
+          Yes I am
+          In my Father’s house
+          There’s a place for me
+          I’m a child of God
+          Yes I am
+      - label: Bridge
+        text: |
+          I am chosen
+          Not forsaken
+          I am who You say I am
+          You are for me
+          Not against me
+          I am who You say I am
+  i_asked_the_lord:
+    title: I Asked the Lord
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          I asked the Lord that I might grow
+          In faith and love and every grace
+          Might more of His salvation know
+          And seek more earnestly His face
+      - label: "2."
+        text: |
+          Twas He who taught me thus to pray
+          And He I trust has answered prayer
+          But it has been in such a way
+          As almost drove me to despair
+      - label: "3."
+        text: |
+          I hope that in some favored hour
+          At once He’d answer my request
+          And by His love’s constraining power
+          Subdue my sins and give me rest
+      - label: "4."
+        text: |
+          Instead of this He made me feel
+          The hidden evils of my heart
+          And let the angry powers of Hell
+          Assault my soul in every part
+      - label: "5."
+        text: |
+          Yea more with His own hand He seemed
+          Intent to aggravate my woe
+          Crossed all the fair designs I schemed,
+          Cast out my feelings, laid me low
+      - label: "6."
+        text: |
+          Lord why is this, I trembling cried
+          Wilt Thou pursue thy worm to death?
+          “Tis in this way” The Lord replied
+          “I answer prayer for grace and faith”
+      - label: "7."
+        text: |
+          “These inward trials I employ
+          From self and pride to set thee free
+          And break thy schemes of earthly joy
+          That thou may seek thy all in me,
+          That thou may seek thy all in me ”
+  your_will_be_done:
+    title: Your Will Be Done
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Your will be done, my God and Father
+          As in Heaven, so on earth
+          My heart is drawn to self-exalting
+          Help me seek Your kingdom first
+          As Jesus walked, so I shall walk
+          Held by Your same unchanging love
+          Be still my soul
+          Oh, lift your voice and pray
+          Father not my will but Yours be done
+      - label: "2."
+        text: |
+          How in that garden he persisted
+          I may never fully know
+          The fearful weight of true obedience
+          It was held by Him alone
+          What wondrous faith, to bear that cross
+          To bear my sin, what wondrous love
+          My hope was sure
+          When there my Savior prayed
+          Father not my will but Yours be done
+      - label: "3."
+        text: |
+          When I am lost, when I am broken
+          In the night of fear and doubt
+          Still I will trust in my good Father
+          Yes, to one great King I bow!
+          As Jesus rose, so I shall rise
+          IN ransomed glory at the throne
+          My heart restored
+          With all your saints I sing
+          Father, not my will but Yours be done
+      - label: "4."
+        text: |
+          As we go forth, our God and Father
+          Lead us daily in the fight
+          That all the world might see Your glory
+          And Your Name be lifted high
+          And in this Name we overcome
+          For You shall see us safely home
+          Now as your church
+          We lift our voice and pray
+          Father, not my will but Yours be done
+  all_creatures_of_our_god_and_king:
+    title: All Creatures of Our God and King
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          All creatures of our God and King
+          Lift up your voice and with us sing
+          O praise Him! Alleluia!
+          Thou, burning sun with golden beam
+          Thou, silver moon with softer gleam
+          O praise Him! O praise Him!
+          Alleluia! Alleluia! Alleluia!
+      - label: "2."
+        text: |
+          Let all things their Creator bless
+          And worship Him in humbleness
+          O praise Him! Alleluia!
+          Praise, praise the Father, praise the Son
+          And praise the Spirit, Three-on-One
+          O Praise Him! O praise Him!
+          Alleluia! Alleluia! Alleluia!
+      - label: "3."
+        text: |
+          All the redeemed washed by His blood
+          Come and rejoice in His great love
+          O praise Him! Alleluia!
+          Christ has defeated every sin
+          Cast all your burdens now on Him
+          O praise Him! O praise Him!
+          Alleluia! Alleluia! Alleluia!
+      - label: "4."
+        text: |
+          He shall return in pow’r to reign
+          Heaven and earth will join to say
+          O praise Him! Alleluia!
+          Then who shall fall on bended knee?
+          All creatures of our God and King
+          O praise Him! O praise Him!
+          Alleluia! Alleluia! Alleluia!
+  abide_with_me:
+    title: Abide with Me
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Abide with me; fast falls the eventide;
+          The darkness deepens; Lord with me abide
+          When other helpers, fail and comforts flee,
+          Help of the helpless, abide with me
+      - label: "2."
+        text: |
+          Thou on my head, in early youth didst smile;
+          And, though rebellious, and perverse meanwhile,
+          Thou has not left me, though I oft left Thee,
+          On to the close Lord, abide with me
+      - label: "3."
+        text: |
+          I need Thy presence, every passing hour
+          What but Thy grace, can foil the tempter’s power?
+          Who, like Thyself, my guide and stay can be?
+          Through cloud and sunshine, abide with me
+      - label: "4."
+        text: |
+          I fear no foe, with Thee at hand to bless
+          Ills have no weight, tears lose their bitterness
+          Where is thy sting death? Where grave thy victory?
+          I triumph still, abide with me
+      - label: "5."
+        text: |
+          Hold Thou Thy cross, before my closing eyes;
+          Shine through the gloom, and point me to the skies
+          Heaven’s morning breaks, and earths’ vain shadows flee;
+          In life, in death, Lord, abide with me
+  nailed_to_the_cross:
+    title: Nailed To The Cross
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          When I stand accused by my regrets
+          And the devil roars his empty threats
+          I will preach the gospel to myself
+          That I am not a man condemned
+          For Jesus Christ is my defense
+      - label: "2."
+        text: |
+          My sin is nailed to the cross
+          My soul is healed by the scares
+          The weight of guilt I bear no more
+          Praise the Lord, praise the Lord
+      - label: "3."
+        text: |
+          When my doubt and shame hang over me
+          Like the arrows of the enemy
+          I will run again to Calvary
+          That rugged hill of hell’s defeat
+          My fortress and my victory
+      - style: chorus
+        text: |
+          My sin is nailed to the cross
+          My soul is healed by the scars
+          The weight of guilt I bear no more
+          Praise the Lord, praise the Lord
+          My sin is nailed to the cross
+          My soul is healed by the scars
+          Now I’m alive forevermore
+          Praise the Lord, praise the Lord
+      - label: "4."
+        text: |
+          It is finished, sin is vanquished
+          Hallelujah, praise the Lord
+          All the glory, all the honor
+          To my Savior, Christ the Lord
+          It is finished, sin is vanquished
+          Hallelujah, praise the Lord
+          All the glory, all the honor
+          To my Savior, Christ the Lord
+      - label: "5."
+        text: |
+          When I stand before the throne at last
+          His blood will plead my innocence
+          I will worship Him with holy hands
+          And raise the song that never ends
+          Of Jesus Christ, my righteousness
+  come_thou_fount:
+    title: Come Thou Fount
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Come thou fount of every blessing
+          Tune my heart to sing Thy grace
+          Streams of mercy never ceasing
+          Call for songs of loudest praise
+          Teach me some melodious sonnet
+          Sung by flaming tongues above
+          Praise the mount I’m fixed upon it
+          Mount of God’s unchanging love
+      - label: "2."
+        text: |
+          Here I raise my Ebenezer
+          Hither by Thy help I’ve come
+          And I hope by Thy good pleasure
+          Safely to arrive at home
+          Jesus sought me when a stranger
+          Wandering from the fold of God
+          He to rescue me from danger
+          Interposed His precious blood
+      - label: "3."
+        text: |
+          Oh, to grace how great a debtor
+          Daily I’m constrained to be
+          Let Thy grace like a fetter
+          Bind my wandering heart to Thee
+          Prone to wander, Lord I feel it
+          Prone to leave Thy God I love
+          Here’s my heart, O take it, seal it
+          Seal it for Thy Courts above
+      - label: "4."
+        text: |
+          Come thou fount of every blessing
+          Tune my heart to sing Thy grace
+          Streams of mercy never ceasing
+          Call for songs of loudest praise
+          Teach me some melodious sonnet
+          Sung by flaming tongues above
+          Praise the mount I’m fixed upon it
+          Mount of God’s unchanging love
+  this_is_the_day:
+    title: This Is The Day
+    columns: 1
+    parts:
+      - style: chorus
+        text: |
+          This is the day that the Lord has made
+          We will rejoice as we lift His name
+          This is the day that the Lord has made
+          Come and rejoice, we will rejoice and be glad in it
+      - label: "1."
+        text: |
+          Whether the sun will shine
+          Whether the skies will rain
+          I know that You are good
+          And this is the day you made
+          Whether in life or death
+          Whether in joy or pain
+          I know the truth remains
+          That this is the day You made
+      - label: "2."
+        text: |
+          Now I can walk in faith
+          You will protect my way
+          Your every work is good
+          And this is the day You made
+          I am a child of Yours
+          You are the One who saves
+          I am redeemed by love
+          And this is the day You made
+      - label: Bridge
+        text: |
+          This is the day
+          Come and sing your praise
+          For the Lord now reigns
+          On the throne of grace
+          Soon is the day
+          He will bring us home
+          And we have this hope
+          For we are His own
+  my_worth_is_not_in_what_i_own:
+    title: My Worth Is Not in What I Own
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          My worth is not in what I own
+          Not in the strength of flesh and bone
+          But in the costly wounds of love
+          At the cross
+      - label: "2."
+        text: |
+          My worth is not in skill or name
+          In win or lose, in pride or shame
+          But in the blood of Christ that flowed
+          At the cross
+      - style: chorus
+        text: |
+          I rejoice in my Redeemer
+          Greatest Treasure,
+          Wellspring of my soul
+          I will trust in Him no other
+          My soul is satisfied in Him alone
+      - label: "3."
+        text: |
+          As summer flowers we fade and die
+          Fame, youth and beauty hurry by
+          But life eternal calls to us
+          At the cross
+      - label: "4."
+        text: |
+          I will not boast in wealth or might
+          Or human wisdom’s fleeting light
+          But I will boast in knowing Christ
+          At the cross
+      - label: "5."
+        text: |
+          Two wonders here that I confess
+          My worth and my unworthiness
+          My value fixed – my ransom paid
+          At the cross
+  son_of_suffering:
+    title: Son of Suffering
+    parts:
+      - label: "1."
+        text: |
+          On the perfect Son of God
+          In all His innocence
+          Here walking in the dirt with you and me
+          He knows what living is
+          He’s acquainted with our grief
+          A man of sorrows, Son of suffering
+      - style: chorus
+        text: |
+          (Oh) blood and tears
+          How can it be
+          (That) there’s a God who weeps
+          There’s a God who bleeds
+          Oh praise the One
+          Who would reach for me
+          Hallelujah to the Son of Suffering
+      - label: "2."
+        text: |
+          Some imagine You
+          Are distant and removed
+          But You chased us down in merciful pursuit
+          To the sinner You were grace
+          And the broke You embraced
+          And in the end the proof is in Your wounds
+          Yes in the end the proof is in Your wounds
+      - label: Bridge
+        text: |
+          Your cross, my freedom
+          Your strips, my healing
+          All praise King Jesus
+          Glory to God in Heaven
+          Your blood still speaking
+          Your love still reaching
+          All praise King Jesus
+          Glory to God Forever
+  great_are_you_lord:
+    title: Great Are You Lord
+    parts:
+      - label: "1."
+        text: |
+          You give life, You are love
+          You bring light to the darkness
+          You give hope, You restore
+          Every heart that is broken
+          And great are you, Lord
+      - style: chorus
+        text: |
+          It’s Your breath in our lungs
+          So we pour out our praise
+          We pour out our praise
+          It’s Your breath in our lungs
+          So we pour out our praise to You only
+      - label: "2."
+        text: |
+          You give life, You are love
+          You bring light to the darkness
+          You give hope, You restore
+          Every heart that is broken
+          And great are you, Lord
+      - label: Bridge
+        text: |
+          And all of the earth will shout Your praise
+          Our hearts will cry, these bones will sing
+          Great are You, Lord *(Repeat*)
+  o_come_to_the_alter:
+    title: O Come to the Altar
+    parts:
+      - label: "1."
+        text: |
+          Are you hurting and broken within?
+          Overwhelmed by the weight of your sin?
+          Jesus is calling
+          Have you come to the end of yourself
+          Do you thirst for a drink from the well?
+          Jesus is calling
+      - style: chorus
+        text: |
+          O come to the altar
+          The Father’s arms are open wide
+          Forgiveness was bought with
+          The precious blood of Jesus Christ
+      - label: "2."
+        text: |
+          Leave behind your regrets and mistakes
+          Come today, there’s no reason to wait
+          Jesus is calling
+          Bring your sorrows and trade them for joy
+          From the ashes, a new life is born
+          Jesus is calling
+      - style: chorus
+        text: |
+          Oh, what a Savior
+          Isn’t He wonderful?
+          Sing Hallelujah, Christ is risen
+          Bow down before Him
+          For He is Lord of all
+          Sing Hallelujah, Christ is risen
+      - label: "3."
+        text: |
+          Bear your cross as you wait for the crown
+          Tell the world of the treasure you found
+  amazing_grace:
+    title: Amazing Grace
+    parts:
+      - label: "1."
+        text: |
+          Amazing grace how sweet the sound
+          That saved a wretch like me
+          I once was lost, but now I’m found
+          Was blind but now I see
+      - label: "2."
+        text: |
+          ‘Twas grace that taught my heart to fear
+          And grace my fears relieved
+          How precious did that grace appear
+          The hour I first believed
+      - label: "3."
+        text: |
+          Through many dangers, toils, and snares
+          I have already come
+          This grace that brought me safe thus far
+          And grace will lead me home
+      - label: "4."
+        text: |
+          When we’ve been here ten thousand years
+          Bright, shining as the sun
+          We’ve no less days to sing God’s praise
+          Than when we first begun
+      - label: "5."
+        text: |
+          Amazing grace how sweet the sound
+          That saved a wretch like me
+          I once was lost, but now I’m found
+          Was blind but now I see
+  heal_us:
+    title: Heal Us
+    parts:
+      - style: chorus
+        text: |
+          Heal us, Emmanuel, here we are
+          We long to feel Thy touch
+          Deep wounded souls to Thee we fly
+          O Savior hear our cry
+      - label: "1."
+        text: |
+          Our faith is feeble, we confess
+          We faintly trust Thy word
+          But will You pity us the less?
+          Be that far from You Lord!
+      - label: "2."
+        text: |
+          Remember him who once applied
+          With trembling for relief
+          “Lord, I believe,” with tears he cried
+          “O help my unbelief!”
+      - label: "3."
+        text: |
+          She too, who touched you in the press
+          And healing virtue stole
+          Was answered, “Daughter, go in peace
+          Thy faith has made thee whole ”
+      - label: "4."
+        text: |
+          Like her, with hopes and fears we come
+          To touch You if we may
+          O send us not despairing homes
+          Send none unhealed away
+  be_thou_my_vision:
+    title: Be Thou My Vision
+    parts:
+      - label: "1."
+        text: |
+          Be Thou my vision, O Lord of my heart
+          Naught be all else to me, save that Thou art
+          Thou my best thought, by day or by night
+          Waking or sleeping, Thy presence my light
+      - label: "2."
+        text: |
+          Be Thou my wisdom, and Thou my true word
+          I ever with Thee and Thou with me, Lord
+          Thou my great Father, and I Thy true son
+          Thou in me dwelling and I with Thee one
+      - label: "3."
+        text: |
+          Riches I heed not, nor vain, empty praise
+          Thou mine inheritance, now and always
+          Thou and Thou only first in my heart
+          High King of heaven, my treasure Thou art
+      - label: "4."
+        text: |
+          High King of heaven, my victory won
+          May I reach heaven’s joys, O bright heaven’s sun
+          Heart of my own heart, whatever befalls
+          Still be my vision, O ruler of all
+  o_praise_the_name:
+    title: O Praise the Name
+    parts:
+      - label: "1."
+        text: |
+          I cast my mind to Calvary
+          Where Jesus bled and died for me
+          I see His wounds, His hands, His feet
+          My Savior on that cursed tree
+      - label: "2."
+        text: |
+          His body bound and drenched in tears
+          They laid Him down in Joseph’s tomb
+          The entrance sealed by heavy stone
+          Messiah still and all alone
+      - style: chorus
+        text: |
+          O praise the Name of the Lord our God
+          O praise His Name forevermore
+          For endless days we will sing your praise
+          Oh Lord, oh Lord our God
+      - label: "3."
+        text: |
+          Then on the third at break of dawn
+          The Son of heaven rose again
+          O trampled death where is your sting?
+          The angels roar with Christ the King
+      - label: "4."
+        text: |
+          He shall return in robes of white
+          The blazing sun shall pierce the night
+          And I will rise among the saints
+          My gaze transfixed on Jesus’ face
+  christ_our_hope_in_life_and_death:
+    title: Christ, Our Hope in Life and Death
+    parts:
+      - label: "1."
+        text: |
+          What is our hope in life and death
+          Christ alone Christ alone
+          What is our only confidence
+          That our souls to Him belong
+          What holds our days within His hand
+          What comes apart from His command
+          And what will keep us to the end
+          The love of Christ in which we Stand
+      - style: chorus
+        text: |
+          O sing hallelujah
+          Our hope springs eternal
+          O sing hallelujah
+          Now and ever we confess
+          Christ our hope in life and death
+      - label: "2."
+        text: |
+          What truth can calm the troubled soul
+          God is good God is good
+          Where is His grace and goodness known
+          In our great Redeemer’s blood
+          Who holds our faith when fears arise
+          Who stands above the stormy trial
+          Who sends the waves that bring us nigh
+          Unto the shore the rock of Christ
+      - label: "3."
+        text: |
+          Unto the grave what will we sing
+          Christ He lives Christ He lives
+          And what reward will heaven bring
+          Everlasting life with Him
+          There we will rise to meet the Lord
+          Then sin and death will be destroyed
+          And we will feast in endless joy
+          When Christ is ours forevermore
+  all_i_have_is_christ_zachs_version:
+    title: All I Have Is Christ (Zach’s Version)
+    parts:
+      - label: "1."
+        text: |
+          I once was lost in darkest night
+          Yet thought I knew the way
+          The sin that promised joy and life
+          Had led me to the grave
+          I had no hope that You would own
+          A rebel to Your will
+          And if You had not loved me first
+          I would refuse You still
+      - label: "2."
+        text: |
+          But as I ran my hell-bound race
+          Indifferent to the cost
+          You looked upon my helpless state
+          And led me to the cross
+          And I beheld God's love displayed
+          You suffered in my place
+          You bore the wrath reserved for me
+          Now all I know is grace
+      - style: chorus
+        text: |
+          Hallelujah! All I have is Christ
+          Hallelujah! Jesus is my life
+          Hallelujah! All I have is Christ
+          Hallelujah! Jesus is my life
+      - label: "3."
+        text: |
+          Now, Lord, I would be Yours alone
+          And live so all might see
+          The strength to follow Your commands
+          Could never come from me
+          O Father, use my ransomed life
+          In any way You choose
+          And let my song forever be
+          My only boast is You
+  it_was_finished_upon_that_cross:
+    title: It Was Finished Upon that Cross
+    parts:
+      - label: "1."
+        text: |
+          How I love the voice of Jesus
+          On the cross of Calvary
+          He declares His work is finished
+          He has spoken this hope to me
+          Though the sun had ceased its shining
+          Though the war appeared as lost
+          Christ had triumphed over evil
+          It was finished upon that cross
+      - label: "2."
+        text: |
+          Now the curse, it has been broken
+          Jesus paid the price for me
+          Full, the pardon he has offered
+          Great, the welcome that I receive
+          Boldly, I approach my Father
+          Clothed in Jesus' righteousness
+          There is no more guilt to carry
+          It was finished upon that cross
+      - label: "3."
+        text: |
+          Death was once my great opponent
+          Fear once had a hold on me
+          But the Son who died to save us
+          Rose that we would be free indeed!
+          Death was once my great opponent
+          Fear once had a hold on me
+          But the Son who died to save us
+          Rose that we would be free indeed!
+          Yes, He rose that we would be free indeed!
+      - label: "4."
+        text: |
+          Free from every plan of darkness
+          Free to live and free to love
+          Death is dead and Christ is risen!
+          It was finished upon that cross
+          Onward to eternal glory
+          To my Saviour and my God
+          I rejoice in Jesus' victory
+          It was finished upon that cross
+          It was finished upon that cross
+          It was finished upon that cross
+  psalm_8_how_majestic_is_your_name:
+    title: Psalm 8 (How Majestic is Your Name)
+    parts:
+      - label: "1."
+        text: |
+          When I look at Your heavens
+          The moon and stars You set in motion, oh God
+          I sing all glory and honor
+          What is man that You are mindful
+          The Son of Man that You would care for Him
+          We sing all glory and honor
+      - style: chorus
+        text: |
+          Oh Lord, our Lord
+          Oh, how awesome are Your ways
+          How majestic is Your name in all the earth
+          Oh Lord, our Lord
+          May we see Your kingdom come
+          Father, may Your will be done in all the earth
+      - label: "2."
+        text: |
+          In all the earth You gave dominion to Your children
+          And You crowned them, oh God
+          With glory and honor, so we'll sing of Your name
+          Live our lives for Your greatness, oh God
+          And Your glory and honor
+      - label: "3."
+        text: |
+          The Earth is full of the glory of God
+          Come make much of the name above all names
+          Creation cries out and every knee bows
+          Jesus, we crown You, oh Lord, our Lord
+  ten_thousand_reasons:
+    title: 10,000 Reasons
+    parts:
+      - style: chorus
+        text: |
+          Bless the Lord, O my soul,
+          O my soul, worship His holy Name
+          Sing like never before, O my soul
+          I’ll worship Your holy Name
+      - label: "1."
+        text: |
+          The sun comes up, it’s a new day dawning;
+          It’s time to sing Your song again
+          Whatever may pass and whatever lies before me,
+          Let me be singing when the evening comes
+      - label: "2."
+        text: |
+          You’re rich in love and You’re slow to anger,
+          Your Name is great Your heart is kind;
+          For all Your goodness I will keep on singing,
+          Ten thousand reasons for my heart to find
+      - label: "3."
+        text: |
+          And on that day when my strength is failing,
+          The end draws near and my time has come;
+          Still my soul sings Your praise unending,
+          Ten thousand years and then forevermore
+  there_is_one_gospel:
+    title: There is One Gospel
+    parts:
+      - label: "1."
+        text: |
+          There is one Gospel on which I stand
+          For all eternity
+          It is my story, my Father’s plan
+          The Son has rescued me
+          Oh what a Gospel, Oh what a peace
+          My highest joy and my deepest need
+          Now and forever He is my light
+          I stand in the Gospel of Jesus Christ
+      - label: "2."
+        text: |
+          There is one Gospel to which I cling
+          All else I count as loss
+          For there, where justice and mercy meet
+          He saved me on the cross
+          No more I boast in what I can bring
+          No more I carry the weight of sin
+          For He has brought me from death to life
+          I stand in the Gospel of Jesus Christ
+      - label: "3."
+        text: |
+          There is one Gospel where hope is found
+          The empty tomb still speaks
+          For death could not keep my Savior down
+          He lives and I am free
+          Now on my Savior, I fix my eyes
+          My life is His and His hope is mine!
+          For He has promised I, too, will rise
+          I stand in the Gospel of Jesus Christ
+      - label: "4."
+        text: |
+          And in this Gospel the church is one
+          We do not walk alone
+          We have His Spirit as we press on
+          To lead us safely home
+          And when in glory still I will sing
+          Of this old story that rescued me
+          Praise to my Savior, the King of life
+          I stand in the Gospel of Jesus Christ
+  holy_holy_holy:
+    title: Holy, Holy, Holy
+    parts:
+      - label: "1."
+        text: |
+          Holy, holy, holy! Lord God Almighty!
+          Early in the morning our song shall rise to Thee;
+          Holy, holy, holy, merciful and mighty!
+          God in three Persons, blessed Trinity!
+      - label: "2."
+        text: |
+          Holy, holy, holy! All the saints adore Thee,
+          Casting down their golden crowns around the glassy sea,
+          Cherubim and seraphim falling down before Thee,
+          Who wert and art, and evermore shalt be
+      - label: "3."
+        text: |
+          Holy, holy, holy! Though the darkness hide Thee,
+          Though the eye of sinful man Thy glory may not see;
+          Only Thou art holy; there is none beside Thee,
+          Perfect in power, love, and purity
+      - label: "4."
+        text: |
+          Holy, holy, holy! Lord God Almighty!
+          All Thy works shall praise Thy name in earth and sky and sea;
+          Holy, holy, holy, merciful and mighty!
+          God in three Persons, blessed Trinity!
+  how_rich_a_treasure_we_possess:
+    title: How Rich A Treasure We Possess
+    parts:
+      - label: "1."
+        text: |
+          How rich a treasure we possess, in our Lord
+          His blood our ransom and defense, His glory our reward
+          The sum of all created things, is worthless in compare
+          For our inheritance is Him, whose praise angels declare
+      - label: "2."
+        text: |
+          And how free and costly was the love, displayed upon the cross
+          While we were dead in untold sin, the Sovereign purchased us
+          The will of God the Father, demonstrated through the Son
+          The Spirit seals the greatest work, the work which Christ has done
+      - label: "3."
+        text: |
+          How vast the measureless and the flood of mercy unrestrained
+          The penalty was paid full, the spotless Lamb was slain
+          Salvation what a priceless gift received by grace through faith
+          We stand in robes of righteousness, we stand in Jesus’ name (Yes we do)
+      - style: chorus
+        text: |
+          For Yours is the Kingdom, and the power, and the glory
+          Yours is the Kingdom, and the power, and the glory
+          Yours is the Kingdom, and the power, and the glory
+          Amen
+  christ_the_sure_and_steady_anchor:
+    title: Christ the Sure and Steady Anchor
+    parts:
+      - label: "1."
+        text: |
+          Christ the sure and steady Anchor
+          In the fury of the storm
+          When the winds of doubt blow through me
+          And my sails have all been torn
+          In the suffering, in the sorrow
+          When my sinking hopes are few
+          I will hold fast to the Anchor
+          It shall never be removed
+      - label: "2."
+        text: |
+          Christ the sure and steady Anchor
+          While the tempest rages on
+          When temptation claims the battle
+          And it seems the night has won
+          Deeper still then goes the Anchor
+          Though I justly stand accused
+          I will hold fast to the Anchor
+          It shall never be removed
+      - label: "3."
+        text: |
+          Christ the sure and steady Anchor
+          Through the floods of unbelief
+          Hopeless somehow, O my soul, now
+          Lift your eyes to Calvary
+          This my ballast of assurance
+          See His love forever proved
+          I will hold fast to the Anchor
+          It shall never be removed
+      - label: "4."
+        text: |
+          Christ the sure and steady Anchor
+          As we face the wave of death
+          When these trials give way to glory
+          As we draw our final breath
+          We will cross that great horizon
+          Clouds behind and life secure
+          And the calm will be the better
+          For the storms that we endure
+  king_of_kings:
+    title: King of Kings
+    parts:
+      - label: "1."
+        text: |
+          In the darkness we were waiting
+          Without hope without light
+          Til from heaven You came running
+          There was mercy in Your eyes
+          To fulfill the law and prophets
+          To a Virgin Came the Word
+          From a throne of endless glory
+          To a cradle in the dirt
+      - style: chorus
+        text: |
+          Praise the Father, Praise the Son
+          Praise the Spirit three in One
+          God of glory, Majesty, Praise forever to the King of Kings
+      - label: "2."
+        text: |
+          To reveal the kingdom coming, And to reconcile the lost
+          To redeem the whole creation, You did not despise the cross, For even in Your suffering, You saw to the other side
+          Knowing this was our salvation, Jesus for our sake you died
+      - label: "3."
+        text: |
+          And the morning that You rose, All of heaven held its breath
+          Til that stone was moved for good, For the Lamb had conquered death
+          And the dead rose from their tombs, And the angels stood in awe
+          For the souls of all who’d come, To the Father are restored
+      - label: "4."
+        text: |
+          And the Church of Christ was born
+          Then the Spirit lit the flame
+          Now this gospel truth of old
+          Shall not heal shall not faint
+          By His blood and in his Name
+          In His freedom I am free
+          For the love of Jesus Christ
+          Who has resurrected me
+  not_in_me:
+    title: Not in Me
+    parts:
+      - label: "1."
+        text: |
+          No list of sins I have not done, no list of virtues I pursue,
+          No list of those I am not like can earn myself a place with you
+          O God! Be merciful to me! I am a sinner through and through
+          My only hope of righteousness is not in me, but only you
+      - label: "2."
+        text: |
+          No humble dress, no fervent prayer, no lifted hands, no tearful song,
+          No recitation of the truth can justify a single wrong
+          My righteousness is Jesus’ life! My debt was paid by Jesus’ death
+          My weary load was borne by Him And He alone can give me rest
+      - label: "3."
+        text: |
+          No separation from the world, no work I do, no gift I give
+          Can cleanse my conscience, cleanse my hands,
+          I cannot cause my soul to live
+          But Jesus died and rose again The pow’r of death is overthrown!
+          My God is merciful to me and merciful in Christ alone
+          My righteousness is Jesus’ life, My debt was paid by Jesus’ death
+          My weary load was borne by him, and He alone can give me rest,
+          And he alone can give me rest
+  how_great_is_our_god:
+    title: How Great is Our God
+    parts:
+      - label: "1."
+        text: |
+          The splendor of the King, clothed in majesty
+          Let all the earth rejoice, all the earth rejoice
+          He wraps Himself in light, and darkness tries to hide
+          And trembles at his voice, trembles at his voice
+      - style: chorus
+        text: |
+          How great is our God, sing with me
+          How great is our God, all will see
+          How great, how great is our God
+      - label: "2."
+        text: |
+          Age to age He stands, and time is in His hands
+          Beginning and the end, beginning and the end
+          The Godhead, three in one: Father, Spirit, Son
+          The Lion and the Lamb, the Lion and the Lamb
+      - label: Bridge
+        text: |
+          Name above all names
+          Worthy of all praise
+          My heart will sing
+          How great is our God
+  i_am_not_my_own:
+    title: I Am Not My Own
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          The One who made the heavens, made my heart and soul
+          Before I drew a breath, I was loved and known
+          I am His creation, the Maker's masterpiece
+          And all that He designs will be done in me
+      - label: "2."
+        text: |
+          My body is a temple of the living God
+          I'll worship in this house that His blood has bought
+          As I bear His image, oh, may I not profane
+          The holiness I hold in this earthly frame
+      - style: chorus
+        text: |
+          I belong to the Lord, oh, I am not my own
+          I belong to the Lord, I am not my own
+          I will honor Him for this I know
+          I belong to the Lord, I am not my own
+      - label: "3."
+        text: |
+          And if He has redeemed me, I am not my own
+          The measure of my worth is His love alone
+          He declares my standing, and He declares my state
+          So I will know myself by the name He gave
+      - label: "4."
+        text: |
+          I am not my own and now my heart is free
+          O Maker, come and make what You will of me
+          There is nothing broken that You cannot repair
+          So Lord, I leave my life in Your loving care
+  isaiah_43:
+    title: Isaiah 43
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          When you pass through the waters,
+          I will be with you,
+          And the waves will not overcome you
+          Do not fear, for I have redeemed you,
+          I have called you by name, you are Mine
+      - style: chorus
+        text: |
+          For I am the Lord your God (I am the Lord your God),
+          I am the Lord your God (I am)
+          The Holy One of Israel
+          Your Savior
+          I am the Lord (do not fear)
+          I am the Lord (do not fear)
+      - label: "2."
+        text: |
+          When you walk through the fire
+          You’ll not be burned,
+          And the flames will not
+          Consume you
+          Do not fear,
+          For I have redeemed you,
+          I have called you by name,
+          You are Mine
+  by_faith:
+    title: By Faith
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          By faith we see the hand of God
+          In the light of creation's grand design
+          In the lives of those who prove His faithfulness
+          Who walk by faith and not by sight
+      - label: "2."
+        text: |
+          By faith our fathers roamed the earth
+          With the power of His promise in their hearts
+          Of a holy city built by God's own hand
+          A place where peace and justice reign
+      - style: chorus
+        text: |
+          We will stand as children of the promise
+          We will fix our eyes on Him our soul's reward
+          Till the race is finished and the work is done
+          We'll walk by faith and not by sight
+      - label: "3."
+        text: |
+          By faith the prophets saw a day
+          When the longed-for Messiah would appear
+          With the power to break the chains of sin and death
+          And rise triumphant from the grave
+      - label: "4."
+        text: |
+          By faith the church was called to go
+          In the power of the Spirit to the lost
+          To deliver captives and to preach good news
+          In every corner of the earth
+      - label: "5."
+        text: |
+          By faith this mountain shall be moved
+          And the power of the gospel shall prevail
+          For we know in Christ all things are possible
+          For all who call upon His name
+  a_christian_s_daily_prayer:
+    title: A Christian’s Daily Prayer
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          As morning dawns and day awakes
+          To You I bring my need
+          O gracious God, my source of strength
+          In You I live and breathe
+          Each hour is Yours by wisdom planned
+          Each deed empowered by sovereign hands
+          Renew my spirit, help me stand
+          Be glorified today
+      - label: "2."
+        text: |
+          As day unfolds, I seek Your will
+          In all of life's demands
+          And though the tempter tries me still
+          I cling to Your commands
+          Let every effort of my life
+          Display the matchless worth of Christ
+          Make me a living sacrifice
+          Be glorified today
+      - label: "3."
+        text: |
+          As sun gives way to darkest night
+          Your Spirit still is here
+          And though my strength fades like the light
+          New mercies will appear
+          I rest in You; abide with me
+          Until our trials and suffering
+          Give way to final victory
+          Be glorified, today
+      - label: "4."
+        text: |
+          I rest in You; abide with me
+          Until our trials and suffering
+          Give way to final victory
+          Be glorified, today
+          Be glorified, I pray
+  all_must_be_well:
+    title: All Must Be Well
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Through the love of God our Savior, All will be well
+          Free and changeless is His favor, All is well
+          Precious is the blood that healed us
+          Perfect is the grace that sealed us
+          Strong the hand stretched forth to shield us
+          All must be well
+      - label: "2."
+        text: |
+          Though we pass through tribulation, All will be well
+          Ours is such a full salvation, All is well
+          Happy still in God confiding
+          Fruitful if in Christ abiding
+          Steadfast through the Spirit's guiding
+          All must be well
+      - label: "3."
+        text: |
+          We expect a bright tomorrow; All will be well
+          Faith can sing through days of sorrow, All is well
+          On our Father's love relying
+          Jesus every need supplying
+          Yes in living or in dying
+          All must be well
+      - label: "4."
+        text: |
+          On our Father's love relying
+          Jesus every need supplying
+          Yes in living or in dying
+          All must be well
+  behold_our_god:
+    title: Behold Our God
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Who has held the oceans in his hands?
+          Who has numbered every grain of sand?
+          Kings and nations tremble at his voice
+          All creation rises to rejoice
+      - style: chorus
+        text: |
+          Behold our God, seated on his throne
+          Come, let us adore him
+          Behold our king, nothing can compare
+          Come, let us adore him
+      - label: "2."
+        text: |
+          Who has given counsel to the Lord?
+          Who can question any of his words?
+          Who can teach, the one who knows all things?
+          Who can fathom all his wondrous deeds?
+      - label: "3."
+        text: |
+          Who has felt the nails upon his hands?
+          Bearing all the guilt of sinful man
+          God eternal, humbled to the grave
+          Jesus, Savior, risen now to reign
+      - label: Bridge
+        text: |
+          You will reign forever (let Your glory fill the Earth)
+          You will reign forever (let Your glory fill the Earth)
+          You will reign forever (let Your glory fill the Earth)
+          You will reign forever (let Your glory fill the Earth)
+  the_lord_is_my_salvation:
+    title: The Lord is My Salvation
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          The grace of God has reached for me
+          And pulled me from the raging sea
+          And I am safe on this solid ground
+          The Lord is my salvation
+      - label: "2."
+        text: |
+          I will not fear when darkness falls
+          His strength will help me scale these walls
+          I’ll see the dawn of the rising sun
+          The Lord is my salvation
+      - style: chorus
+        text: |
+          Who is like the Lord our God?
+          Strong to save, faithful in love
+          My debt is paid and the vict’ry won
+          The Lord is my salvation
+      - label: "3."
+        text: |
+          My hope is hidden in the Lord
+          He flow’rs each promise of His Word
+          When winter fades I know spring will come
+          The Lord is my salvation
+      - label: "4."
+        text: |
+          In times of waiting, times of need
+          When I know loss, when I am weak
+          I know His grace will renew these days
+          The Lord is my salvation
+      - label: "5."
+        text: |
+          And when I reach my final day
+          He will not leave me in the grave
+          But I will rise, He will call me home
+          The Lord is my salvation
+      - label: Bridge
+        text: |
+          Glory be to God the Father
+          Glory be to God the Son
+          Glory be to God the Spirit
+          The Lord is our salvation
+          The Lord is my salvation
+          The Lord is my salvation
+  jesus_is_mine:
+    title: Jesus is Mine
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Fade, fade, each earthly joy; Jesus is mine.
+          Stronger than fleeting hopes; Jesus is mine.
+          Dark is the wilderness,
+          Earth has no resting place,
+          Jesus alone can bless; Jesus is mine.
+      - label: "2."
+        text: |
+          In days of fragile peace; Jesus is mine.
+          Through tearful nights of grief; Jesus is mine.
+          His voice commands the storm,
+          His presence stills my soul,
+          He will sustain my hope; Jesus is mine.
+      - style: chorus
+        text: |
+          Jesus is mine, Jesus is mine,
+          When all else fails, He still remains; Jesus is mine.
+      - label: "3."
+        text: |
+          When on that final day; Jesus is mine;
+          Before his radiant face; Jesus is mine.
+          Safe in his arms I’ll cling,
+          Praising my Savior King,
+          Forevermore I’ll sing: “Jesus is mine.”
+  rock_of_ages_cleft_for_me:
+    title: Rock of Ages (Cleft for Me)
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Rock of ages cleft for me,
+          Let me hide myself in Thee
+          Let the water and the blood
+          From Thy wounded side which flowed
+          Be for sin the double cure,
+          Save from wrath and make me pure!
+      - label: "2."
+        text: |
+          Not the labors of my hands
+          Can fulfill thy laws demands
+          Could my zeal no respite know;
+          Could my tears forever flow
+          All for sin could not atone;
+          Thou must save and Thou alone
+      - style: chorus
+        text: |
+          May I hide myself in Thee
+          Would you cover my head in Your mercies
+          Can Your grace come capture me
+          And make Your righteousness my identity
+      - label: "3."
+        text: |
+          Nothing in my hand I bring,
+          Simply to the cross I cling
+          Naked, come to Thee for dress;
+          Helpless, look to Thee for grace
+          Foul, I to the fountain fly,
+          Wash me Savior, or I die
+      - label: "4."
+        text: |
+          While I draw this fleeting breath,
+          When my eyes shall close in death
+          When I soar to worlds unknown;
+          See Thee on Thy judgment throne
+          Rock of Ages, cleft for me,
+          let me hide myself in Thee
+      - style: chorus
+        text: |
+          Lord I hide myself in Thee
+          You have covered my head in Your mercies
+          Yes Your grace has captured me
+          You've made Your righteousness my identity
+  ancient_of_days:
+    title: Ancient of Days
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Though the nations rage
+          Kingdoms rise and fall
+          There is still one king
+          Reigning over all
+          So I will not fear
+          For this truth remains:
+          That my God, he is the Ancient of Days
+      - style: chorus
+        text: |
+          None above him None before him
+          All of time in his hands
+          For His throne it shall remain and ever stand
+          All the power All the glory
+          I will trust in His name
+          For my God, he is the Ancient of days
+      - label: "2."
+        text: |
+          Though the dread of night
+          Overwhelms my soul
+          He is here with me
+          I am not alone
+          O his love is sure
+          And he knows my name
+          For my God, he is the Ancient of Days
+      - label: "3."
+        text: |
+          Though I may not see
+          What the future brings
+          I will watch and wait
+          For the Saviour king
+          Then my joy complete
+          Standing face to face
+          In the presence of the Ancient of Days
+  blessed_assurance:
+    title: Blessed Assurance
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Blessed assurance, Jesus is mine;
+          Oh, what a foretaste of glory divine!
+          Heir of salvation, purchase of God,
+          Born of His Spirit, washed in His blood.
+      - style: chorus
+        text: |
+          This is my story, this is my song,
+          Praising my Savior all the day long.
+          This is my story, this is my song,
+          Praising my Savior all the day long.
+      - label: "2."
+        text: |
+          Perfect submission, perfect delight,
+          Visions of rapture now burst on my sight;
+          Angels descending, bring from above
+          Echoes of mercy, whispers of love.
+      - label: "3."
+        text: |
+          Perfect submission, all is at rest,
+          I in my Savior am happy and blest;
+          Watching and waiting, looking above,
+          Filled with His goodness, lost in His love.
+  crown_him_with_many_crowns:
+    title: Crown Him With Many Crowns
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Crown Him with many crowns,
+          the Lamb upon His throne.
+          Hark! how the heavenly anthem drowns
+          all music but its own.
+          Awake, my soul, and sing
+          of Him who died for thee,
+          and hail Him as thy matchless king
+          through all eternity.
+      - label: "2."
+        text: |
+          Crown him the Lord of life,
+          who triumphed o'er the grave,
+          and rose victorious in the strife
+          for those He came to save;
+          His glories now we sing
+          who died and rose on high,
+          who died eternal life to bring,
+          and lives that death may die.
+      - label: "3."
+        text: |
+          Crown Him the Lord of love;
+          behold His hands and side,
+          rich wounds, yet visible above,
+          in beauty glorified;
+          no angels in the sky
+          can fully bear that sight,
+          but downward bends their burning eye
+          at mysteries so bright.
+      - label: "4."
+        text: |
+          Crown Him the Lord of peace,
+          whose power a scepter sways
+          from pole to pole, that wars may cease,
+          and all be prayer and praise.
+          His reign shall know no end,
+          and round his pierced feet
+          fair flowers of paradise extend
+          their fragrance ever sweet.
+      - label: "5."
+        text: |
+          Crown Him the Lord of years,
+          the potentate of time,
+          creator of the rolling spheres,
+          ineffably sublime.
+          All hail, Redeemer, hail!
+          for Thou hast died for me;
+          Thy praise shall never, never fail
+          throughout eternity.
+  only_a_holy_god:
+    title: Only a Holy God
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Who else commands all the hosts of heaven?
+          Who else could make every king bow down?
+          Who else can whisper and darkness trembles?
+          Only a Holy God
+      - label: "2."
+        text: |
+          What other beauty demands such praises?
+          What other splendour outshines the sun?
+          What other majesty rules with justice?
+          Only a Holy God
+      - style: chorus
+        text: |
+          Come and behold Him
+          The One and the Only
+          Cry out, sing holy
+          Forever a Holy God
+          Come and worship the Holy God
+      - label: "3."
+        text: |
+          What other glory consumes like fire?
+          What other power can raise the dead?
+          What other name remains undefeated?
+          Only a Holy God
+      - label: "4."
+        text: |
+          Who else could rescue me from my failing?
+          Who else would offer His only Son?
+          Who else invites me to call Him Father?
+          Only a Holy God
+          Only my Holy God
+  servant_king:
+    title: The Servant King
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          From Heaven, You came helpless babe
+          Entered our world, your glory veiled
+          Not to be served but to serve
+          And give Your life that we might live
+      - style: chorus
+        text: |
+          This is our God, The Servant King
+          He calls us now to follow Him
+          To bring our lives as a daily offering
+          Of worship to The Servant King
+      - label: "2."
+        text: |
+          There in the garden of tears
+          My heavy load he chose to bear
+          His heart with sorrow was torn
+          "Yet not My will but Yours", He said
+      - label: "3."
+        text: |
+          Come see His hands and His feet
+          The scars that speak of sacrifice
+          Hands that flung stars into space
+          To cruel nails surrendered
+      - label: "4."
+        text: |
+          So let us learn how to serve
+          And in our lives enthrone Him
+          Each other's needs to prefer
+          For it is Christ we're serving
+  o_great_god:
+    title: O Great God
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          O great God of highest heav'n
+          Occupy my lowly heart
+          Own it all and reign supreme
+          Conquer every rebel power
+          Let no vice or sin remain
+          That resists Your holy war
+          You have loved and purchased me
+          Make me Yours forevermore
+      - label: "2."
+        text: |
+          I was blinded by my sin
+          Had no ears to hear Your voice
+          Did not know Your love within
+          Had no taste for heaven's joys
+          Then Your Spirit gave me life
+          Opened up Your Word to me
+          Through the gospel of Your Son
+          Give me endless hope and peace
+      - label: "3."
+        text: |
+          Help me now to live a life
+          That's dependent on Your grace
+          Keep my heart and guard my soul
+          From the evils that I face
+          You are worthy to be praised
+          With my every thought and deed
+          O great God of highest heaven
+          Glorify Your Name through me
+  reformation_song:
+    title: Reformation Song
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Your Word alone is solid ground,
+          The mighty rock on which we build;
+          In every line the truth is found
+          And every page with glory filled
+      - label: "2."
+        text: |
+          Through faith alone we come to You;
+          We have no merit we can claim
+          Sure that Your promises are true,
+          We place our hope in Jesus’ name
+      - style: chorus
+        text: |
+          Gloria, gloria, glory to God alone;
+          Gloria, gloria, glory to God alone!
+      - style: chorus
+        text: |
+          In Christ alone we’re justified;
+          His righteousness is all our plea;
+          Your law’s demands are satisfied;
+          His perfect work has set us free!
+      - style: chorus
+        text: |
+          By grace alone we have been saved;
+          All that we are has come from You
+          Hearts that were once by sin enslaved
+          Now by Your pow’r have been made new!
+  my_soul_will_wait:
+    title: My Soul Will Wait
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          When the enemy surrounds and my heart grows faint within,
+          When the darkness overwhelms and my fears are pressing in,
+          I will trust in You, O Lord; in the silence I will wait.
+          I will stand upon Your word.
+      - label: "2."
+        text: |
+          You’re my stronghold and my shield in the midst of every threat.
+          Though the wicked never yield and my fears are like a breath,
+          Yes, I know the outcome’s sure—Satan’s evil plans will fail.
+          In Your power I’m secure.
+      - label: "3."
+        text: |
+          You’re my solid Rock and my salvation,
+          my steadfast hope that won’t be shaken.
+          My soul will wait, my soul will wait for You.
+          You’re my comfort when I feel forsaken,
+          my refuge and my sure foundation.
+          My soul will wait, my soul will wait for You.
+      - label: "4."
+        text: |
+          This is love I can’t explain, this is mercy unreserved.
+          Through Your sacrifice so great, I have peace that’s undeserved.
+          For the battle has been won; I fear no shame or loss.
+          Now the sting of death is gone.
+      - label: "5."
+        text: |
+          Pouring out our hearts before You, we will trust in You.
+          Perfect Savior, strong defender, we will trust in You.
+  speak_o_lord:
+    title: Speak O Lord
+    columns: 1
+    parts:
+      - label: "1."
+        text: |
+          Speak, O Lord, as we come to You,
+          To receive the food of Your Holy Word.
+          Take Your truth, plant it deep in us;
+          Shape and fashion us in Your likeness,
+      - label: "2."
+        text: |
+          That the light of Christ might be seen today
+          In our acts of love and our deeds of faith.
+          Speak, O Lord, and fulfill in us
+          All Your purposes, for Your glory
+      - label: "3."
+        text: |
+          Teach us, Lord full obedience,
+          Holy reverence, true humility.
+          Test our thoughts and our attitudes,
+          In the radiance of Your purity.
+      - label: "4."
+        text: |
+          Cause our faith to rise, cause our eyes to see
+          Your majestic love and authority.
+          Words of pow’r that can never fail;
+          Let their truth prevail over unbelief
+      - label: "5."
+        text: |
+          Speak, O Lord, and renew our minds;
+          Help us grasp the heights of Your plans for us.
+          Truths, unchanged from the dawn of time,
+          That will echo down through eternity.
+      - label: "6."
+        text: |
+          And by grace we’ll stand on Your promises;
+          And by faith we’ll walk as You walk with us.
+          Speak, O Lord, till your church is built,
+          And the earth is filled with Your glory.

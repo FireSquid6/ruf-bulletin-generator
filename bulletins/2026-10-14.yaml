@@ -1,0 +1,59 @@
+metadata:
+  title: RUF Bulletin - October 14, 2026
+  author: Reformed University Fellowship
+  subject: Weekly bulletin
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+folded: true
+output: ../output/bulletin-2026-10-14.pdf
+pages:
+  - columns:
+      - - type: scripture
+          label: Sermon
+          reference: James 4:1-10
+          text: (1) What causes quarrels and what causes fights among you? Is it not this, that your passions are at war within you? (2) You desire and do not have, so you murder. You covet and cannot obtain, so you fight and quarrel. You do not have, because you do not ask. (3) You ask and do not receive, because you ask wrongly, to spend it on your passions. (4) You adulterous people! Do you not know that friendship with the world is enmity with God? Therefore whoever wishes to be a friend of the world makes himself an enemy of God. (5) Or do you suppose it is to no purpose that the Scripture says, “He yearns jealously over the spirit that he has made to dwell in us”? (6) But he gives more grace. Therefore it says, “God opposes the proud but gives grace to the humble.” (7) Submit yourselves therefore to God. Resist the devil, and he will flee from you. (8) Draw near to God, and he will draw near to you. Cleanse your hands, you sinners, and purify your hearts, you double-minded. (9) Be wretched and mourn and weep. Let your laughter be turned to mourning and your joy to gloom. (10) Humble yourselves before the Lord, and he will exalt you.
+        - type: song
+          song_ref: it_is_well
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: Join the GroupMe!
+              path: ../assets/groupme-qr.png
+            - caption: Prayer Requests
+              path: ../assets/prayer-group-qr.png
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: Announcements
+          date: October 14, 2026
+          items: []
+        - type: contacts
+          items:
+            - name: Way Rutherford
+              detail: (502) 403-8765
+            - name: Lauren Danforth
+              detail: (920) 918-7330
+            - name: Will Won
+              detail: (254) 239-7227
+  - columns:
+      - - type: song
+          song_ref: on_jordan_s_stormy_banks
+        - type: heading
+          text: Welcome and Announcements
+        - type: heading
+          text: Greet Your Neighbor!
+        - type: scripture
+          label: Scripture Reading
+          scale: 1.1
+          reference: Proverbs 4:23-27
+          text: (23) Keep your heart with all vigilance, for from it flow the springs of life. (24) Put away from you crooked speech, and put devious talk far from you. (25) Let your eyes look directly forward, and your gaze be straight before you. (26) Ponder the path of your feet; then all your ways will be sure. (27) Do not swerve to the right or to the left; turn your foot away from evil.
+      - - type: song
+          song_ref: your_will_be_done
+        - type: heading
+          text: Prayer
+        - type: song
+          song_ref: this_is_my_father_s_world
