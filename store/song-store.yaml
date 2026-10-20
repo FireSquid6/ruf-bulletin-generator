@@ -223,6 +223,7 @@ songs:
   his_mercy_is_more:
     title: His Mercy is More
     columns: 1
+    scale: 1.1
     parts:
       - label: "1."
         text: |
@@ -844,6 +845,8 @@ songs:
           Yes, I'll thank You for the cross
   yet_not_i_but_through_christ_in_me:
     title: Yet Not I But Through Christ in Me
+    columns: 1
+    scale: 1.1
     parts:
       - label: "1."
         text: |
@@ -887,6 +890,8 @@ songs:
           Yet not I, but through Christ in me
   sweet_comfort:
     title: Sweet Comfort
+    columns: 2 
+    scale: 1.1
     parts:
       - label: "1."
         text: |
@@ -894,7 +899,8 @@ songs:
           His holy will abides
           I will be still whate'er He does
           And follow where He guides
-
+      - style: chorus
+        text: |
           Sweet comfort, sweet comfort
           Yet shall fill my heart
           Sweet comfort, sweet comfort
