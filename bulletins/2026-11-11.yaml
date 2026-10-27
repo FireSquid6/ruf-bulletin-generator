@@ -1,0 +1,59 @@
+metadata:
+  title: RUF Bulletin - November 11, 2026
+  author: Reformed University Fellowship
+  subject: Weekly bulletin
+layout:
+  horizontal_margin_mm: 7
+  vertical_margin_mm: 4
+  gutter_mm: 14
+folded: true
+output: ../output/bulletin-2026-11-11.pdf
+pages:
+  - columns:
+      - - type: scripture
+          label: Sermon
+          reference: James 5:13-20
+          text: (13) Is anyone among you suffering? Let him pray. Is anyone cheerful? Let him sing praise. (14) Is anyone among you sick? Let him call for the elders of the church, and let them pray over him, anointing him with oil in the name of the Lord. (15) And the prayer of faith will save the one who is sick, and the Lord will raise him up. And if he has committed sins, he will be forgiven. (16) Therefore, confess your sins to one another and pray for one another, that you may be healed. The prayer of a righteous person has great power as it is working. (17) Elijah was a man with a nature like ours, and he prayed fervently that it might not rain, and for three years and six months it did not rain on the earth. (18) Then he prayed again, and heaven gave rain, and the earth bore its fruit. (19) My brothers, if anyone among you wanders from the truth and someone brings him back, (20) let him know that whoever brings back a sinner from his wandering will save his soul from death and will cover a multitude of sins.
+        - type: song
+          song_ref: goodness_of_jesus
+        - type: qr
+          size_mm: 26
+          items:
+            - caption: Join the GroupMe!
+              path: ../assets/groupme-qr.png
+            - caption: Prayer Requests
+              path: ../assets/prayer-group-qr.png
+      - - type: branding
+          path: ../assets/ruf-baylor-logo.png
+          max_width_mm: 80
+          max_height_mm: 80
+        - type: announcements
+          title: Announcements
+          date: November 11, 2026
+          items: []
+        - type: contacts
+          items:
+            - name: Way Rutherford
+              detail: (502) 403-8765
+            - name: Lauren Danforth
+              detail: (920) 918-7330
+            - name: Will Won
+              detail: (254) 239-7227
+  - columns:
+      - - type: song
+          song_ref: on_jordan_s_stormy_banks
+        - type: heading
+          text: Welcome and Announcements
+        - type: heading
+          text: Greet Your Neighbor!
+        - type: scripture
+          label: Scripture Reading
+          scale: 1.1
+          reference: 1 Kings 17:17-24
+          text: (17) After this the son of the woman, the mistress of the house, became ill. And his illness was so severe that there was no breath left in him. (18) And she said to Elijah, “What have you against me, O man of God? You have come to me to bring my sin to remembrance and to cause the death of my son!” (19) And he said to her, “Give me your son.” And he took him from her arms and carried him up into the upper chamber where he lodged, and laid him on his own bed. (20) And he cried to the Lord, “O Lord my God, have you brought calamity even upon the widow with whom I sojourn, by killing her son?” (21) Then he stretched himself upon the child three times and cried to the Lord, “O Lord my God, let this child's life come into him again.” (22) And the Lord listened to the voice of Elijah. And the life of the child came into him again, and he revived. (23) And Elijah took the child and brought him down from the upper chamber into the house and delivered him to his mother. And Elijah said, “See, your son lives.” (24) And the woman said to Elijah, “Now I know that you are a man of God, and that the word of the Lord in your mouth is truth.”
+      - - type: song
+          song_ref: here_is_love
+        - type: heading
+          text: Prayer
+        - type: song
+          song_ref: jesus_paid_it_all

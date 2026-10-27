@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "bulletin": "bun run src/cli.ts",
+    "bulletin": "bun run src/cli.ts --store store/song-store.yaml",
     "generate": "bun run src/cli.ts example/example-dummy.yaml",
     "test": "bun test"
   },

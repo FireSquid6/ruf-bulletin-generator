@@ -22,6 +22,7 @@ bun run src/cli.ts bulletin.yaml    # write to spec's output: path
 bun run src/cli.ts bulletin.yaml -o out.pdf
 bun run src/cli.ts bulletin.yaml --store path/to/song-store.yaml
 bun run src/cli.ts bulletin.yaml --debug   # draw column guides
+bun run bulletin bulletins/2026-10-07.yaml # use the bundled song store
 ```
 
 Type-check and run tests:
@@ -76,7 +77,13 @@ before redistributing them automatically.
 
 ## Song store
 
-Songs can be kept in a keyed YAML store instead of copied into each bulletin:
+Songs from the weekly files in `bulletins/` are kept in the keyed
+`store/song-store.yaml` instead of copied into each bulletin. The `bulletin`
+package script supplies that store explicitly; `--store` can still select a
+different one. Each verse has a numbered label, while choruses are unnumbered.
+The two lyric versions of “How Firm a Foundation” have separate keys.
+
+Store format:
 
 ```yaml
 songs:
@@ -139,8 +146,9 @@ Block types:
 | `qr` | `path`, `caption`, `size_mm`, or `items: [{path, caption, size_mm}]` | One QR, or multiple evenly spaced in a row; each caption is centered above its image |
 | `spacer` | `height_mm` | Vertical gap |
 
-Song `parts` entries: `text` (newlines preserved), optional `label` (e.g. `"1."`,
-rendered bold), optional `style: chorus` (renders italic). For 2-column songs,
+Song `parts` entries: `text` (newlines preserved), optional `label` (e.g. `"1."`
+for a verse or `"Bridge"`, rendered bold), optional `style: chorus` (renders italic,
+without a label). For 2-column songs,
 parts are split into two balanced sub-columns in reading order.
 
 Relative image and configured output paths resolve against the bulletin YAML's
