@@ -15,6 +15,7 @@ pages:
           reference: James 5:7-12
           text: (7) Be patient, therefore, brothers, until the coming of the Lord. See how the farmer waits for the precious fruit of the earth, being patient about it, until it receives the early and the late rains. (8) You also, be patient. Establish your hearts, for the coming of the Lord is at hand. (9) Do not grumble against one another, brothers, so that you may not be judged; behold, the Judge is standing at the door. (10) As an example of suffering and patience, brothers, take the prophets who spoke in the name of the Lord. (11) Behold, we consider those blessed who remained steadfast. You have heard of the steadfastness of Job, and you have seen the purpose of the Lord, how the Lord is compassionate and merciful. (12) But above all, my brothers, do not swear, either by heaven or by earth or by any other oath, but let your “yes” be yes and your “no” be no, so that you may not fall under condemnation.
         - type: song
+          scale: 1.1
           song_ref: come_behold_the_wondrous_mystery
         - type: qr
           size_mm: 26
@@ -30,7 +31,16 @@ pages:
         - type: announcements
           title: Announcements
           date: November 4, 2026
-          items: []
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalm Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
+
         - type: contacts
           items:
             - name: Way Rutherford
@@ -41,6 +51,7 @@ pages:
               detail: (254) 239-7227
   - columns:
       - - type: song
+          scale: 1.1
           song_ref: o_love_that_will_not_let_me_go
         - type: heading
           text: Welcome and Announcements
@@ -52,8 +63,10 @@ pages:
           reference: Psalm 37:7-9
           text: (7) Be still before the Lord and wait patiently for him; fret not yourself over the one who prospers in his way, over the man who carries out evil devices! (8) Refrain from anger, and forsake wrath! Fret not yourself; it tends only to evil. (9) For the evildoers shall be cut off, but those who wait for the Lord shall inherit the land.
       - - type: song
+          scale: 1.1
           song_ref: a_christian_s_daily_prayer
         - type: heading
           text: Prayer
         - type: song
+          scale: 1.1
           song_ref: all_praise_to_him

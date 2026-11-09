@@ -117,7 +117,7 @@ songs:
           You are steadfast, steadfast
   o_love_that_will_not_let_me_go:
     title: O Love That Will Not Let Me Go
-    columns: 1
+    columns: 2
     parts:
       - label: "1."
         text: |
@@ -650,7 +650,7 @@ songs:
           His wounds have paid my ransom.
   all_praise_to_him:
     title: All Praise to Him
-    columns: 1
+    columns: 2
     scale: 1.1
     parts:
       - label: "1."
@@ -1178,6 +1178,7 @@ songs:
           As you call me deeper still into love, love, love
   he_will_hold_me_fast:
     title: He Will Hold Me Fast
+    columns: 2
     parts:
       - label: "1."
         text: |
@@ -1220,6 +1221,7 @@ songs:
           When he comes at last
   in_christ_alone:
     title: In Christ Alone
+    columns: 2
     parts:
       - label: "1."
         text: |
@@ -2537,7 +2539,7 @@ songs:
           For all who call upon His name
   a_christian_s_daily_prayer:
     title: A Christian’s Daily Prayer
-    columns: 1
+    columns: 2
     parts:
       - label: "1."
         text: |

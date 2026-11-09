@@ -15,6 +15,7 @@ pages:
           reference: James 5:1-6
           text: (1) Come now, you rich, weep and howl for the miseries that are coming upon you. (2) Your riches have rotted and your garments are moth-eaten. (3) Your gold and silver have corroded, and their corrosion will be evidence against you and will eat your flesh like fire. You have laid up treasure in the last days. (4) Behold, the wages of the laborers who mowed your fields, which you kept back by fraud, are crying out against you, and the cries of the harvesters have reached the ears of the Lord of hosts. (5) You have lived on the earth in luxury and in self-indulgence. You have fattened your hearts in a day of slaughter. (6) You have condemned and murdered the righteous person. He does not resist you.
         - type: song
+          scale: 1.1
           song_ref: he_will_hold_me_fast
         - type: qr
           size_mm: 26
@@ -30,7 +31,17 @@ pages:
         - type: announcements
           title: Announcements
           date: October 28, 2026
-          items: []
+          items:
+            - "RUF Assassin - See QR Code in the Group Me"
+            - "Lunch at the Ford's - Sunday after Redeemer"
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalm Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
         - type: contacts
           items:
             - name: Way Rutherford
@@ -41,6 +52,7 @@ pages:
               detail: (254) 239-7227
   - columns:
       - - type: song
+          scale: 1.1
           song_ref: great_is_thy_faithfulness
         - type: heading
           text: Welcome and Announcements
@@ -48,12 +60,13 @@ pages:
           text: Greet Your Neighbor!
         - type: scripture
           label: Scripture Reading
-          scale: 1.1
           reference: 1 Timothy 6:6-10
           text: (6) But godliness with contentment is great gain, (7) for we brought nothing into the world, and we cannot take anything out of the world. (8) But if we have food and clothing, with these we will be content. (9) But those who desire to be rich fall into temptation, into a snare, into many senseless and harmful desires that plunge people into ruin and destruction. (10) For the love of money is a root of all kinds of evils. It is through this craving that some have wandered away from the faith and pierced themselves with many pangs.
       - - type: song
+          scale: 1.1
           song_ref: in_christ_alone
         - type: heading
           text: Prayer
         - type: song
+          scale: 1.1
           song_ref: hast_thou_heard_him
