@@ -16,7 +16,7 @@ function PreviewBlock({ block }: { block: Block }) {
       <strong>{block.title || blockLabel(block)}</strong>
       {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
       {block.text && <p>{block.text}</p>}
-      {block.items?.map((item, index) => <p key={index}>{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
+      {block.items?.map((item, index) => <p key={index}>{item.title && <strong>{item.title} </strong>}{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
     </>}
   </div>;
 }

@@ -2,6 +2,8 @@ import { Controller, useFieldArray, type UseFormReturn } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "./api";
+import { AssetPicker } from "./AssetPicker";
+import { GroupedItems } from "./GroupedItems";
 
 export type Block = {
   type: string;
@@ -11,7 +13,7 @@ export type Block = {
   reference?: string;
   text?: string;
   songKey?: string;
-  items?: Array<{ text?: string; name?: string; detail?: string; caption?: string; assetId?: string }>;
+  items?: Array<{ title?: string; text?: string; name?: string; detail?: string; caption?: string; assetId?: string; size_mm?: number }>;
 };
 export type Composition = { cover: Block[]; flow: Block[] };
 export type DraftForm = { gatheringDate: string; composition: Composition };
@@ -36,18 +38,6 @@ function newBlock(type: string): Block {
   }
 }
 
-function AssetPicker({ value, onChange, kind }: { value?: string; onChange: (value: string) => void; kind: "branding" | "qr" | "image" }) {
-  const assets = useQuery({ queryKey: ["assets"], queryFn: async () => {
-    const response = await api.api.assets.get();
-    if (response.error || !response.data || !("assets" in response.data)) throw new Error("Could not load images. Try again.");
-    return response.data.assets;
-  }, retry: false });
-  if (assets.isPending) return <p>Loading images…</p>;
-  if (assets.isError) return <p role="alert" className="error">{assets.error.message} <button type="button" onClick={() => assets.refetch()}>Try again</button></p>;
-  const choices = (assets.data ?? []).filter((asset) => asset.kind === kind || kind === "branding" && asset.kind === "image");
-  return <select aria-label={kind === "qr" ? "QR image asset" : kind === "branding" ? "Branding image asset" : "Image asset"} value={value ?? ""} onChange={(event) => onChange(event.target.value)}><option value="">No image selected</option>{value && !choices.some((asset) => asset.id === value) && <option value={value}>Unavailable image ({value})</option>}{choices.map((asset) => <option value={asset.id} key={asset.id}>{asset.name}</option>)}</select>;
-}
-
 function SongPicker({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
   const [search, setSearch] = useState("");
   const songs = useQuery({ queryKey: ["songs", ""], queryFn: async () => {
@@ -66,16 +56,6 @@ function SongPicker({ value, onChange }: { value?: string; onChange: (value: str
     </>}
     <label>Song key<input aria-label="Song key" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="Enter a key or select a song" /></label>
   </div>;
-}
-
-function GroupedItems({ area, index, type, form }: { area: Area; index: number; type: string; form: Form }) {
-  const name = `composition.${area}.${index}.items` as const;
-  const { fields, append, remove, move } = useFieldArray({ control: form.control, name });
-  const itemName = type === "contacts" ? "contact" : type === "qr" ? "QR code" : "announcement";
-  return <div className="grouped-items">{fields.map((field, position) => <div className="grouped-item" key={field.id}>
-    {type === "contacts" ? <><label>Name<input aria-label={`Contact ${position + 1} name`} {...form.register(`${name}.${position}.name`)} /></label><label>Detail<input aria-label={`Contact ${position + 1} detail`} {...form.register(`${name}.${position}.detail`)} /></label></> : type === "qr" ? <><label>Caption<input aria-label={`QR code ${position + 1} caption`} {...form.register(`${name}.${position}.caption`)} /></label><label>QR image<Controller name={`${name}.${position}.assetId`} control={form.control} render={({ field: image }) => <AssetPicker kind="qr" value={image.value} onChange={image.onChange} />} /></label></> : <label>Announcement<input aria-label={`Announcement ${position + 1} text`} {...form.register(`${name}.${position}.text`)} /></label>}
-    <div className="block-actions"><button type="button" aria-label={`Move ${itemName} ${position + 1} up`} disabled={position === 0} onClick={() => move(position, position - 1)}>Up</button><button type="button" aria-label={`Move ${itemName} ${position + 1} down`} disabled={position === fields.length - 1} onClick={() => move(position, position + 1)}>Down</button><button type="button" aria-label={`Remove ${itemName} ${position + 1}`} onClick={() => remove(position)}>Remove item</button></div>
-  </div>)}<button type="button" onClick={() => append(type === "contacts" ? { name: "", detail: "" } : type === "qr" ? { caption: "", assetId: "" } : { text: "" })}>Add {itemName}</button></div>;
 }
 
 function BlockFields({ block, area, index, form }: { block: Block; area: Area; index: number; form: Form }) {
@@ -108,7 +88,7 @@ export function BlockEditor({ form }: { form: Form }) {
       {list.fields.length === 0 && <p className="block-empty">No blocks yet. Add a block below or move one here.</p>}
       {list.fields.map((block, index) => <div className="block-edit" key={block.id}>
         <div className="block-title"><strong>{index + 1}. {blockLabel(block)}</strong><div className="block-order"><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} up in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === 0} onClick={() => list.move(index, index - 1)}>Up</button><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} down in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === list.fields.length - 1} onClick={() => list.move(index, index + 1)}>Down</button></div></div>
-        <BlockFields block={block} area={area} index={index} form={form} />
+        <BlockFields key={`${area}.${index}.${block.id}`} block={block} area={area} index={index} form={form} />
         <div className="block-actions"><button type="button" onClick={() => moveBetween(area, index)}>Move to {area === "cover" ? "reading order" : "cover"}</button><button type="button" aria-label={`Remove ${blockLabel(block)} ${index + 1} from ${area === "cover" ? "cover" : "reading order"}`} onClick={() => list.remove(index)}>Remove</button></div>
       </div>)}
       <label className="add-block">Add block to {area === "cover" ? "cover" : "reading order"}<select value="" onChange={(event) => { if (event.target.value) list.append(newBlock(event.target.value)); }}><option value="">Choose a block…</option>{blockTypes.map((type) => <option key={type} value={type}>{blockNames[type]}</option>)}</select></label>

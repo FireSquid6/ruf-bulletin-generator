@@ -13,9 +13,12 @@
     "start": "bun run packages/server/src/index.ts"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.9",
     "@types/bun": "latest",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "happy-dom": "^21.0.4",
     "typescript": "^5.5.4"
   }
 }
