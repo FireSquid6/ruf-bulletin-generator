@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
-export function imageSize(imagePath: string): { width: number; height: number } {
-  const data = fs.readFileSync(imagePath);
+export function imageSize(imagePath: string | Buffer): { width: number; height: number } {
+  const data = typeof imagePath === "string" ? fs.readFileSync(imagePath) : imagePath;
   if (data[0] === 0x89 && data[1] === 0x50) {
     return { width: data.readUInt32BE(16), height: data.readUInt32BE(20) };
   }
@@ -20,5 +20,5 @@ export function imageSize(imagePath: string): { width: number; height: number } 
       offset += 2 + length;
     }
   }
-  throw new Error(`Unsupported image format: ${imagePath}`);
+  throw new Error(`Unsupported image format: ${typeof imagePath === "string" ? imagePath : "provided image bytes"}`);
 }

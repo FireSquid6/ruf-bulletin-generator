@@ -89,6 +89,30 @@ Existing two-page, two-column files can set `folded: true`. The generator treats
 page 1 right as the cover and combines the other blocks in physical reading order
 before redistributing them automatically.
 
+## Render from in-memory data
+
+`@ruf/generator` also exports `renderPdf(spec, options): Promise<Buffer>` for callers
+that already hold bulletin data. It uses the same layout and PDFKit renderer as
+the YAML CLI, but does not read a YAML file, implicitly load a song store, or
+write a PDF file. Supply song-store data when using `song_ref`, and supply image
+bytes keyed by the `path` value in each image, branding, or QR block:
+
+```ts
+import { renderPdf, type Spec } from "@ruf/generator";
+
+const bulletin: Spec = {
+  cover: [{ type: "branding", path: "logo" }],
+  flow: [{ type: "text", text: "Welcome" }],
+};
+const pdf = await renderPdf(bulletin, { assets: { logo: logoBytes } });
+// Return pdf as application/pdf to the caller, or save it elsewhere.
+```
+
+`logoBytes` is a `Buffer` supplied by the caller (for example, from an asset
+record). Missing songs/assets, invalid blocks, and content that does not fit
+reject generation rather than returning a partial PDF. The input `output` field
+is only used by the YAML API; in-memory callers own their output destination.
+
 ## Song store
 
 Songs from the weekly files in `bulletins/` are kept in the keyed

@@ -12,9 +12,9 @@ import {
 } from "./constants";
 import { arrangeFoldedPages, largestColumnScale, planFoldedFlow } from "./layout";
 import { resolvePath } from "./paths";
-import { renderColumn, type Doc } from "./render";
-import { hasSongReferences, loadSongStore, resolveSongReferences } from "./song-store";
-import type { Spec } from "./types";
+import { renderColumn, type Doc, type ImageSource } from "./render";
+import { hasSongReferences, loadSongStore, resolveSongReferences, validateSongStore } from "./song-store";
+import type { SongStore, Spec } from "./types";
 import { validateSpec } from "./validation";
 
 export async function generate(
@@ -36,7 +36,39 @@ export async function generate(
   const yamlDir = path.dirname(path.resolve(yamlPath));
   const configuredOutput = spec.output ?? "bulletin.pdf";
   const destination = outputOverride ?? resolvePath(configuredOutput, yamlDir);
+  const bytes = await renderDocument(spec, yamlDir, debug);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
+  fs.writeFileSync(destination, bytes);
+  return destination;
+}
+
+export interface RenderPdfOptions {
+  /** Current song-store contents, supplied by the caller rather than loaded from disk. */
+  songStore?: SongStore;
+  /** Image bytes keyed by the path/key in each branding, image or QR block. */
+  assets?: Readonly<Record<string, Buffer>>;
+  debug?: boolean;
+}
+
+/** Render PDF bytes without reading YAML, looking up assets on disk, or writing an output file. */
+export async function renderPdf(spec: Spec, options: RenderPdfOptions = {}): Promise<Buffer> {
+  validateSpec(spec);
+  let resolved = spec;
+  if (options.songStore !== undefined) {
+    validateSongStore(options.songStore);
+    resolved = resolveSongReferences(spec, options.songStore);
+  } else if (hasSongReferences(spec)) {
+    throw new Error("A song store is required to render song references");
+  }
+  const imageSource: ImageSource = (key) => {
+    const image = options.assets && Object.hasOwn(options.assets, key) ? options.assets[key] : undefined;
+    if (!Buffer.isBuffer(image)) throw new Error(`Image '${key}' is not available in the supplied assets`);
+    return image;
+  };
+  return renderDocument(resolved, imageSource, options.debug ?? false);
+}
+
+async function renderDocument(spec: Spec, imageSource: ImageSource, debug: boolean): Promise<Buffer> {
 
   const horizontalMargin = Number(
     spec.layout?.horizontal_margin_mm ?? spec.layout?.margin_mm ?? DEFAULT_HORIZONTAL_MARGIN_MM,
@@ -52,8 +84,12 @@ export async function generate(
   doc.info.Title = metadata.title ?? "RUF Bulletin";
   doc.info.Author = metadata.author ?? "Reformed University Fellowship";
   doc.info.Subject = metadata.subject ?? "Weekly bulletin";
-  const stream = fs.createWriteStream(destination);
-  doc.pipe(stream);
+  const chunks: Buffer[] = [];
+  const result = new Promise<Buffer>((resolve, reject) => {
+    doc.on("data", (chunk: Buffer) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+  });
 
   const drawGuide = (x: number, width: number) => {
     if (!debug) return;
@@ -85,18 +121,18 @@ export async function generate(
       verticalMargin,
       width,
       contentHeight,
-      yamlDir,
+      imageSource,
     );
     const pages = arrangeFoldedPages(foldedCover, plan.columns);
 
-    renderColumn(doc, pages[0][0], leftX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
-    renderColumn(doc, pages[0][1], rightX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    renderColumn(doc, pages[0][0], leftX, verticalMargin, width, contentHeight, imageSource, plan.scale);
+    renderColumn(doc, pages[0][1], rightX, verticalMargin, width, contentHeight, imageSource, plan.scale);
     drawGuide(leftX, width);
     drawGuide(rightX, width);
 
     doc.addPage();
-    renderColumn(doc, pages[1][0], leftX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
-    renderColumn(doc, pages[1][1], rightX, verticalMargin, width, contentHeight, yamlDir, plan.scale);
+    renderColumn(doc, pages[1][0], leftX, verticalMargin, width, contentHeight, imageSource, plan.scale);
+    renderColumn(doc, pages[1][1], rightX, verticalMargin, width, contentHeight, imageSource, plan.scale);
     drawGuide(leftX, width);
     drawGuide(rightX, width);
   } else {
@@ -121,9 +157,9 @@ export async function generate(
           verticalMargin,
           width,
           contentHeight,
-          yamlDir,
+          imageSource,
         );
-        renderColumn(doc, blocks, x, verticalMargin, width, contentHeight, yamlDir, scale);
+        renderColumn(doc, blocks, x, verticalMargin, width, contentHeight, imageSource, scale);
         drawGuide(x, width);
         x += width + gutter;
       }
@@ -131,9 +167,5 @@ export async function generate(
   }
 
   doc.end();
-  await new Promise<void>((resolve, reject) => {
-    stream.on("finish", resolve);
-    stream.on("error", reject);
-  });
-  return destination;
+  return result;
 }

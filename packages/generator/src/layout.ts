@@ -6,7 +6,7 @@ import {
   PAGE_W,
   SCALE_SEARCH_STEPS,
 } from "./constants";
-import { renderColumn, type Doc } from "./render";
+import { renderColumn, type Doc, type ImageSource } from "./render";
 import type { Block, FoldedFlowPlan } from "./types";
 
 export function arrangeFoldedPages(
@@ -22,7 +22,7 @@ function columnFits(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
   scale: number,
 ): boolean {
   const probe = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0, compress: false }) as Doc;
@@ -33,7 +33,7 @@ function columnFits(
     return addPage();
   }) as typeof probe.addPage;
 
-  const bottom = renderColumn(probe, blocks, x, yTop, width, height, yamlDir, scale);
+  const bottom = renderColumn(probe, blocks, x, yTop, width, height, imageSource, scale);
   return !overflowed && bottom <= yTop + height + 2;
 }
 
@@ -43,7 +43,7 @@ function partitionFlow(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
   scale: number,
 ): [Block[], Block[], Block[]] | null {
   const columns: Block[][] = [];
@@ -53,7 +53,7 @@ function partitionFlow(
     let end = start;
     while (
       end < flow.length &&
-      columnFits(flow.slice(start, end + 1), x, yTop, width, height, yamlDir, scale)
+      columnFits(flow.slice(start, end + 1), x, yTop, width, height, imageSource, scale)
     ) {
       end++;
     }
@@ -71,11 +71,11 @@ function foldedPlanAtScale(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
   scale: number,
 ): FoldedFlowPlan | null {
-  if (!columnFits(cover, x, yTop, width, height, yamlDir, scale)) return null;
-  const columns = partitionFlow(flow, x, yTop, width, height, yamlDir, scale);
+  if (!columnFits(cover, x, yTop, width, height, imageSource, scale)) return null;
+  const columns = partitionFlow(flow, x, yTop, width, height, imageSource, scale);
   return columns ? { scale, columns } : null;
 }
 
@@ -86,22 +86,22 @@ export function planFoldedFlow(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
 ): FoldedFlowPlan {
   let low = MIN_FONT_SCALE;
-  let lowPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, low);
+  let lowPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, imageSource, low);
   if (!lowPlan) {
     throw new Error(`Bulletin content does not fit at the minimum font scale (${MIN_FONT_SCALE})`);
   }
 
   let high = 1;
-  let highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, high);
+  let highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, imageSource, high);
   if (highPlan) {
     low = high;
     lowPlan = highPlan;
     while (high < MAX_FONT_SCALE) {
       high = Math.min(high * 2, MAX_FONT_SCALE);
-      highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, high);
+      highPlan = foldedPlanAtScale(cover, flow, x, yTop, width, height, imageSource, high);
       if (!highPlan) break;
       low = high;
       lowPlan = highPlan;
@@ -111,7 +111,7 @@ export function planFoldedFlow(
 
   for (let step = 0; step < SCALE_SEARCH_STEPS; step++) {
     const scale = (low + high) / 2;
-    const plan = foldedPlanAtScale(cover, flow, x, yTop, width, height, yamlDir, scale);
+    const plan = foldedPlanAtScale(cover, flow, x, yTop, width, height, imageSource, scale);
     if (plan) {
       low = scale;
       lowPlan = plan;
@@ -129,19 +129,19 @@ export function largestColumnScale(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
 ): number {
-  if (!columnFits(blocks, x, yTop, width, height, yamlDir, MIN_FONT_SCALE)) {
+  if (!columnFits(blocks, x, yTop, width, height, imageSource, MIN_FONT_SCALE)) {
     throw new Error(`Column content does not fit at the minimum font scale (${MIN_FONT_SCALE})`);
   }
 
   let low = MIN_FONT_SCALE;
   let high = 1;
-  if (columnFits(blocks, x, yTop, width, height, yamlDir, high)) {
+  if (columnFits(blocks, x, yTop, width, height, imageSource, high)) {
     low = high;
     while (high < MAX_FONT_SCALE) {
       high = Math.min(high * 2, MAX_FONT_SCALE);
-      if (!columnFits(blocks, x, yTop, width, height, yamlDir, high)) break;
+      if (!columnFits(blocks, x, yTop, width, height, imageSource, high)) break;
       low = high;
       if (high === MAX_FONT_SCALE) return high;
     }
@@ -149,7 +149,7 @@ export function largestColumnScale(
 
   for (let step = 0; step < SCALE_SEARCH_STEPS; step++) {
     const scale = (low + high) / 2;
-    if (columnFits(blocks, x, yTop, width, height, yamlDir, scale)) low = scale;
+    if (columnFits(blocks, x, yTop, width, height, imageSource, scale)) low = scale;
     else high = scale;
   }
   return low;
