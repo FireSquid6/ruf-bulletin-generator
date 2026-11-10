@@ -86,7 +86,7 @@ export function BlockEditor({ form }: { form: Form }) {
     return <section className="block-group" key={area} aria-label={area === "cover" ? "Cover blocks" : "Reading-order blocks"}>
       <h2>{area === "cover" ? "Cover" : "Reading order"}</h2><p>{area === "cover" ? "The right-hand outside panel" : "The remaining content, in sequence"}</p>
       {list.fields.length === 0 && <p className="block-empty">No blocks yet. Add a block below or move one here.</p>}
-      {list.fields.map((block, index) => <div className="block-edit" key={block.id}>
+      {list.fields.map((block, index) => <div className="block-edit" id={`block-${area}-${index}`} tabIndex={-1} key={block.id}>
         <div className="block-title"><strong>{index + 1}. {blockLabel(block)}</strong><div className="block-order"><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} up in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === 0} onClick={() => list.move(index, index - 1)}>Up</button><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} down in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === list.fields.length - 1} onClick={() => list.move(index, index + 1)}>Down</button></div></div>
         <BlockFields key={`${area}.${index}.${block.id}`} block={block} area={area} index={index} form={form} />
         <div className="block-actions"><button type="button" onClick={() => moveBetween(area, index)}>Move to {area === "cover" ? "reading order" : "cover"}</button><button type="button" aria-label={`Remove ${blockLabel(block)} ${index + 1} from ${area === "cover" ? "cover" : "reading order"}`} onClick={() => list.remove(index)}>Remove</button></div>

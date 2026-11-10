@@ -28,6 +28,17 @@ function toSpec(composition: Composition, date: string): Spec {
         if (block.role !== "sermon" && block.role !== "reading") return fail("Choose Sermon passage or Scripture reading.");
         if (typeof block.reference !== "string" || !block.reference.trim() || typeof block.text !== "string" || !block.text.trim()) return fail("Enter a reference and passage text.");
         return { type: "scripture", label: block.role === "sermon" ? "Sermon Passage" : "Scripture Reading", reference: block.reference, text: block.text };
+      case "announcements": {
+        if (block.title !== undefined && typeof block.title !== "string") return fail("Enter a valid announcement heading.");
+        if (!Array.isArray(block.items)) return fail("Announcement items must be a list.");
+        const items = block.items.map((item, itemIndex) => {
+          if (!item || typeof item !== "object" || item.title !== undefined && typeof item.title !== "string" || item.text !== undefined && typeof item.text !== "string" || !`${item.title ?? ""}${item.text ?? ""}`.trim()) {
+            return fail(`Announcement item ${itemIndex + 1} needs a title or text.`);
+          }
+          return { title: item.title ?? "", text: item.text ?? "" };
+        });
+        return { type: "announcements", title: block.title || "Announcements", items };
+      }
       default: return fail("This block is not supported in basic PDF generation yet. Remove it from the draft or wait for song and image support.");
     }
   });
@@ -52,9 +63,9 @@ async function renderDatedPdf(composition: Composition, date: string): Promise<B
           try { await renderPdf(prefix); }
           catch (failure) {
             if (failure instanceof Error && failure.message.includes("does not fit")) {
-              const block = composition[area][index];
-              const type = block?.type ?? "date";
-              throw new PdfError(`${area === "cover" ? "Cover" : "Reading order"} block ${index + 1} (${type}) does not fit on the folded A4 sheet. Shorten or move this content.`, { area, index, type });
+              const locationIndex = area === "cover" ? Math.min(index, composition.cover.length - 1) : index;
+              const type = composition[area][locationIndex]?.type ?? "date";
+              throw new PdfError(`${area === "cover" ? "Cover" : "Reading order"} block ${locationIndex + 1} (${type}) does not fit on the folded A4 sheet${area === "cover" && index !== locationIndex ? " alongside the gathering date" : ""}. Shorten or move this content.`, { area, index: locationIndex, type });
             }
             throw failure;
           }

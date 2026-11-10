@@ -45,6 +45,8 @@ describe.skipIf(!url)("dated PDF at the authenticated HTTP boundary", () => {
       expect(bytes.subarray(0, 5).toString()).toBe("%PDF-");
       expect(bytes.toString("latin1").match(/\/Type \/Page[^s]/g)?.length).toBe(2);
       expect(bytes.toString("latin1")).toContain("D:20340521000000Z");
+      expect(bytes.toString("latin1")).toContain("/Title ");
+      expect(bytes.includes(Buffer.from([0, 82, 0, 85, 0, 70]))).toBe(true);
       const pageText = [...bytes.toString("latin1").matchAll(/stream\n([\s\S]*?)\nendstream/g)]
         .map((match) => inflateSync(Buffer.from(match[1], "latin1")).toString()).join("\n");
       expect(pageText).toContain(Buffer.from("May 21, 2034").toString("hex"));
@@ -66,6 +68,24 @@ describe.skipIf(!url)("dated PDF at the authenticated HTTP boundary", () => {
       const unsupported = await call(`/api/bulletins/${draft.id}/pdf`);
       expect(unsupported.status).toBe(422);
       expect(await unsupported.json()).toMatchObject({ block: { area: "cover", index: 0, type: "image" } });
+      const grouped = { cover: [{ type: "announcements", title: "News", items: [{ title: "Campus", text: "Tuesday gathering" }, { text: "Friday dinner" }] }], flow: [] };
+      expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 6, composition: grouped })).status).toBe(200);
+      const groupedPdf = await call(`/api/bulletins/${draft.id}/pdf`);
+      expect(groupedPdf.status).toBe(200);
+      const groupedText = [...Buffer.from(await groupedPdf.arrayBuffer()).toString("latin1").matchAll(/stream\n([\s\S]*?)\nendstream/g)]
+        .map((match) => inflateSync(Buffer.from(match[1], "latin1")).toString())
+        .flatMap((stream) => [...stream.matchAll(/<([0-9a-f]+)>/gi)].map((match) => match[1]))
+        .map((hex) => Buffer.from(hex, "hex").toString("latin1")).join("");
+      expect(groupedText).toContain("Campus Tuesday gathering");
+      expect(groupedText).toContain("Friday dinner");
+      expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 7, composition: { cover: [], flow: [{ type: "qr", items: [{ caption: "Join", assetId: "later", size_mm: 22 }] }] } })).status).toBe(200);
+      const qr = await call(`/api/bulletins/${draft.id}/pdf`);
+      expect(qr.status).toBe(422);
+      expect(await qr.json()).toMatchObject({ block: { area: "flow", index: 0, type: "qr" } });
+      expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 8, composition: { cover: [{ type: "text", text: "Too much ".repeat(20000) }], flow: [] } })).status).toBe(200);
+      const coverOverflow = await call(`/api/bulletins/${draft.id}/pdf`);
+      expect(coverOverflow.status).toBe(422);
+      expect(await coverOverflow.json()).toMatchObject({ block: { area: "cover", index: 0, type: "text" } });
     } finally {
       await database.close();
       await setup.query(`DROP SCHEMA ${schema} CASCADE`);
