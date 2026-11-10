@@ -1,6 +1,5 @@
 import { Elysia, t } from "elysia";
 import { eq, ilike, or, asc } from "drizzle-orm";
-import type { createAuth } from "./auth";
 import type { Database } from "./db";
 import { song } from "./schema";
 
@@ -22,12 +21,8 @@ function duplicate(error: unknown) {
     typeof error.cause === "object" && error.cause !== null && "code" in error.cause && error.cause.code === "23505";
 }
 
-export function songRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
+export function songRoutes(db: Database) {
   return new Elysia({ prefix: "/api/songs" })
-    .resolve(async ({ request, status }) => {
-      if (!await auth.api.getSession({ headers: request.headers })) return status(401, { error: "Sign in required" });
-      return {};
-    })
     .get("/", async ({ query }) => {
       const search = query.search?.trim();
       const pattern = `%${(search ?? "").replace(/[\\%_]/g, "\\$&")}%`;

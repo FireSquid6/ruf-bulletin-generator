@@ -14,6 +14,9 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
   return new Elysia()
     .onRequest(async ({ request }) => {
       const pathname = new URL(request.url).pathname;
+      if (pathname === "/api/songs" || pathname.startsWith("/api/songs/")) {
+        if (!await auth.api.getSession({ headers: request.headers })) return Response.json({ error: "Sign in required" }, { status: 401 });
+      }
       if (pathname === "/mcp" || pathname.startsWith("/mcp/")) {
         if (!await authenticateMcpKey(db, request.headers.get("authorization"))) {
           return Response.json({ error: "Valid MCP key required" }, { status: 401 });
@@ -45,7 +48,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     .post("/api/keys", ({ request, body, set }) => keys.issue(request.headers, body as { userId?: string; label?: string }, set, new URL(config.baseURL).origin))
     .post("/api/keys/:id/revoke", ({ request, params, set }) => keys.revoke(request.headers, params.id, set, new URL(config.baseURL).origin))
     .use(invitationRoutes(db, auth, new URL(config.baseURL).origin))
-    .use(songRoutes(db, auth))
+    .use(songRoutes(db))
     .get("/*", async ({ request }) => {
       const pathname = new URL(request.url).pathname;
       if (pathname !== "/sign-in" && pathname !== "/register" && !pathname.includes(".") &&
