@@ -5,19 +5,19 @@ import { useForm } from "react-hook-form";
 import { api } from "./api";
 import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
 import { BlockEditor, blockLabel, type Block, type DraftForm } from "./BlockEditor";
+import { AssetPreview } from "./AssetPreview";
 
 type Draft = { id: string; gatheringDate: string; revision: number; composition: DraftForm["composition"] };
 function dateString(value: string | Date) { return value instanceof Date ? value.toISOString().slice(0, 10) : value; }
 function draftFromApi(value: Draft): Draft { return { ...value, gatheringDate: dateString(value.gatheringDate) }; }
 
 function PreviewBlock({ block }: { block: Block }) {
+  if (block.type === "branding" || block.type === "image" || block.type === "qr") return <AssetPreview block={block} />;
   return <div className="preview-block">
-    {(block.type === "branding" || block.type === "image") && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt={blockLabel(block)} /> : <>
-      <strong>{block.title || blockLabel(block)}</strong>
-      {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
-      {block.text && <p>{block.text}</p>}
-      {block.items?.map((item, index) => <p key={index}>{item.title && <strong>{item.title} </strong>}{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
-    </>}
+    <strong>{block.title || blockLabel(block)}</strong>
+    {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
+    {block.text && <p>{block.text}</p>}
+    {block.items?.map((item, index) => <p key={index}>{item.title && <strong>{item.title} </strong>}{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
   </div>;
 }
 
