@@ -39,7 +39,10 @@ function toSpec(composition: Composition, date: string): Spec {
         });
         return { type: "announcements", title: block.title || "Announcements", items };
       }
-      default: return fail("This block is not supported in basic PDF generation yet. Remove it from the draft or wait for song and image support.");
+      case "qr": return fail("QR images and their captions/sizes are not supported in basic PDF generation yet. Your draft is unchanged.");
+      case "song": return fail("Song references are not supported in basic PDF generation yet. Your draft is unchanged.");
+      case "image": case "branding": return fail("Images are not supported in basic PDF generation yet. Your draft is unchanged.");
+      default: return fail("This block is not supported in basic PDF generation yet. Your draft is unchanged.");
     }
   });
   return {

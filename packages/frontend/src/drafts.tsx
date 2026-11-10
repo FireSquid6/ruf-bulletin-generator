@@ -84,6 +84,7 @@ function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; o
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   useEffect(() => () => { if (pdfUrl) URL.revokeObjectURL(pdfUrl); }, [pdfUrl]);
   const pdf = useMutation({ mutationFn: async () => {
+    // Eden's response parser decodes application/pdf as text; fetch keeps the bytes intact.
     const response = await fetch(`/api/bulletins/${encodeURIComponent(draft.id)}/pdf`, { credentials: "same-origin" });
     if (!response.ok) {
       const detail = await response.json().catch(() => null) as { error?: string; block?: { area: "cover" | "flow"; index: number } } | null;

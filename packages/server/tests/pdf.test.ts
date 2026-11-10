@@ -81,7 +81,8 @@ describe.skipIf(!url)("dated PDF at the authenticated HTTP boundary", () => {
       expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 7, composition: { cover: [], flow: [{ type: "qr", items: [{ caption: "Join", assetId: "later", size_mm: 22 }] }] } })).status).toBe(200);
       const qr = await call(`/api/bulletins/${draft.id}/pdf`);
       expect(qr.status).toBe(422);
-      expect(await qr.json()).toMatchObject({ block: { area: "flow", index: 0, type: "qr" } });
+      expect(await qr.json()).toMatchObject({ error: expect.stringContaining("QR"), block: { area: "flow", index: 0, type: "qr" } });
+      expect((await (await call(`/api/bulletins/${draft.id}`)).json()).composition.flow).toEqual([{ type: "qr", items: [{ caption: "Join", assetId: "later", size_mm: 22 }] }]);
       expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 8, composition: { cover: [{ type: "text", text: "Too much ".repeat(20000) }], flow: [] } })).status).toBe(200);
       const coverOverflow = await call(`/api/bulletins/${draft.id}/pdf`);
       expect(coverOverflow.status).toBe(422);
