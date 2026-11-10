@@ -1,14 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { api } from "./api";
 import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
+import { BlockEditor, blockLabel, type Block, type DraftForm } from "./BlockEditor";
 
-type Block = { type: string; role?: string; assetId?: string; title?: string; reference?: string; text?: string; songKey?: string; items?: Array<{ text?: string; name?: string; detail?: string; caption?: string; assetId?: string }> };
-type Composition = { cover: Block[]; flow: Block[] };
-type Draft = { id: string; gatheringDate: string; revision: number; composition: Composition };
-type DraftForm = { gatheringDate: string; composition: Composition };
+type Draft = { id: string; gatheringDate: string; revision: number; composition: DraftForm["composition"] };
+function dateString(value: string | Date) { return value instanceof Date ? value.toISOString().slice(0, 10) : value; }
+function draftFromApi(value: Draft): Draft { return { ...value, gatheringDate: dateString(value.gatheringDate) }; }
+
+function PreviewBlock({ block }: { block: Block }) {
+  return <div className="preview-block">
+    {(block.type === "branding" || block.type === "image") && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt={blockLabel(block)} /> : <>
+      <strong>{block.title || blockLabel(block)}</strong>
+      {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
+      {block.text && <p>{block.text}</p>}
+      {block.items?.map((item, index) => <p key={index}>{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
+    </>}
+  </div>;
+}
 
 function resultError(result: { error: unknown }, fallback: string): never {
   const value = (result.error as { value?: { error?: string } } | null)?.value;
@@ -40,7 +51,7 @@ export function BulletinIndex() {
   const list = useQuery({ queryKey: ["bulletins", search], queryFn: async () => {
     const response = await api.api.bulletins.get({ query: search ? { date: search } : {} });
     if (response.error || !response.data || !("bulletins" in response.data)) return resultError(response, "Could not load bulletins. Try again.");
-    return response.data.bulletins;
+    return (response.data.bulletins ?? []).map((item) => ({ ...item, gatheringDate: dateString(item.gatheringDate) }));
   }, retry: false });
   const remove = useMutation({ mutationFn: async (id: string) => {
     const response = await api.api.bulletins({ id }).delete();
@@ -57,38 +68,6 @@ export function BulletinIndex() {
   </main>;
 }
 
-const blockNames: Record<string, string> = { branding: "RUF logo", announcements: "Announcements", contacts: "Contacts", scripture: "Passage", song: "Song", heading: "Heading", text: "Text", spacer: "Spacer", qr: "QR codes" };
-function AssetPicker({ value, onChange, kind }: { value?: string; onChange: (value: string) => void; kind: "branding" | "qr" }) {
-  const assets = useQuery({ queryKey: ["assets"], queryFn: async () => {
-    const response = await api.api.assets.get();
-    if (response.error || !response.data || !("assets" in response.data)) return resultError(response, "Could not load images. Try again.");
-    return response.data.assets;
-  }, retry: false });
-  if (assets.isPending) return <p>Loading images…</p>;
-  if (assets.isError) return <p role="alert" className="error">{assets.error.message} <button type="button" onClick={() => assets.refetch()}>Try again</button></p>;
-  const choices = assets.data?.filter((asset) => asset.kind === kind || kind === "branding" && asset.kind === "image") ?? [];
-  return <select value={value ?? ""} onChange={(event) => onChange(event.target.value)}><option value="">No image selected</option>{value && !choices.some((asset) => asset.id === value) && <option value={value}>Unavailable image ({value})</option>}{choices.map((asset) => <option value={asset.id} key={asset.id}>{asset.name}</option>)}</select>;
-}
-function BlockList({ area, control, register, getValues, setValue }: { area: "cover" | "flow"; control: ReturnType<typeof useForm<DraftForm>>["control"]; register: ReturnType<typeof useForm<DraftForm>>["register"]; getValues: ReturnType<typeof useForm<DraftForm>>["getValues"]; setValue: ReturnType<typeof useForm<DraftForm>>["setValue"] }) {
-  const { fields, append, remove, move } = useFieldArray({ control, name: `composition.${area}` });
-  const other = area === "cover" ? "flow" : "cover";
-  return <section className="block-group"><h2>{area === "cover" ? "Cover" : "Reading order"}</h2><p>{area === "cover" ? "The right-hand outside panel" : "The remaining panels, in sequence"}</p>
-    {fields.map((field, index) => { const prefix = `composition.${area}.${index}` as const; return <div className="block-edit" key={field.id}><div className="block-title"><strong>{blockNames[field.type] ?? field.type}</strong><div><button type="button" aria-label={`Move ${field.type} up`} disabled={index === 0} onClick={() => move(index, index - 1)}>Up</button><button type="button" aria-label={`Move ${field.type} down`} disabled={index === fields.length - 1} onClick={() => move(index, index + 1)}>Down</button></div></div>
-      {field.type === "branding" && <label>Image asset<Controller name={`${prefix}.assetId`} control={control} render={({ field: image }) => <AssetPicker kind="branding" value={image.value as string | undefined} onChange={image.onChange} />} /></label>}
-      {(field.type === "announcements" || field.type === "heading" || field.type === "text") && <label>{field.type === "text" ? "Text" : "Heading"}<input {...register(`${prefix}.${field.type === "text" ? "text" : "title"}`)} /></label>}
-      {field.type === "scripture" && <><label>Role<select {...register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input {...register(`${prefix}.reference`)} /></label><label>Passage text<textarea rows={4} {...register(`${prefix}.text`)} /></label></>}
-      {field.type === "song" && <label>Song key<input {...register(`${prefix}.songKey`)} placeholder="Choose a song later" /></label>}
-      {(field.type === "announcements" || field.type === "contacts" || field.type === "qr") && <GroupedItems area={area} index={index} type={field.type} control={control} register={register} />}
-      <div className="block-actions"><button type="button" onClick={() => { const block = getValues(prefix); remove(index); setValue(`composition.${other}`, [...getValues(`composition.${other}`), block], { shouldDirty: true }); }}>Move to {other === "cover" ? "cover" : "reading order"}</button><button type="button" onClick={() => remove(index)}>Remove</button></div></div>; })}
-    <label className="add-block">Add block<select value="" onChange={(event) => { const type = event.target.value; if (type) append(type === "scripture" ? { type, role: "reading", reference: "", text: "" } : type === "song" ? { type, songKey: "" } : type === "branding" ? { type, assetId: "" } : type === "announcements" || type === "contacts" || type === "qr" ? { type, items: [] } : { type, text: "" }); }}><option value="">Choose a block…</option>{["branding", "announcements", "contacts", "scripture", "song", "heading", "text", "spacer", "qr"].map((type) => <option key={type} value={type}>{blockNames[type]}</option>)}</select></label>
-  </section>;
-}
-function GroupedItems({ area, index, type, control, register }: { area: "cover" | "flow"; index: number; type: string; control: ReturnType<typeof useForm<DraftForm>>["control"]; register: ReturnType<typeof useForm<DraftForm>>["register"] }) {
-  const name = `composition.${area}.${index}.items` as const;
-  const { fields, append, remove, move } = useFieldArray({ control, name });
-  return <div className="grouped-items">{fields.map((field, position) => <div className="grouped-item" key={field.id}>{type === "contacts" ? <><label>Name<input {...register(`${name}.${position}.name`)} /></label><label>Detail<input {...register(`${name}.${position}.detail`)} /></label></> : type === "qr" ? <><label>Caption<input {...register(`${name}.${position}.caption`)} /></label><label>QR image<Controller name={`${name}.${position}.assetId`} control={control} render={({ field: image }) => <AssetPicker kind="qr" value={image.value as string | undefined} onChange={image.onChange} />} /></label></> : <label>Announcement<input {...register(`${name}.${position}.text`)} /></label>}<div className="block-actions"><button type="button" disabled={position === 0} onClick={() => move(position, position - 1)}>Move up</button><button type="button" disabled={position === fields.length - 1} onClick={() => move(position, position + 1)}>Move down</button><button type="button" onClick={() => remove(position)}>Remove item</button></div></div>)}<button type="button" onClick={() => append(type === "contacts" ? { name: "", detail: "" } : type === "qr" ? { caption: "", assetId: "" } : { text: "" })}>Add {type === "contacts" ? "contact" : type === "qr" ? "QR code" : "announcement"}</button></div>;
-}
-
 export function DraftEditor() {
   const { id = "" } = useParams();
   const client = useQueryClient();
@@ -97,7 +76,7 @@ export function DraftEditor() {
   const draft = useQuery({ queryKey: ["draft", id], queryFn: async () => {
     const response = await api.api.bulletins({ id }).get();
     if (response.error || !response.data || !("composition" in response.data)) return resultError(response, "Could not open this draft. Try again.");
-    return response.data as Draft;
+    return draftFromApi(response.data as Draft);
   }, retry: false, refetchOnWindowFocus: false, refetchOnReconnect: false });
   if (draft.isPending) return <main className="center">Loading draft…</main>;
   if (draft.isError || !draft.data) return <main className="center"><p role="alert">{draft.error?.message ?? "Draft not found"}</p><Link to="/">Back to bulletins</Link></main>;
@@ -105,7 +84,8 @@ export function DraftEditor() {
 }
 
 function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; onSaved: (draft: Draft) => void; onBack: () => void; view: "preview" | "edit"; setView: (view: "preview" | "edit") => void }) {
-  const { register, handleSubmit, control, getValues, setValue, watch, formState: { isDirty } } = useForm<DraftForm>({ defaultValues: { gatheringDate: draft.gatheringDate, composition: draft.composition } });
+  const form = useForm<DraftForm>({ defaultValues: { gatheringDate: draft.gatheringDate, composition: draft.composition } });
+  const { register, handleSubmit, watch, getValues, formState: { isDirty } } = form;
   const values = watch();
   const [latest, setLatest] = useState<Draft | null>(null);
   const [conflictError, setConflictError] = useState<string | null>(null);
@@ -115,24 +95,24 @@ function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; o
     if (response.status === 409) {
       const value = (response.error as { value?: { latest?: DraftSnapshot; error?: string } } | null)?.value;
       if (value?.latest) {
-        setLatest(value.latest as Draft);
+        setLatest(draftFromApi(value.latest as Draft));
         setConflictError(null);
         setView("edit");
         throw new Error("A newer version is available to review.");
       }
     }
     if (response.error || !response.data || !("composition" in response.data)) return resultError(response, "Could not save this draft. Try again.");
-    return response.data as Draft;
+    return draftFromApi(response.data as Draft);
   }, onSuccess: onSaved });
   return <main className="editor"><div className="editor-header"><button className="quiet" onClick={() => { if (!isDirty || window.confirm("Discard unsaved changes?")) onBack(); }}>Bulletins</button><div><h1>Bulletin for {values.gatheringDate || draft.gatheringDate}</h1><p>{latest ? "Save conflict · Your edits are unsaved" : save.isSuccess ? "Saved draft" : isDirty ? "Unsaved changes" : `Saved draft · Revision ${draft.revision}`}</p></div><button className="primary" form="draft-form" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></div>
     <div className="mobile-view"><button aria-pressed={view === "edit"} onClick={() => setView("edit")}>Edit</button><button aria-pressed={view === "preview"} onClick={() => setView("preview")}>Preview</button></div>
-    <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <div key={i} className="preview-block">{block.type === "branding" && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt="Branding image" /> : <><strong>{block.title || blockNames[block.type] || block.type}</strong>{block.text && <p>{block.text}</p>}</>}</div>)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[0, 1].map((column) => <div className="panel" key={column}>{values.composition.flow.filter((_, i) => i % 2 === column).map((block, i) => <div className="preview-block" key={i}><strong>{block.role === "sermon" ? "Sermon passage" : block.role === "reading" ? "Scripture reading" : blockNames[block.type] || block.type}</strong><p>{block.reference || block.title || block.text || block.songKey || ""}</p></div>)}</div>)}</div></div></section>
+    <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <PreviewBlock key={i} block={block} />)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[values.composition.flow.slice(0, Math.ceil(values.composition.flow.length / 2)), values.composition.flow.slice(Math.ceil(values.composition.flow.length / 2))].map((blocks, column) => <div className="panel" key={column}>{blocks.map((block, i) => <PreviewBlock key={i} block={block} />)}</div>)}</div></div></section>
     <form id="draft-form" className={`editor-fields ${view === "preview" ? "mobile-hidden" : ""}`} onSubmit={handleSubmit((form) => { if (!latest) save.mutate({ form, revision: draft.revision }); })}><h2>Draft details</h2><label htmlFor="gathering-date">Gathering date</label><input id="gathering-date" type="date" required {...register("gatheringDate", { required: true })} /><p className="field-note">The date is unique to this bulletin. Weekly words can remain blank.</p>
       {latest && <DraftConflict latest={latest} local={getValues()} saving={save.isPending} error={conflictError ?? undefined}
         onUseLatest={() => { if (window.confirm("Replace your unsaved edits with the newer saved draft? This cannot be undone.")) onSaved(latest); }}
         onOverwrite={() => { if (window.confirm(`Overwrite saved revision ${latest.revision} with your current edits? The newer saved content will be replaced.`)) { setConflictError(null); save.mutate({ form: getValues(), revision: latest.revision }, { onError: (error) => { if (error.message !== "A newer version is available to review.") setConflictError(error.message); } }); } }} />}
       {save.isError && !latest && <div role="alert" className="error">{save.error.message}</div>}
-      <BlockList area="cover" control={control} register={register} getValues={getValues} setValue={setValue} /><BlockList area="flow" control={control} register={register} getValues={getValues} setValue={setValue} />
+      <BlockEditor form={form} />
       <button className="primary" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></form></div>
   </main>;
 }
