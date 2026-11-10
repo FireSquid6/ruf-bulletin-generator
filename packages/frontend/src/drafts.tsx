@@ -4,22 +4,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { api } from "./api";
 import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
-import { BlockEditor, blockLabel, type Block, type DraftForm } from "./BlockEditor";
+import { BlockEditor, type DraftForm } from "./BlockEditor";
 
 type Draft = { id: string; gatheringDate: string; revision: number; composition: DraftForm["composition"] };
 function dateString(value: string | Date) { return value instanceof Date ? value.toISOString().slice(0, 10) : value; }
 function draftFromApi(value: Draft): Draft { return { ...value, gatheringDate: dateString(value.gatheringDate) }; }
-
-function PreviewBlock({ block }: { block: Block }) {
-  return <div className="preview-block">
-    {(block.type === "branding" || block.type === "image") && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt={blockLabel(block)} /> : <>
-      <strong>{block.title || blockLabel(block)}</strong>
-      {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
-      {block.text && <p>{block.text}</p>}
-      {block.items?.map((item, index) => <p key={index}>{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
-    </>}
-  </div>;
-}
 
 function resultError(result: { error: unknown }, fallback: string): never {
   const value = (result.error as { value?: { error?: string } } | null)?.value;
@@ -89,6 +78,16 @@ function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; o
   const values = watch();
   const [latest, setLatest] = useState<Draft | null>(null);
   const [conflictError, setConflictError] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  useEffect(() => () => { if (pdfUrl) URL.revokeObjectURL(pdfUrl); }, [pdfUrl]);
+  const pdf = useMutation({ mutationFn: async () => {
+    const response = await fetch(`/api/bulletins/${encodeURIComponent(draft.id)}/pdf`, { credentials: "same-origin" });
+    if (!response.ok) {
+      const detail = await response.json().catch(() => null) as { error?: string } | null;
+      throw new Error(detail?.error ?? (response.status === 401 ? "Sign in again to generate this PDF." : "Could not generate the PDF. Try again."));
+    }
+    return URL.createObjectURL(await response.blob());
+  }, onSuccess: (url) => { setPdfUrl(url); setView("preview"); } });
   useEffect(() => { const guard = (event: BeforeUnloadEvent) => { if (isDirty) { event.preventDefault(); event.returnValue = ""; } }; window.addEventListener("beforeunload", guard); return () => window.removeEventListener("beforeunload", guard); }, [isDirty]);
   const save = useMutation({ mutationFn: async ({ form, revision }: { form: DraftForm; revision: number }) => {
     const response = await api.api.bulletins({ id: draft.id }).put({ ...form, revision });
@@ -103,10 +102,10 @@ function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; o
     }
     if (response.error || !response.data || !("composition" in response.data)) return resultError(response, "Could not save this draft. Try again.");
     return draftFromApi(response.data as Draft);
-  }, onSuccess: onSaved });
+  }, onSuccess: (value) => { setPdfUrl(null); pdf.reset(); onSaved(value); } });
   return <main className="editor"><div className="editor-header"><button className="quiet" onClick={() => { if (!isDirty || window.confirm("Discard unsaved changes?")) onBack(); }}>Bulletins</button><div><h1>Bulletin for {values.gatheringDate || draft.gatheringDate}</h1><p>{latest ? "Save conflict · Your edits are unsaved" : save.isSuccess ? "Saved draft" : isDirty ? "Unsaved changes" : `Saved draft · Revision ${draft.revision}`}</p></div><button className="primary" form="draft-form" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></div>
     <div className="mobile-view"><button aria-pressed={view === "edit"} onClick={() => setView("edit")}>Edit</button><button aria-pressed={view === "preview"} onClick={() => setView("preview")}>Preview</button></div>
-    <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <PreviewBlock key={i} block={block} />)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[values.composition.flow.slice(0, Math.ceil(values.composition.flow.length / 2)), values.composition.flow.slice(Math.ceil(values.composition.flow.length / 2))].map((blocks, column) => <div className="panel" key={column}>{blocks.map((block, i) => <PreviewBlock key={i} block={block} />)}</div>)}</div></div></section>
+    <div className="editor-layout"><section className={`preview-column pdf-preview ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Generated PDF preview"><div className="pdf-toolbar"><div><h2>PDF preview</h2><p>{pdfUrl ? `Saved bulletin · ${draft.gatheringDate}` : "Preview the saved bulletin with the actual PDF generator."}</p></div><div className="pdf-actions"><button type="button" onClick={() => pdf.mutate()} disabled={pdf.isPending || isDirty || !!latest || save.isPending}>{pdf.isPending ? "Generating…" : pdfUrl ? "Refresh PDF" : "Generate preview"}</button>{pdfUrl && !isDirty && !latest && <a className="pdf-download" href={pdfUrl} download={`ruf-bulletin-${draft.gatheringDate}.pdf`}>Download PDF</a>}</div></div>{isDirty && <p className="pdf-notice" role="status">Save your changes before generating a new PDF. The current PDF, if shown, reflects the last saved version.</p>}{latest && <p className="pdf-notice">Resolve the save conflict before generating a PDF.</p>}{pdf.isError && <p className="pdf-error" role="alert">{pdf.error.message} Your draft is still saved. Edit the named block and try again.</p>}{pdfUrl ? <iframe className="pdf-frame" src={pdfUrl} title={`Generated bulletin for ${draft.gatheringDate}`} /> : <div className="pdf-empty"><p>The folded A4 sheet will appear here after generation.</p><p>Outside and inside pages are rendered by PDFKit, not browser layout.</p></div>}</section>
     <form id="draft-form" className={`editor-fields ${view === "preview" ? "mobile-hidden" : ""}`} onSubmit={handleSubmit((form) => { if (!latest) save.mutate({ form, revision: draft.revision }); })}><h2>Draft details</h2><label htmlFor="gathering-date">Gathering date</label><input id="gathering-date" type="date" required {...register("gatheringDate", { required: true })} /><p className="field-note">The date is unique to this bulletin. Weekly words can remain blank.</p>
       {latest && <DraftConflict latest={latest} local={getValues()} saving={save.isPending} error={conflictError ?? undefined}
         onUseLatest={() => { if (window.confirm("Replace your unsaved edits with the newer saved draft? This cannot be undone.")) onSaved(latest); }}
