@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T20:37:13Z",
+  "title": "Design System: RUF Bulletin Studio",
+  "extensions": {
+    "shadows": [
+      {"name": "paper", "value": "0 3px 7px #00000012, 0 12px 32px #0000000b", "purpose": "Distinguish the printable document from the workspace canvas."},
+      {"name": "dialog", "value": "0 12px 40px #0006", "purpose": "Raise a focused confirmation above the app."}
+    ],
+    "motion": [
+      {"name": "section-hover", "value": "background-color 120ms ease-out", "purpose": "Light feedback for selecting a section, disabled when reduced motion is preferred."}
+    ],
+    "breakpoints": [
+      {"name": "library-stack", "value": "760px"},
+      {"name": "editor-narrow", "value": "1000px"}
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "One emphasized save, add, or export action per decision area.",
+      "html": "<button class=\"ds-button-primary\">Export PDF</button>",
+      "css": ".ds-button-primary{min-height:38px;padding:7px 14px;background:#2563eb;color:#fff;border:1px solid #2563eb;border-radius:4px;font:600 12px/1.5 system-ui,sans-serif;cursor:pointer}.ds-button-primary:hover{background:#1d4ed8}.ds-button-primary:focus-visible{outline:2px solid #2563eb;outline-offset:3px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Routine actions such as Save draft and Move down.",
+      "html": "<button class=\"ds-button-secondary\">Save draft</button>",
+      "css": ".ds-button-secondary{min-height:38px;padding:7px 14px;background:#fff;color:#27272a;border:1px solid #d4d4d8;border-radius:4px;font:12px/1.5 system-ui,sans-serif;cursor:pointer}.ds-button-secondary:hover{background:#fafafa}.ds-button-secondary:focus-visible{outline:2px solid #2563eb;outline-offset:3px}"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "description": "Visible label with a calm border, used throughout the editor and libraries.",
+      "html": "<label class=\"ds-field\">Passage reference<input placeholder=\"John 15:1–5\"></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;color:#27272a;font:500 12px/1.5 system-ui,sans-serif}.ds-field input{min-height:40px;padding:8px 10px;background:#fff;color:#27272a;border:1px solid #d4d4d8;border-radius:4px;font:12px/1.5 system-ui,sans-serif}.ds-field input:focus-visible{outline:2px solid #2563eb;outline-offset:3px}"
+    },
+    {
+      "name": "Section Row",
+      "kind": "custom",
+      "description": "Selects a block in the right rail without making the paper itself editable.",
+      "html": "<button class=\"ds-section-row\"><span><strong>Scripture Reading · Psalm 100</strong><small>Reading order · scripture</small></span><span aria-hidden=\"true\">›</span></button>",
+      "css": ".ds-section-row{display:flex;justify-content:space-between;align-items:center;width:300px;min-height:62px;padding:12px 10px;text-align:left;background:#fff;color:#27272a;border:1px solid transparent;border-radius:4px;cursor:pointer;font:12px/1.5 system-ui,sans-serif}.ds-section-row strong{display:block;font-weight:500}.ds-section-row small{display:block;margin-top:3px;color:#52525b;font-size:10px}.ds-section-row:hover{background:#fafafa}.ds-section-row:focus-visible{outline:2px solid #2563eb;outline-offset:3px}"
+    },
+    {
+      "name": "Workspace Navigation",
+      "kind": "nav",
+      "description": "Quiet horizontal navigation to bulletin and shared-library screens.",
+      "html": "<nav class=\"ds-nav\"><button aria-current=\"page\">Bulletins</button><button>Songs</button><button>Assets</button><button>Access</button></nav>",
+      "css": ".ds-nav{display:flex;gap:3px;padding:12px 14px;border-bottom:1px solid #d4d4d8;background:#fff}.ds-nav button{min-height:36px;padding:7px 10px;border:0;border-radius:4px;background:transparent;color:#52525b;font:12px/1.5 system-ui,sans-serif;cursor:pointer}.ds-nav button:hover,.ds-nav button[aria-current=page]{color:#18181b;background:#fafafa}.ds-nav button:focus-visible{outline:2px solid #2563eb;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The document is the work.",
+    "overview": "The application is a quiet workspace around a printable object. On desktop, the bulletin preview owns most of the viewport; controls live alongside it rather than covering it. The interface is light, neutral, compact, and task-oriented, with blue reserved for an active choice or primary action.",
+    "keyCharacteristics": [
+      "A white two-spread document against a cool neutral canvas",
+      "Plain sans-serif editing UI against serif print content",
+      "Visible cover/flow distinction",
+      "Local, explicit status and errors",
+      "Little ornamental chrome"
+    ],
+    "rules": [
+      {"name": "The Document-First Rule", "body": "Keep the page visually dominant; UI accents should identify actions and state rather than compete with bulletin content.", "section": "colors"},
+      {"name": "The Paper Rule", "body": "Reserve elevation for the printable sheet and active dialogs; separate routine controls with spacing, tone, and fine borders.", "section": "elevation"}
+    ],
+    "dos": [
+      "Do keep preview, edit controls, and save/generation status separately identifiable.",
+      "Do use the exact selected visual hierarchy as a starting point when building the real web application; see docs/design/EDITOR.md and reference captures.",
+      "Do surface broken references, overflow, and stale revisions with specific messages and a way back to the affected content."
+    ],
+    "donts": [
+      "Don't turn the screen mockup's localStorage, HTML measurement, browser print, or fixture content into backend or PDF authority.",
+      "Don't lock branding or other blocks to the cover: the physical panel is fixed, its contents are not.",
+      "Don't introduce promotional banners, sidebar slogans, app footers, or click-to-edit behavior on the preview; the selected concept keeps editing in the sidebar."
+    ]
+  }
+}
