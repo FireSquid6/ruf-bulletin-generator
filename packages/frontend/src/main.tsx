@@ -9,6 +9,7 @@ import { Credentials } from "./Credentials";
 import { session } from "./session";
 import { Register } from "./Register";
 import { Invitations } from "./Invitations";
+import { SongStore } from "./SongStore";
 import "./style.css";
 
 const queryClient = new QueryClient();
@@ -34,9 +35,9 @@ function Workspace({ credentials = false }: { credentials?: boolean }) {
   if (credentials && current.data.user.role !== "admin") return <Navigate to="/" replace />;
 
   return <>
-    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link>{current.data.user.role === "admin" && <><Link to="/invitations">Staff invitations</Link><Link to="/credentials">MCP credentials</Link></>}</nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
+    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/songs">Song store</Link><Link to="/assets">Images</Link>{current.data.user.role === "admin" && <><Link to="/invitations">Staff invitations</Link><Link to="/credentials">MCP credentials</Link></>}</nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
     {logout.isError && <p role="alert" className="error workspace">{logout.error.message}</p>}
-    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="/credentials" element={<Credentials />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
+    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/songs" element={<SongStore />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="/credentials" element={<Credentials />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </>;
 }
 
@@ -66,4 +67,4 @@ function SignIn() {
   </form><p className="form-followup">Have an invitation? <Link to="/register">Create an account</Link></p></main></>;
 }
 
-createRoot(document.getElementById("root")!).render(<React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><Routes><Route path="/sign-in" element={<SignIn />} /><Route path="/register" element={<Register />} /><Route path="/invitations" element={<Invitations />} /><Route path="/credentials" element={<Workspace credentials />} /><Route path="*" element={<Workspace />} /></Routes></BrowserRouter></QueryClientProvider></React.StrictMode>);
+createRoot(document.getElementById("root")!).render(<React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><Routes><Route path="/sign-in" element={<SignIn />} /><Route path="/register" element={<Register />} /><Route path="/invitations" element={<Invitations />} /><Route path="/credentials" element={<Workspace credentials />} /><Route path="/songs" element={<Workspace />} /><Route path="*" element={<Workspace />} /></Routes></BrowserRouter></QueryClientProvider></React.StrictMode>);
