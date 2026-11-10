@@ -45,7 +45,7 @@ function AssetPicker({ value, onChange, kind }: { value?: string; onChange: (val
   if (assets.isPending) return <p>Loading images…</p>;
   if (assets.isError) return <p role="alert" className="error">{assets.error.message} <button type="button" onClick={() => assets.refetch()}>Try again</button></p>;
   const choices = (assets.data ?? []).filter((asset) => asset.kind === kind || kind === "branding" && asset.kind === "image");
-  return <select value={value ?? ""} onChange={(event) => onChange(event.target.value)}><option value="">No image selected</option>{value && !choices.some((asset) => asset.id === value) && <option value={value}>Unavailable image ({value})</option>}{choices.map((asset) => <option value={asset.id} key={asset.id}>{asset.name}</option>)}</select>;
+  return <select aria-label={kind === "qr" ? "QR image asset" : kind === "branding" ? "Branding image asset" : "Image asset"} value={value ?? ""} onChange={(event) => onChange(event.target.value)}><option value="">No image selected</option>{value && !choices.some((asset) => asset.id === value) && <option value={value}>Unavailable image ({value})</option>}{choices.map((asset) => <option value={asset.id} key={asset.id}>{asset.name}</option>)}</select>;
 }
 
 function SongPicker({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
@@ -61,10 +61,10 @@ function SongPicker({ value, onChange }: { value?: string; onChange: (value: str
   return <div className="song-picker">
     {songs.isPending ? <p>Loading songs…</p> : songs.isError ? <p role="alert" className="error">{songs.error.message} <button type="button" onClick={() => songs.refetch()}>Try again</button></p> : <>
       {missing && <p className="field-warning" role="status">Song key “{value}” is not in the song store. This draft can still be saved.</p>}
-      <label>Find a song<input type="search" value={search} placeholder="Search by key or title" onChange={(event) => setSearch(event.target.value)} /></label>
-      <label>Select song<select value={value && !missing ? value : ""} onChange={(event) => onChange(event.target.value)}><option value="">{value && missing ? "Keep missing key" : "Choose a song…"}</option>{matches.map((song) => <option key={song.key} value={song.key}>{song.title} · {song.key}</option>)}</select></label>
+      <label>Find a song<input aria-label="Find a song" type="search" value={search} placeholder="Search by key or title" onChange={(event) => setSearch(event.target.value)} /></label>
+      <label>Select song<select aria-label="Select song" value={value && !missing ? value : ""} onChange={(event) => onChange(event.target.value)}><option value="">{value && missing ? "Keep missing key" : "Choose a song…"}</option>{matches.map((song) => <option key={song.key} value={song.key}>{song.title} · {song.key}</option>)}</select></label>
     </>}
-    <label>Song key<input value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="Enter a key or select a song" /></label>
+    <label>Song key<input aria-label="Song key" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="Enter a key or select a song" /></label>
   </div>;
 }
 
@@ -73,7 +73,7 @@ function GroupedItems({ area, index, type, form }: { area: Area; index: number; 
   const { fields, append, remove, move } = useFieldArray({ control: form.control, name });
   const itemName = type === "contacts" ? "contact" : type === "qr" ? "QR code" : "announcement";
   return <div className="grouped-items">{fields.map((field, position) => <div className="grouped-item" key={field.id}>
-    {type === "contacts" ? <><label>Name<input {...form.register(`${name}.${position}.name`)} /></label><label>Detail<input {...form.register(`${name}.${position}.detail`)} /></label></> : type === "qr" ? <><label>Caption<input {...form.register(`${name}.${position}.caption`)} /></label><label>QR image<Controller name={`${name}.${position}.assetId`} control={form.control} render={({ field: image }) => <AssetPicker kind="qr" value={image.value} onChange={image.onChange} />} /></label></> : <label>Announcement<input {...form.register(`${name}.${position}.text`)} /></label>}
+    {type === "contacts" ? <><label>Name<input aria-label={`Contact ${position + 1} name`} {...form.register(`${name}.${position}.name`)} /></label><label>Detail<input aria-label={`Contact ${position + 1} detail`} {...form.register(`${name}.${position}.detail`)} /></label></> : type === "qr" ? <><label>Caption<input aria-label={`QR code ${position + 1} caption`} {...form.register(`${name}.${position}.caption`)} /></label><label>QR image<Controller name={`${name}.${position}.assetId`} control={form.control} render={({ field: image }) => <AssetPicker kind="qr" value={image.value} onChange={image.onChange} />} /></label></> : <label>Announcement<input aria-label={`Announcement ${position + 1} text`} {...form.register(`${name}.${position}.text`)} /></label>}
     <div className="block-actions"><button type="button" aria-label={`Move ${itemName} ${position + 1} up`} disabled={position === 0} onClick={() => move(position, position - 1)}>Up</button><button type="button" aria-label={`Move ${itemName} ${position + 1} down`} disabled={position === fields.length - 1} onClick={() => move(position, position + 1)}>Down</button><button type="button" aria-label={`Remove ${itemName} ${position + 1}`} onClick={() => remove(position)}>Remove item</button></div>
   </div>)}<button type="button" onClick={() => append(type === "contacts" ? { name: "", detail: "" } : type === "qr" ? { caption: "", assetId: "" } : { text: "" })}>Add {itemName}</button></div>;
 }
@@ -82,9 +82,9 @@ function BlockFields({ block, area, index, form }: { block: Block; area: Area; i
   const prefix = `composition.${area}.${index}` as const;
   return <>
     {(block.type === "branding" || block.type === "image") && <label>Image asset<Controller name={`${prefix}.assetId`} control={form.control} render={({ field }) => <AssetPicker kind={block.type === "branding" ? "branding" : "image"} value={field.value as string | undefined} onChange={field.onChange} />} /></label>}
-    {(block.type === "announcements" || block.type === "heading") && <label>Heading<input {...form.register(`${prefix}.title`)} /></label>}
-    {block.type === "text" && <label>Text<textarea rows={3} {...form.register(`${prefix}.text`)} /></label>}
-    {block.type === "scripture" && <><label>Role<select {...form.register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input {...form.register(`${prefix}.reference`)} /></label><label>Passage text<textarea rows={4} {...form.register(`${prefix}.text`)} /></label></>}
+    {(block.type === "announcements" || block.type === "heading") && <label>Heading<input aria-label={`${blockLabel(block)} ${index + 1} heading`} {...form.register(`${prefix}.title`)} /></label>}
+    {block.type === "text" && <label>Text<textarea aria-label={`Text block ${index + 1}`} rows={3} {...form.register(`${prefix}.text`)} /></label>}
+    {block.type === "scripture" && <><label>Role<select aria-label={`Passage ${index + 1} role`} {...form.register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input aria-label={`Passage ${index + 1} reference`} {...form.register(`${prefix}.reference`)} /></label><label>Passage text<textarea aria-label={`Passage ${index + 1} text`} rows={4} {...form.register(`${prefix}.text`)} /></label></>}
     {block.type === "song" && <Controller name={`${prefix}.songKey`} control={form.control} render={({ field }) => <SongPicker value={field.value as string | undefined} onChange={field.onChange} />} />}
     {(block.type === "announcements" || block.type === "contacts" || block.type === "qr") && <GroupedItems area={area} index={index} type={block.type} form={form} />}
     {block.type === "spacer" && <p className="field-note">A blank space in the composition.</p>}

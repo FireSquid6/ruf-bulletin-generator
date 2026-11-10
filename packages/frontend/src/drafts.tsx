@@ -4,11 +4,22 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { api } from "./api";
 import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
-import { BlockEditor, blockLabel, type DraftForm } from "./BlockEditor";
+import { BlockEditor, blockLabel, type Block, type DraftForm } from "./BlockEditor";
 
 type Draft = { id: string; gatheringDate: string; revision: number; composition: DraftForm["composition"] };
 function dateString(value: string | Date) { return value instanceof Date ? value.toISOString().slice(0, 10) : value; }
 function draftFromApi(value: Draft): Draft { return { ...value, gatheringDate: dateString(value.gatheringDate) }; }
+
+function PreviewBlock({ block }: { block: Block }) {
+  return <div className="preview-block">
+    {(block.type === "branding" || block.type === "image") && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt={blockLabel(block)} /> : <>
+      <strong>{block.title || blockLabel(block)}</strong>
+      {(block.reference || block.songKey) && <p>{block.reference || block.songKey}</p>}
+      {block.text && <p>{block.text}</p>}
+      {block.items?.map((item, index) => <p key={index}>{item.text || item.name || item.caption}{item.detail && ` · ${item.detail}`}</p>)}
+    </>}
+  </div>;
+}
 
 function resultError(result: { error: unknown }, fallback: string): never {
   const value = (result.error as { value?: { error?: string } } | null)?.value;
@@ -95,7 +106,7 @@ function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; o
   }, onSuccess: onSaved });
   return <main className="editor"><div className="editor-header"><button className="quiet" onClick={() => { if (!isDirty || window.confirm("Discard unsaved changes?")) onBack(); }}>Bulletins</button><div><h1>Bulletin for {values.gatheringDate || draft.gatheringDate}</h1><p>{latest ? "Save conflict · Your edits are unsaved" : save.isSuccess ? "Saved draft" : isDirty ? "Unsaved changes" : `Saved draft · Revision ${draft.revision}`}</p></div><button className="primary" form="draft-form" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></div>
     <div className="mobile-view"><button aria-pressed={view === "edit"} onClick={() => setView("edit")}>Edit</button><button aria-pressed={view === "preview"} onClick={() => setView("preview")}>Preview</button></div>
-    <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <div key={i} className="preview-block">{(block.type === "branding" || block.type === "image") && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt={blockLabel(block)} /> : <><strong>{block.title || blockLabel(block)}</strong>{block.text && <p>{block.text}</p>}</>}</div>)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[0, 1].map((column) => <div className="panel" key={column}>{values.composition.flow.filter((_, i) => i % 2 === column).map((block, i) => <div className="preview-block" key={i}><strong>{blockLabel(block)}</strong><p>{block.reference || block.title || block.text || block.songKey || ""}</p></div>)}</div>)}</div></div></section>
+    <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <PreviewBlock key={i} block={block} />)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[values.composition.flow.slice(0, Math.ceil(values.composition.flow.length / 2)), values.composition.flow.slice(Math.ceil(values.composition.flow.length / 2))].map((blocks, column) => <div className="panel" key={column}>{blocks.map((block, i) => <PreviewBlock key={i} block={block} />)}</div>)}</div></div></section>
     <form id="draft-form" className={`editor-fields ${view === "preview" ? "mobile-hidden" : ""}`} onSubmit={handleSubmit((form) => { if (!latest) save.mutate({ form, revision: draft.revision }); })}><h2>Draft details</h2><label htmlFor="gathering-date">Gathering date</label><input id="gathering-date" type="date" required {...register("gatheringDate", { required: true })} /><p className="field-note">The date is unique to this bulletin. Weekly words can remain blank.</p>
       {latest && <DraftConflict latest={latest} local={getValues()} saving={save.isPending} error={conflictError ?? undefined}
         onUseLatest={() => { if (window.confirm("Replace your unsaved edits with the newer saved draft? This cannot be undone.")) onSaved(latest); }}
