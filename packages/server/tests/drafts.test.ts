@@ -12,9 +12,13 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
     await setup.connect();
     await setup.query(`CREATE SCHEMA ${schema}`);
     await setup.query(`SET search_path TO ${schema}`);
-    for (const name of ["0001_workspace", "0002_drafts"]) {
+    for (const name of ["0001_workspace", "0002_drafts", "0004_assets"]) {
       await setup.query(await Bun.file(new URL(`../migrations/${name}.sql`, import.meta.url)).text());
     }
+    const logoBytes = Buffer.from(await Bun.file(new URL("../../../assets/ruf-baylor-logo.png", import.meta.url)).arrayBuffer());
+    const logoId = "00000000-0000-4000-8000-000000000004";
+    await setup.query("INSERT INTO image_asset (id, name, kind, mime_type, size, bytes) VALUES ($1, $2, $3, $4, $5, $6)",
+      [logoId, "RUF Baylor logo", "branding", "image/png", logoBytes.length, logoBytes]);
     const testUrl = new URL(url!);
     testUrl.searchParams.set("options", `-csearch_path=${schema}`);
     const database = createDatabase(testUrl.toString());
@@ -38,7 +42,10 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
       const draft = await created.json();
       expect(draft.gatheringDate).toBe(date);
       expect(draft.revision).toBe(1);
-      expect(draft.composition.cover.some((block: { type: string; asset: string }) => block.type === "branding" && block.asset === "ruf-baylor-logo.png")).toBe(true);
+      expect(draft.composition.cover.some((block: { type: string; assetId: string }) => block.type === "branding" && block.assetId === logoId)).toBe(true);
+      const logo = await call(`/api/assets/${draft.composition.cover[0].assetId}/image`);
+      expect(logo.status).toBe(200);
+      expect(Buffer.from(await logo.arrayBuffer())).toEqual(logoBytes);
       expect(JSON.stringify(draft.composition)).not.toContain("James 5");
       expect((await call("/api/bulletins", "POST", { gatheringDate: date })).status).toBe(409);
       expect((await call(`/api/bulletins?date=${date}`)).json()).resolves.toMatchObject({ bulletins: [{ id: draft.id, gatheringDate: date }] });
