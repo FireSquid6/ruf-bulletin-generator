@@ -7,6 +7,7 @@ export DATABASE_URL='postgres://user:password@localhost:5432/ruf'
 export APP_URL='http://localhost:3000' # use the actual HTTPS public origin in deployment
 export BETTER_AUTH_SECRET="$(openssl rand -base64 48)" # store securely; reuse across restarts
 bun run --cwd packages/server migrate
+bun run --cwd packages/server import-songs # optional one-time legacy catalog import
 export ADMIN_EMAIL='admin@example.org' ADMIN_NAME='Administrator'
 read -rs -p 'Initial admin password: ' ADMIN_PASSWORD; echo
 export ADMIN_PASSWORD
@@ -15,6 +16,8 @@ unset ADMIN_PASSWORD
 bun run build
 bun run start
 ```
+
+Run `bun run --cwd packages/server import-songs` from the repository root with `DATABASE_URL` set after migrations to copy `store/song-store.yaml` into Postgres. This is a one-time staff CLI command, not a web endpoint or continuing sync. It reads the source without changing it, validates the entire file using the generator, and inserts all new keys atomically. Re-running skips existing keys (including songs edited in the web store), so it is safe to retry but will not update or restore them; edit those in the web song store. It does not import weekly bulletin YAML. Imported entries are available in `/songs` and `/api/songs`; song selection in the bulletin editor depends on #8.
 
 The bootstrap command refuses to run once **any** account exists. It has no HTTP route or shared registration secret. Keep `BETTER_AUTH_SECRET` stable: changing it invalidates sessions. Use TLS for non-local origins, restrict database credentials, and never commit `.env` files. Password recovery and email verification are not included. Administrators generate one-use invitation keys in the web workspace at `/invitations`. Copy each key when issued: only its SHA-256 digest is stored and the plaintext cannot be retrieved. Staff register at `/register` using email, password and the invitation key; Better Auth's public sign-up route remains denied.
 
