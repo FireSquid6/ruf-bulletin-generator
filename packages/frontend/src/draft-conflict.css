@@ -1,0 +1,15 @@
+.draft-conflict { border: 1px solid #d4d4d8; background: #fafafa; padding: 16px; margin: 0 0 24px; color: #27272a; }
+.draft-conflict h2 { margin-bottom: 8px; }
+.draft-conflict > p { margin-bottom: 14px; }
+.draft-conflict button { text-align: left; }
+.conflict-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+.conflict-actions button:last-child { border-color: #92400e; color: #92400e; }
+.draft-conflict .conflict-note { margin: 0; font-size: .9rem; }
+.conflict-versions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.conflict-version { min-width: 0; padding: 12px; border: 1px solid #d4d4d8; background: #fff; }
+.conflict-version h3 { margin: 0 0 8px; }
+.conflict-version h4 { margin: 14px 0 6px; }
+.conflict-version ol { padding-left: 20px; margin: 0; }
+.conflict-version li { margin-bottom: 12px; overflow-wrap: anywhere; }
+.conflict-version pre { white-space: pre-wrap; overflow-wrap: anywhere; font: .9rem/1.5 ui-monospace, monospace; background: #fafafa; padding: 8px; margin: 6px 0; }
+@media (max-width: 1100px) { .conflict-versions { grid-template-columns: 1fr; } }

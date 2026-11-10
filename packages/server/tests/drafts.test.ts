@@ -66,6 +66,28 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
       const moved = await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: next, revision: 2, composition: { cover: [], flow: [] } });
       expect(moved.status).toBe(200);
       expect((await call(`/api/bulletins?date=${next}`)).json()).resolves.toMatchObject({ bulletins: [{ id: draft.id }] });
+      // Both editors start from the same saved revision. Only one write may win,
+      // and the losing editor must receive the actual saved content to review.
+      const competing = await Promise.all([
+        call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2033-04-21", revision: 3, composition: { cover: [{ type: "text", text: "Editor A" }], flow: [] } }),
+        call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2033-04-28", revision: 3, composition: { cover: [], flow: [{ type: "text", text: "Editor B" }] } }),
+      ]);
+      expect(competing.map((response) => response.status).sort()).toEqual([200, 409]);
+      const winner = await competing.find((response) => response.status === 200)!.json();
+      const loser = await competing.find((response) => response.status === 409)!.json();
+      expect(loser).toEqual({ error: "This bulletin has a newer revision.", latest: winner });
+      expect((await call(`/api/bulletins/${draft.id}`)).json()).resolves.toEqual(winner);
+      // A third save after the conflict cannot be silently overwritten with
+      // the revision shown in the first comparison.
+      const third = await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: winner.gatheringDate, revision: winner.revision, composition: { cover: [], flow: [{ type: "text", text: "Third editor" }] } });
+      expect(third.status).toBe(200);
+      const thirdDraft = await third.json();
+      const staleOverwrite = await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: next, revision: winner.revision, composition: { cover: [], flow: [{ type: "text", text: "Recovered work" }] } });
+      expect(staleOverwrite.status).toBe(409);
+      expect(await staleOverwrite.json()).toEqual({ error: "This bulletin has a newer revision.", latest: thirdDraft });
+      const recovered = await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: next, revision: thirdDraft.revision, composition: { cover: [], flow: [{ type: "text", text: "Recovered work" }] } });
+      expect(recovered.status).toBe(200);
+      expect(await recovered.json()).toMatchObject({ revision: 6, gatheringDate: next, composition: { flow: [{ type: "text", text: "Recovered work" }] } });
       expect((await call(`/api/bulletins/${draft.id}`, "DELETE")).status).toBe(204);
       expect((await call(`/api/bulletins/${draft.id}`)).status).toBe(404);
     } finally {

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { api } from "./api";
+import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
 
 type Block = { type: string; role?: string; assetId?: string; title?: string; reference?: string; text?: string; songKey?: string; items?: Array<{ text?: string; name?: string; detail?: string; caption?: string; assetId?: string }> };
 type Composition = { cover: Block[]; flow: Block[] };
@@ -97,7 +98,7 @@ export function DraftEditor() {
     const response = await api.api.bulletins({ id }).get();
     if (response.error || !response.data || !("composition" in response.data)) return resultError(response, "Could not open this draft. Try again.");
     return response.data as Draft;
-  }, retry: false });
+  }, retry: false, refetchOnWindowFocus: false, refetchOnReconnect: false });
   if (draft.isPending) return <main className="center">Loading draft…</main>;
   if (draft.isError || !draft.data) return <main className="center"><p role="alert">{draft.error?.message ?? "Draft not found"}</p><Link to="/">Back to bulletins</Link></main>;
   return <EditorForm key={`${id}:${draft.data.revision}`} draft={draft.data} onSaved={(value) => { client.setQueryData(["draft", id], value); client.invalidateQueries({ queryKey: ["bulletins"] }); }} onBack={() => navigate("/")} view={view} setView={setView} />;
@@ -106,18 +107,32 @@ export function DraftEditor() {
 function EditorForm({ draft, onSaved, onBack, view, setView }: { draft: Draft; onSaved: (draft: Draft) => void; onBack: () => void; view: "preview" | "edit"; setView: (view: "preview" | "edit") => void }) {
   const { register, handleSubmit, control, getValues, setValue, watch, formState: { isDirty } } = useForm<DraftForm>({ defaultValues: { gatheringDate: draft.gatheringDate, composition: draft.composition } });
   const values = watch();
+  const [latest, setLatest] = useState<Draft | null>(null);
+  const [conflictError, setConflictError] = useState<string | null>(null);
   useEffect(() => { const guard = (event: BeforeUnloadEvent) => { if (isDirty) { event.preventDefault(); event.returnValue = ""; } }; window.addEventListener("beforeunload", guard); return () => window.removeEventListener("beforeunload", guard); }, [isDirty]);
-  const save = useMutation({ mutationFn: async (form: DraftForm) => {
-    const response = await api.api.bulletins({ id: draft.id }).put({ ...form, revision: draft.revision });
+  const save = useMutation({ mutationFn: async ({ form, revision }: { form: DraftForm; revision: number }) => {
+    const response = await api.api.bulletins({ id: draft.id }).put({ ...form, revision });
+    if (response.status === 409) {
+      const value = (response.error as { value?: { latest?: DraftSnapshot; error?: string } } | null)?.value;
+      if (value?.latest) {
+        setLatest(value.latest as Draft);
+        setConflictError(null);
+        setView("edit");
+        throw new Error("A newer version is available to review.");
+      }
+    }
     if (response.error || !response.data || !("composition" in response.data)) return resultError(response, "Could not save this draft. Try again.");
     return response.data as Draft;
   }, onSuccess: onSaved });
-  return <main className="editor"><div className="editor-header"><button className="quiet" onClick={() => { if (!isDirty || window.confirm("Discard unsaved changes?")) onBack(); }}>Bulletins</button><div><h1>Bulletin for {values.gatheringDate || draft.gatheringDate}</h1><p>{save.isSuccess ? "Saved draft" : isDirty ? "Unsaved changes" : `Saved draft · Revision ${draft.revision}`}</p></div><button className="primary" form="draft-form" type="submit" disabled={save.isPending}>{save.isPending ? "Saving…" : "Save draft"}</button></div>
+  return <main className="editor"><div className="editor-header"><button className="quiet" onClick={() => { if (!isDirty || window.confirm("Discard unsaved changes?")) onBack(); }}>Bulletins</button><div><h1>Bulletin for {values.gatheringDate || draft.gatheringDate}</h1><p>{latest ? "Save conflict · Your edits are unsaved" : save.isSuccess ? "Saved draft" : isDirty ? "Unsaved changes" : `Saved draft · Revision ${draft.revision}`}</p></div><button className="primary" form="draft-form" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></div>
     <div className="mobile-view"><button aria-pressed={view === "edit"} onClick={() => setView("edit")}>Edit</button><button aria-pressed={view === "preview"} onClick={() => setView("preview")}>Preview</button></div>
     <div className="editor-layout"><section className={`preview-column ${view === "edit" ? "mobile-hidden" : ""}`} aria-label="Draft structure preview"><p>Draft arrangement · Not a PDF proof</p><div className="sheet"><h2>Outside</h2><div className="panels"><div className="panel"><span>Reading order continues</span></div><div className="panel"><span>Cover</span>{values.composition.cover.map((block, i) => <div key={i} className="preview-block">{block.type === "branding" && block.assetId ? <img src={`/api/assets/${block.assetId}/image`} alt="Branding image" /> : <><strong>{block.title || blockNames[block.type] || block.type}</strong>{block.text && <p>{block.text}</p>}</>}</div>)}</div></div></div><div className="sheet"><h2>Inside</h2><div className="panels">{[0, 1].map((column) => <div className="panel" key={column}>{values.composition.flow.filter((_, i) => i % 2 === column).map((block, i) => <div className="preview-block" key={i}><strong>{block.role === "sermon" ? "Sermon passage" : block.role === "reading" ? "Scripture reading" : blockNames[block.type] || block.type}</strong><p>{block.reference || block.title || block.text || block.songKey || ""}</p></div>)}</div>)}</div></div></section>
-    <form id="draft-form" className={`editor-fields ${view === "preview" ? "mobile-hidden" : ""}`} onSubmit={handleSubmit((form) => save.mutate(form))}><h2>Draft details</h2><label htmlFor="gathering-date">Gathering date</label><input id="gathering-date" type="date" required {...register("gatheringDate", { required: true })} /><p className="field-note">The date is unique to this bulletin. Weekly words can remain blank.</p>
-      {save.isError && <div role="alert" className="error">{save.error.message}{save.error.message.includes("newer revision") && <button type="button" onClick={() => { if (window.confirm("Reload the newest draft? Your unsaved edits will be lost.")) window.location.reload(); }}>Reload newest draft</button>}</div>}
+    <form id="draft-form" className={`editor-fields ${view === "preview" ? "mobile-hidden" : ""}`} onSubmit={handleSubmit((form) => { if (!latest) save.mutate({ form, revision: draft.revision }); })}><h2>Draft details</h2><label htmlFor="gathering-date">Gathering date</label><input id="gathering-date" type="date" required {...register("gatheringDate", { required: true })} /><p className="field-note">The date is unique to this bulletin. Weekly words can remain blank.</p>
+      {latest && <DraftConflict latest={latest} local={getValues()} saving={save.isPending} error={conflictError ?? undefined}
+        onUseLatest={() => { if (window.confirm("Replace your unsaved edits with the newer saved draft? This cannot be undone.")) onSaved(latest); }}
+        onOverwrite={() => { if (window.confirm(`Overwrite saved revision ${latest.revision} with your current edits? The newer saved content will be replaced.`)) { setConflictError(null); save.mutate({ form: getValues(), revision: latest.revision }, { onError: (error) => { if (error.message !== "A newer version is available to review.") setConflictError(error.message); } }); } }} />}
+      {save.isError && !latest && <div role="alert" className="error">{save.error.message}</div>}
       <BlockList area="cover" control={control} register={register} getValues={getValues} setValue={setValue} /><BlockList area="flow" control={control} register={register} getValues={getValues} setValue={setValue} />
-      <button className="primary" type="submit" disabled={save.isPending}>{save.isPending ? "Saving…" : "Save draft"}</button></form></div>
+      <button className="primary" type="submit" disabled={save.isPending || !!latest}>{save.isPending ? "Saving…" : "Save draft"}</button></form></div>
   </main>;
 }
