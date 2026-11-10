@@ -6,6 +6,7 @@ import { draftRoutes } from "./drafts";
 import { assetRoutes } from "./assets";
 import { authenticateMcpKey, keyRoutes } from "./keys";
 import { invitationRoutes } from "./invitations";
+import { songRoutes } from "./songs";
 
 export function createApp(db: Database, config: { secret: string; baseURL: string }) {
   const auth = createAuth(db, config);
@@ -13,6 +14,9 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
   return new Elysia()
     .onRequest(async ({ request }) => {
       const pathname = new URL(request.url).pathname;
+      if (pathname === "/api/songs" || pathname.startsWith("/api/songs/")) {
+        if (!await auth.api.getSession({ headers: request.headers })) return Response.json({ error: "Sign in required" }, { status: 401 });
+      }
       if (pathname === "/mcp" || pathname.startsWith("/mcp/")) {
         if (!await authenticateMcpKey(db, request.headers.get("authorization"))) {
           return Response.json({ error: "Valid MCP key required" }, { status: 401 });
@@ -28,7 +32,8 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         pathname !== "/api/health" && pathname !== "/api/bulletins" && !pathname.startsWith("/api/bulletins/") && !pathname.startsWith("/api/auth/") &&
         !/^\/api\/assets(?:\/[0-9a-f-]{36}(?:\/image)?)?$/i.test(pathname) &&
         !["/api/staff", "/api/keys", "/api/register", "/api/invitations"].includes(pathname) &&
-        !/^\/api\/keys\/[^/]+\/revoke$/.test(pathname)) {
+        !/^\/api\/keys\/[^/]+\/revoke$/.test(pathname) &&
+        pathname !== "/api/songs" && !pathname.startsWith("/api/songs/")) {
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
@@ -43,6 +48,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     .post("/api/keys", ({ request, body, set }) => keys.issue(request.headers, body as { userId?: string; label?: string }, set, new URL(config.baseURL).origin))
     .post("/api/keys/:id/revoke", ({ request, params, set }) => keys.revoke(request.headers, params.id, set, new URL(config.baseURL).origin))
     .use(invitationRoutes(db, auth, new URL(config.baseURL).origin))
+    .use(songRoutes(db))
     .get("/*", async ({ request }) => {
       const pathname = new URL(request.url).pathname;
       if (pathname !== "/sign-in" && pathname !== "/register" && !pathname.includes(".") &&
