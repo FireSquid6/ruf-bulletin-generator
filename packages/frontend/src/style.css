@@ -2,7 +2,7 @@
 * { box-sizing: border-box; }
 body { margin: 0; }
 ::selection { background: #2563eb; color: #fff; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; border: 1px solid #d4d4d8; border-radius: 4px; background: #fff; color: #27272a; padding: 8px 14px; }
 button:hover:not(:disabled) { background: #fafafa; }
 button:disabled { cursor: wait; opacity: .65; }
@@ -31,8 +31,27 @@ form { display: flex; flex-direction: column; }
 label { font-weight: 600; margin-bottom: 6px; }
 input { width: 100%; border: 1px solid #d4d4d8; border-radius: 4px; padding: 10px 12px; background: #fff; color: #18181b; margin-bottom: 20px; }
 input[aria-invalid="true"] { border-color: #b42323; margin-bottom: 4px; }
+select { width: 100%; border: 1px solid #d4d4d8; border-radius: 4px; padding: 10px 12px; background: #fff; color: #18181b; margin-bottom: 20px; }
 small { color: #b42323; margin-bottom: 16px; }
 .primary { align-self: flex-start; background: #2563eb; color: #fff; border-color: #2563eb; min-width: 110px; }
 .primary:hover:not(:disabled) { background: #2563eb; filter: brightness(.92); }
 .error { color: #b42323; margin: 0 0 16px; }
-@media (max-width: 760px) { .workspace { padding: 32px 16px; } .empty { padding: 32px 24px; } .bar-inner { padding: 12px 16px; flex-wrap: wrap; } .bar nav { order: 3; width: 100%; } .account { gap: 8px; } .account span { display: none; } input, button { min-height: 44px; } }
+.account a, .back-link { color: #2563eb; text-underline-offset: 3px; }
+.back-link { display: inline-block; margin-bottom: 32px; }
+.credentials { max-width: 960px; }
+.credentials section { border-top: 1px solid #d4d4d8; padding: 24px 0 32px; }
+.credentials section > h2 { font-size: 1rem; margin-bottom: 16px; }
+.credential-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.credential-fields label { display: block; }
+.credentials .secret-once { background: #fafafa; border: 1px solid #d4d4d8; padding: 24px; margin-bottom: 32px; }
+.secret-once p { margin-bottom: 16px; color: #257045; }
+.secret-value { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.secret-value code { background: #fff; padding: 12px; border: 1px solid #d4d4d8; overflow-wrap: anywhere; max-width: 100%; user-select: all; }
+.credential-list ul { padding: 0; margin: 0; list-style: none; border-top: 1px solid #d4d4d8; }
+.credential-list li { padding: 16px 0; border-bottom: 1px solid #d4d4d8; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.credential-list li > div:first-child { display: grid; gap: 3px; min-width: 0; overflow-wrap: anywhere; }
+.credential-list li span { color: #52525b; }
+.key-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.key-actions .revoked { color: #b42323; }
+@media (max-width: 760px) { .workspace { padding: 32px 16px; } .empty { padding: 32px 24px; } .bar-inner { padding: 12px 16px; flex-wrap: wrap; } .bar nav { order: 3; width: 100%; flex-wrap: wrap; } .account { gap: 8px; } .account span { display: none; } input, button { min-height: 44px; } }
+@media (max-width: 760px) { .credential-fields { grid-template-columns: 1fr; gap: 0; } .credential-list li { align-items: flex-start; flex-direction: column; } .account a { white-space: nowrap; } }
