@@ -81,11 +81,18 @@ export function draftRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
         const [row] = await db.update(bulletin).set({ gatheringDate: body.gatheringDate, composition: JSON.stringify(body.composition), revision: sql`${bulletin.revision} + 1` })
           .where(and(eq(bulletin.id, params.id), eq(bulletin.revision, body.revision))).returning();
         if (row) return detail(row);
-        const [existing] = await db.select({ id: bulletin.id }).from(bulletin).where(eq(bulletin.id, params.id));
+        const [existing] = await db.select().from(bulletin).where(eq(bulletin.id, params.id));
         set.status = existing ? 409 : 404;
-        return { error: existing ? "This bulletin has a newer revision. Reload before saving." : "Bulletin not found" };
+        return existing ? { error: "This bulletin has a newer revision.", latest: detail(existing) } : { error: "Bulletin not found" };
       } catch (error) {
         if (!uniqueViolation(error)) throw error;
+        // A simultaneous date change may have advanced this draft too. Report
+        // that newer state before treating the requested date as the conflict.
+        const [existing] = await db.select().from(bulletin).where(eq(bulletin.id, params.id));
+        if (existing && existing.revision !== body.revision) {
+          set.status = 409;
+          return { error: "This bulletin has a newer revision.", latest: detail(existing) };
+        }
         set.status = 409;
         return { error: "A bulletin already exists for this date" };
       }
