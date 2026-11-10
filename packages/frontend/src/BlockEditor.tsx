@@ -1,5 +1,6 @@
 import { Controller, useFieldArray, type UseFormReturn } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { api } from "./api";
 
 export type Block = {
@@ -47,6 +48,26 @@ function AssetPicker({ value, onChange, kind }: { value?: string; onChange: (val
   return <select value={value ?? ""} onChange={(event) => onChange(event.target.value)}><option value="">No image selected</option>{value && !choices.some((asset) => asset.id === value) && <option value={value}>Unavailable image ({value})</option>}{choices.map((asset) => <option value={asset.id} key={asset.id}>{asset.name}</option>)}</select>;
 }
 
+function SongPicker({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
+  const [search, setSearch] = useState("");
+  const songs = useQuery({ queryKey: ["songs", ""], queryFn: async () => {
+    const response = await api.api.songs.get({ query: { search: "" } });
+    if (response.error || !response.data || !("songs" in response.data)) throw new Error("Could not load songs. You can still enter a key below.");
+    return response.data.songs;
+  }, retry: false });
+  const choices = songs.data ?? [];
+  const missing = !!value && !choices.some((song) => song.key === value);
+  const matches = choices.filter((song) => song.key === value || `${song.key} ${song.title}`.toLowerCase().includes(search.toLowerCase()));
+  return <div className="song-picker">
+    {songs.isPending ? <p>Loading songs…</p> : songs.isError ? <p role="alert" className="error">{songs.error.message} <button type="button" onClick={() => songs.refetch()}>Try again</button></p> : <>
+      {missing && <p className="field-warning" role="status">Song key “{value}” is not in the song store. This draft can still be saved.</p>}
+      <label>Find a song<input type="search" value={search} placeholder="Search by key or title" onChange={(event) => setSearch(event.target.value)} /></label>
+      <label>Select song<select value={value && !missing ? value : ""} onChange={(event) => onChange(event.target.value)}><option value="">{value && missing ? "Keep missing key" : "Choose a song…"}</option>{matches.map((song) => <option key={song.key} value={song.key}>{song.title} · {song.key}</option>)}</select></label>
+    </>}
+    <label>Song key<input value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="Enter a key or select a song" /></label>
+  </div>;
+}
+
 function GroupedItems({ area, index, type, form }: { area: Area; index: number; type: string; form: Form }) {
   const name = `composition.${area}.${index}.items` as const;
   const { fields, append, remove, move } = useFieldArray({ control: form.control, name });
@@ -64,7 +85,7 @@ function BlockFields({ block, area, index, form }: { block: Block; area: Area; i
     {(block.type === "announcements" || block.type === "heading") && <label>Heading<input {...form.register(`${prefix}.title`)} /></label>}
     {block.type === "text" && <label>Text<textarea rows={3} {...form.register(`${prefix}.text`)} /></label>}
     {block.type === "scripture" && <><label>Role<select {...form.register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input {...form.register(`${prefix}.reference`)} /></label><label>Passage text<textarea rows={4} {...form.register(`${prefix}.text`)} /></label></>}
-    {block.type === "song" && <label>Song key<input {...form.register(`${prefix}.songKey`)} placeholder="Choose a song later" /></label>}
+    {block.type === "song" && <Controller name={`${prefix}.songKey`} control={form.control} render={({ field }) => <SongPicker value={field.value as string | undefined} onChange={field.onChange} />} />}
     {(block.type === "announcements" || block.type === "contacts" || block.type === "qr") && <GroupedItems area={area} index={index} type={block.type} form={form} />}
     {block.type === "spacer" && <p className="field-note">A blank space in the composition.</p>}
   </>;
