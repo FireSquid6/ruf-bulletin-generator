@@ -36,4 +36,6 @@ jobs:
       - run: bun run --cwd packages/server migrate
       - run: bun run build
       - run: bun run typecheck
-      - run: bun test packages/server/tests
+      # Bootstrap's one-time empty-database contract runs before other tests add accounts.
+      - run: bun test packages/server/tests/auth.test.ts
+      - run: bun test packages/server/tests/routes.test.ts packages/server/tests/z-assets.test.ts

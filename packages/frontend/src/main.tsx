@@ -1,9 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router";
+import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate } from "react-router";
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { api } from "./api";
+import { AssetLibrary } from "./AssetLibrary";
 import "./style.css";
 
 const queryClient = new QueryClient();
@@ -16,6 +17,7 @@ async function session() {
 
 function Workspace() {
   const navigate = useNavigate();
+  const location = useLocation();
   const client = useQueryClient();
   const current = useQuery({ queryKey: ["session"], queryFn: session, retry: false });
   const bulletins = useQuery({
@@ -44,14 +46,14 @@ function Workspace() {
   if (!current.data) return <Navigate to="/sign-in" replace />;
 
   return <>
-    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
-    <main className="workspace">
+    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link></nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
+    {location.pathname === "/assets" ? <AssetLibrary /> : <main className="workspace">
       <div className="workspace-heading"><div><h1>Bulletins</h1><p>Gathering dates and saved drafts</p></div></div>
       {logout.isError && <p role="alert" className="error">{logout.error.message}</p>}
       {bulletins.isPending ? <p>Loading bulletins…</p> : bulletins.isError ? <p role="alert">{bulletins.error.message} <button onClick={() => bulletins.refetch()}>Try again</button></p> : bulletins.data?.bulletins.length === 0 ?
         <section className="empty"><h2>No bulletins yet</h2><p>This workspace is ready for your first gathering bulletin. Bulletin creation is coming next; the YAML generator remains available from the command line.</p></section> :
         <ul className="bulletin-list">{bulletins.data?.bulletins.map((item) => <li key={item.id}>{item.gatheringDate}</li>)}</ul>}
-    </main>
+    </main>}
   </>;
 }
 

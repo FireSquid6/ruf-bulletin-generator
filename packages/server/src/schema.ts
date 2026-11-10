@@ -1,4 +1,15 @@
-import { boolean, pgTable, text, timestamp, date, integer } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, date, integer, uuid, varchar, customType } from "drizzle-orm/pg-core";
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
+export const imageAsset = pgTable("image_asset", {
+  id: uuid("id").primaryKey(),
+  name: varchar("name", { length: 160 }).notNull(),
+  kind: varchar("kind", { length: 16 }).notNull(),
+  mimeType: varchar("mime_type", { length: 32 }).notNull(),
+  size: integer("size").notNull(),
+  bytes: bytea("bytes").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
