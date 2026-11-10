@@ -55,8 +55,15 @@ export function SongStore() {
   useEffect(() => {
     if (!isDirty) return;
     const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
+    const warnLink = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+      if (link && !window.confirm("Discard your unsaved song changes?")) {
+        event.preventDefault(); event.stopPropagation();
+      }
+    };
     window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
+    document.addEventListener("click", warnLink, true);
+    return () => { window.removeEventListener("beforeunload", warn); document.removeEventListener("click", warnLink, true); };
   }, [isDirty]);
   const choose = (next: string) => {
     if (next === selected || next === "new" && creating) return;
@@ -94,7 +101,7 @@ export function SongStore() {
   });
   const active = creating || !!selected;
   return <main className="workspace songs-page">
-    <nav className="library-nav" aria-label="Workspace"><Link to="/" onClick={event => { if (isDirty && !window.confirm("Discard your unsaved song changes?")) event.preventDefault(); }}>Bulletins</Link><span aria-current="page">Song store</span></nav>
+    <Link className="back-link" to="/">Back to bulletins</Link>
     <div className="workspace-heading"><div><h1>Song store</h1><p>Shared songs available for bulletin selection.</p></div><button className="primary" onClick={() => choose("new")}>Add song</button></div>
     <div className="song-layout">
       <section className="song-catalog" aria-label="Songs">

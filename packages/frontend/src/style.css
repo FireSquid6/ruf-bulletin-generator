@@ -123,10 +123,7 @@ a { color: #2563eb; text-underline-offset: 3px; }
 .invitation-history li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #d4d4d8; }
 .available { color: #257045; }.used { color: #52525b; }
 @media (max-width: 760px) { .invitation-issue { align-items: flex-start; flex-direction: column; } .invitation-history li { gap: 8px; } }
-.library-nav { display: flex; gap: 16px; border-bottom: 1px solid #d4d4d8; margin: -24px 0 42px; padding-bottom: 12px; }
 a { color: #2563eb; text-underline-offset: 3px; }
-.library-nav a, .library-nav span { padding: 8px 4px; color: #52525b; text-decoration: none; }
-.library-nav span { color: #18181b; border-bottom: 2px solid #2563eb; }
 .songs-page .workspace-heading { align-items: flex-start; }
 .songs-page .workspace-heading p { margin-top: 4px; }
 .song-layout { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 32px; align-items: start; }
@@ -164,7 +161,6 @@ a { color: #2563eb; text-underline-offset: 3px; }
 .form-actions { justify-content: flex-start; margin-top: 8px; }
 .danger { color: #b42323; border-color: #b42323; }
 @media (max-width: 760px) {
-  .library-nav { margin: -12px 0 32px; }
   .song-layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .song-catalog { border-right: 0; border-bottom: 1px solid #d4d4d8; padding: 0 0 24px; min-height: 0; }
   .song-editor form { padding: 20px 16px; }
