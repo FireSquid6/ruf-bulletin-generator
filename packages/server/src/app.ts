@@ -3,6 +3,7 @@ import { frontendResponse } from "@ruf/frontend";
 import type { Database } from "./db";
 import { createAuth } from "./auth";
 import { bulletin } from "./schema";
+import { assetRoutes } from "./assets";
 
 export function createApp(db: Database, config: { secret: string; baseURL: string }) {
   const auth = createAuth(db, config);
@@ -18,13 +19,14 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
       ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
       if ((pathname === "/api" || pathname.startsWith("/api/")) &&
-        !["/api/health", "/api/bulletins"].includes(pathname) && !pathname.startsWith("/api/auth/")) {
+        !["/api/health", "/api/bulletins"].includes(pathname) && !pathname.startsWith("/api/auth/") && !/^\/api\/assets(?:\/[0-9a-f-]{36}(?:\/image)?)?$/i.test(pathname)) {
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
     })
     .get("/api/health", () => ({ status: "ok" }))
     .all("/api/auth/*", ({ request }) => auth.handler(request))
+    .use(assetRoutes(db, auth))
     .get("/api/bulletins", async ({ request, set }) => {
       const session = await auth.api.getSession({ headers: request.headers });
       if (!session) {

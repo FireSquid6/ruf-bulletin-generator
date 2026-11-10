@@ -1,0 +1,27 @@
+.asset-library { max-width: 1120px; }
+.asset-upload { background: #fff; border: 1px solid #d4d4d8; padding: 24px; }
+.asset-upload > p { margin-bottom: 22px; }
+.asset-fields { display: grid; grid-template-columns: minmax(180px, 1fr) 160px minmax(230px, 1.2fr); gap: 16px; }
+.asset-fields > div { min-width: 0; display: flex; flex-direction: column; }
+.asset-fields input, .asset-fields select { margin-bottom: 14px; }
+.asset-fields input[type="file"] { padding: 8px; }
+.asset-fields select { border: 1px solid #d4d4d8; border-radius: 4px; padding: 10px 12px; background: #fff; color: #18181b; min-height: 40px; }
+.asset-list { margin-top: 32px; }
+.asset-list-heading { display: flex; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #d4d4d8; }
+.asset-list-heading h2 { margin: 0; font-size: 1rem; }
+.asset-list-heading span, .asset-detail span { color: #52525b; }
+.asset-list ul { list-style: none; padding: 0; margin: 0; }
+.asset-row { display: flex; align-items: center; gap: 20px; min-width: 0; padding: 16px 0; border-bottom: 1px solid #d4d4d8; }
+.asset-preview { width: 92px; height: 72px; flex: none; background: #fff; border: 1px solid #d4d4d8; display: grid; place-items: center; }
+.asset-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.asset-detail { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.asset-detail strong { color: #18181b; overflow-wrap: anywhere; }
+.asset-actions { display: flex; gap: 8px; }
+.asset-inline { margin-top: 12px; }
+.asset-inline > div { display: flex; flex-wrap: wrap; align-items: start; gap: 8px; }
+.asset-inline input { max-width: 250px; margin: 0; }
+.asset-confirm { margin-top: 10px; }
+.asset-confirm p { margin-bottom: 10px; max-width: 55ch; }
+.asset-confirm button + button { margin-left: 8px; }
+.asset-library .error { margin-top: 8px; }
+@media (max-width: 760px) { .asset-fields { grid-template-columns: 1fr; gap: 4px; } .asset-row { align-items: flex-start; flex-wrap: wrap; gap: 12px; } .asset-preview { width: 72px; height: 64px; } .asset-actions { width: 100%; padding-left: 84px; } .asset-upload { padding: 18px; } }
