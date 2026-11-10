@@ -40,3 +40,4 @@ jobs:
       - run: bun test packages/server/tests/auth.test.ts
       - run: bun test packages/server/tests/routes.test.ts packages/server/tests/drafts.test.ts packages/server/tests/keys.test.ts packages/server/tests/z-assets.test.ts
       - run: bun test packages/server/tests/songs.test.ts
+      - run: bun test packages/server/tests/import-songs.test.ts
