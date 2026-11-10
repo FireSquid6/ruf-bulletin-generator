@@ -44,7 +44,9 @@ export function SongStore() {
   const key = watch("key");
   useEffect(() => {
     if (creating) reset(blank);
-    else if (!isDirty && detail.data && detail.data.key === selected) reset({
+  }, [creating, reset]);
+  useEffect(() => {
+    if (!creating && !isDirty && detail.data && detail.data.key === selected) reset({
       key: detail.data.key, title: detail.data.title, parts: detail.data.parts,
       columns: detail.data.columns ? String(detail.data.columns) as "1" | "2" : "",
       scale: detail.data.scale == null ? "" : String(detail.data.scale),
