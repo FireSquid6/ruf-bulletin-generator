@@ -5,6 +5,15 @@ import { resolvePath } from "./paths";
 import type { Block, QrItem, SongPart } from "./types";
 
 export type Doc = PDFKit.PDFDocument;
+// CLI callers resolve image paths relative to their YAML; data callers provide bytes by asset key.
+export type ImageSource = string | ((key: string) => Buffer);
+
+function resolveImage(key: string, source: ImageSource): string | Buffer {
+  if (typeof source !== "string") return source(key);
+  const imagePath = resolvePath(key, source);
+  if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
+  return imagePath;
+}
 
 function styleByName(name: string) {
   const style = STYLES[name as StyleName];
@@ -59,7 +68,7 @@ function renderLabeledText(
 
 function renderImage(
   doc: Doc,
-  imagePath: string,
+  imagePath: string | Buffer,
   x: number,
   y: number,
   width: number,
@@ -224,7 +233,7 @@ function renderBlock(
   y: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
   scale: number,
 ): number {
   switch (block.type) {
@@ -242,8 +251,7 @@ function renderBlock(
       return renderText(doc, block.text as string, x, y, width, (block.style as string) ?? "body", scale);
     case "image":
     case "branding": {
-      const imagePath = resolvePath(block.path as string, yamlDir);
-      if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
+      const imagePath = resolveImage(block.path as string, imageSource);
       const isBranding = block.type === "branding";
       const maxWidth = Math.min(width, Number(block.max_width_mm ?? width / MM) * MM);
       const defaultMaxHeight = isBranding ? height * 0.4 : height;
@@ -262,8 +270,7 @@ function renderBlock(
       let bottom = y;
       items.forEach((item, index) => {
         if (!item.path) throw new Error("A QR item requires a path");
-        const imagePath = resolvePath(item.path, yamlDir);
-        if (!fs.existsSync(imagePath)) throw new Error(`Image does not exist: ${imagePath}`);
+        const imagePath = resolveImage(item.path, imageSource);
         const itemX = x + index * (itemWidth + gap);
         const size = Math.min(itemWidth, Number(item.size_mm ?? block.size_mm ?? 28) * MM);
         let cursor = y;
@@ -286,12 +293,12 @@ export function renderColumn(
   yTop: number,
   width: number,
   height: number,
-  yamlDir: string,
+  imageSource: ImageSource,
   scale: number,
 ): number {
   let y = yTop;
   for (const block of blocks) {
-    y = renderBlock(doc, block, x, y, width, height, yamlDir, scale);
+    y = renderBlock(doc, block, x, y, width, height, imageSource, scale);
   }
   return y;
 }

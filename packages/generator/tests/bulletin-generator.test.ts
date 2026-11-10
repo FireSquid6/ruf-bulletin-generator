@@ -99,9 +99,10 @@ describe("song store", () => {
     expect(referenced.size).toBe(23);
     for (const key of referenced) expect(store.songs[key], key).toBeDefined();
     for (const key of ["sweet_comfort", "yet_not_i_but_through_christ_in_me"]) {
-      expect(store.songs[key].parts).toHaveLength(4);
-      expect(store.songs[key].parts.every((part) => part.style === undefined)).toBe(true);
+      expect(store.songs[key].parts).toHaveLength(5);
     }
+    expect(store.songs.sweet_comfort.parts.filter((part) => part.style === "chorus")).toHaveLength(1);
+    expect(store.songs.yet_not_i_but_through_christ_in_me.parts.every((part) => part.style === undefined)).toBe(true);
     for (const [key, song] of Object.entries(store.songs)) {
       let verse = 0;
       for (const part of song.parts) {
@@ -112,16 +113,15 @@ describe("song store", () => {
     }
   });
 
-  test("future bulletins follow the worship plan, with missing songs left as references", () => {
+  test("later weekly examples retain their passages and song references", () => {
     const root = path.resolve(import.meta.dirname, "../../..");
     const store = loadSongStore(path.join(root, "store/song-store.yaml"));
     const notInSheet = new Set(["here_is_love", "be_unto_your_name"]);
     const weeks = [
-      ["2026-10-14", "James 4:1-10", "Proverbs 4:23-27", "it_is_well", "on_jordan_s_stormy_banks", "your_will_be_done", "this_is_my_father_s_world"],
       ["2026-10-21", "James 4:11-17", "Jeremiah 9:23-24", "how_deep_the_father_s_love", "his_mercy_is_more", "sweet_comfort", "yet_not_i_but_through_christ_in_me"],
       ["2026-10-28", "James 5:1-6", "1 Timothy 6:6-10", "he_will_hold_me_fast", "great_is_thy_faithfulness", "in_christ_alone", "hast_thou_heard_him"],
       ["2026-11-04", "James 5:7-12", "Psalm 37:7-9", "come_behold_the_wondrous_mystery", "o_love_that_will_not_let_me_go", "a_christian_s_daily_prayer", "all_praise_to_him"],
-      ["2026-11-11", "James 5:13-20", "1 Kings 17:17-24", "goodness_of_jesus", "on_jordan_s_stormy_banks", "here_is_love", "jesus_paid_it_all"],
+      ["2026-11-11", "James 5:13-20", "1 Kings 17:17-24", "goodness_of_jesus", "all_sufficient_merit", "how_firm_a_foundation", "jesus_paid_it_all"],
       ["2026-11-18", "Jude 1-25", "2 Peter 1:3-8", "we_will_feast_in_the_house_of_zion", "be_unto_your_name", "sweet_comfort", "arise_my_soul_arise"],
     ];
 
@@ -145,6 +145,18 @@ describe("song store", () => {
           .toBe(store.songs[song.song_ref as string].title);
       }
     }
+  });
+
+  test("the October 14 example intentionally embeds its four songs", () => {
+    const root = path.resolve(import.meta.dirname, "../../..");
+    const spec = YAML.load(fs.readFileSync(path.join(root, "bulletins/2026-10-14.yaml"), "utf8"));
+    validateSpec(spec);
+    const blocks = spec.pages!.flatMap((page) => page.columns.flat());
+    expect(blocks.filter((block) => block.type === "scripture").map((block) => block.reference))
+      .toEqual(["James 4:1-10", "Ecclesiastes 3:9-11"]);
+    const songs = blocks.filter((block) => block.type === "song");
+    expect(songs).toHaveLength(4);
+    expect(songs.every((song) => typeof song.title === "string" && Array.isArray(song.parts) && song.song_ref === undefined)).toBe(true);
   });
 
   test("imports the distinct songs from the song sheet without replacing weekly entries", () => {
