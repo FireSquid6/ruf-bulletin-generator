@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "bun run src/index.ts"
+    "start": "bun run src/index.ts",
+    "migrate": "bun run src/migrate.ts",
+    "bootstrap": "bun run src/bootstrap.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.4.0",
