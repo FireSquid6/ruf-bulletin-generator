@@ -41,3 +41,12 @@ test("generated PDF bytes back both preview and download, while generation error
   expect(requested).toBe(2);
   await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("Cover block 1"));
 });
+
+test("image selections remain visible in the editor without claiming PDF fit", async () => {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+  client.setQueryData(["draft", "image-draft"], { id: "image-draft", gatheringDate: "2034-05-21", revision: 1, composition: { cover: [{ type: "image", assetId: "image-1" }], flow: [] } });
+  client.setQueryData(["assets"], [{ id: "image-1", name: "Campus photo", kind: "image" }]);
+  render(<QueryClientProvider client={client}><MemoryRouter initialEntries={["/bulletins/image-draft"]}><Routes><Route path="/bulletins/:id" element={<DraftEditor />} /></Routes></MemoryRouter></QueryClientProvider>);
+  expect(screen.getByText("Selected draft image · Not a PDF fit check")).toBeDefined();
+  expect(screen.getByRole("img", { name: "Image" }).getAttribute("src")).toBe("/api/assets/image-1/image");
+});
