@@ -60,3 +60,11 @@ export const bulletin = pgTable("bulletin", {
   revision: integer("revision").notNull().default(1),
   composition: text("composition").notNull().default('{"cover":[],"flow":[]}'),
 });
+export const mcpKey = pgTable("mcp_key", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  label: text("label").notNull(),
+  secretHash: text("secret_hash").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  revokedAt: timestamp("revoked_at"),
+});

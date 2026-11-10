@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient
 import { useForm } from "react-hook-form";
 import { BulletinIndex, DraftEditor, NewDraft } from "./drafts";
 import { AssetLibrary } from "./AssetLibrary";
+import { Credentials } from "./Credentials";
 import "./style.css";
 
 const queryClient = new QueryClient();
@@ -12,10 +13,10 @@ const queryClient = new QueryClient();
 async function session() {
   const response = await fetch("/api/auth/get-session", { credentials: "same-origin" });
   if (!response.ok) throw new Error("Could not check your session. Try again.");
-  return (await response.json()) as null | { user: { name: string; email: string } };
+  return (await response.json()) as null | { user: { name: string; email: string; role: string } };
 }
 
-function Workspace() {
+function Workspace({ credentials = false }: { credentials?: boolean }) {
   const navigate = useNavigate();
   const client = useQueryClient();
   const current = useQuery({ queryKey: ["session"], queryFn: session, retry: false });
@@ -33,11 +34,12 @@ function Workspace() {
   if (current.isPending) return <main className="center"><p>Checking your session…</p></main>;
   if (current.isError) return <main className="center"><p role="alert">{current.error.message}</p><button onClick={() => current.refetch()}>Try again</button></main>;
   if (!current.data) return <Navigate to="/sign-in" replace />;
+  if (credentials && current.data.user.role !== "admin") return <Navigate to="/" replace />;
 
   return <>
-    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link></nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
+    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link>{current.data.user.role === "admin" && <Link to="/credentials">MCP credentials</Link>}</nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
     {logout.isError && <p role="alert" className="error workspace">{logout.error.message}</p>}
-    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
+    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="/credentials" element={<Credentials />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </>;
 }
 
@@ -66,4 +68,4 @@ function SignIn() {
   </form></main></>;
 }
 
-createRoot(document.getElementById("root")!).render(<React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><Routes><Route path="/sign-in" element={<SignIn />} /><Route path="*" element={<Workspace />} /></Routes></BrowserRouter></QueryClientProvider></React.StrictMode>);
+createRoot(document.getElementById("root")!).render(<React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><Routes><Route path="/sign-in" element={<SignIn />} /><Route path="/credentials" element={<Workspace credentials />} /><Route path="*" element={<Workspace />} /></Routes></BrowserRouter></QueryClientProvider></React.StrictMode>);
