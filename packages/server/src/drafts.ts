@@ -5,7 +5,6 @@ import { bulletin } from "./schema";
 import { createAuth } from "./auth";
 
 // Content is a document of ordered, movable blocks, not a serialized PDF page.
-// #5 can add block-specific fields without changing the draft CRUD contract.
 export type Composition = { cover: Array<{ type: string; [key: string]: unknown }>; flow: Array<{ type: string; [key: string]: unknown }> };
 // Seeded by migration 0004_assets; the ID remains a reference, never image bytes.
 export const STARTER_LOGO_ASSET_ID = "00000000-0000-4000-8000-000000000004";

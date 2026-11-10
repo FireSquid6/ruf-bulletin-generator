@@ -96,4 +96,62 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
       await setup.end();
     }
   });
+  test("ordered cover and reading-order blocks round trip through the authenticated draft write boundary", async () => {
+    const schema = `arrange_test_${crypto.randomUUID().replaceAll("-", "")}`;
+    const setup = new Client({ connectionString: url! });
+    await setup.connect();
+    await setup.query(`CREATE SCHEMA ${schema}`);
+    await setup.query(`SET search_path TO ${schema}`);
+    for (const name of ["0001_workspace", "0002_drafts", "0004_assets"]) {
+      await setup.query(await Bun.file(new URL(`../migrations/${name}.sql`, import.meta.url)).text());
+    }
+    const testUrl = new URL(url!);
+    testUrl.searchParams.set("options", `-csearch_path=${schema}`);
+    const database = createDatabase(testUrl.toString());
+    const config = { secret: "test-secret-at-least-thirty-two-characters", baseURL: "http://localhost" };
+    const app = createApp(database.db, config);
+    let cookie = "";
+    const call = (path: string, method = "GET", body?: unknown) => app.handle(new Request(`http://localhost${path}`, {
+      method, headers: { ...(cookie ? { cookie } : {}), ...(body ? { "content-type": "application/json" } : {}) },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    }));
+    try {
+      const email = `arrange-${crypto.randomUUID()}@example.org`;
+      await createAuth(database.db, config).api.signUpEmail({ body: { email, name: "Staff", password: "valid-password-123" } });
+      const login = await call("/api/auth/sign-in/email", "POST", { email, password: "valid-password-123" });
+      cookie = login.headers.get("set-cookie")!.split(";")[0];
+      const created = await (await call("/api/bulletins", "POST", { gatheringDate: "2034-05-21" })).json();
+      const composition = {
+        cover: [
+          { type: "scripture", role: "reading", reference: "Psalm 1", text: "First reading" },
+          { type: "heading", title: "Welcome" },
+          { type: "image", assetId: "missing-image" },
+          { type: "spacer" },
+        ],
+        flow: [
+          { type: "scripture", role: "sermon", reference: "Romans 8", text: "Sermon words" },
+          { type: "branding", assetId: "missing-branding" },
+          { type: "scripture", role: "sermon", reference: "John 1", text: "More sermon words" },
+          { type: "text", text: "A note" },
+          { type: "announcements", title: "News", items: [{ text: "Two" }, { text: "One" }] },
+          { type: "contacts", items: [{ name: "Pat", detail: "pat@example.org" }] },
+          { type: "qr", items: [{ caption: "Join", assetId: "missing-qr" }] },
+          { type: "song", songKey: "missing-song" },
+        ],
+      };
+      const saved = await call(`/api/bulletins/${created.id}`, "PUT", { gatheringDate: "2034-05-21", revision: created.revision, composition });
+      expect(saved.status).toBe(200);
+      expect((await saved.json()).composition).toEqual(composition);
+      const reopened = createApp(database.db, config);
+      const read = await reopened.handle(new Request(`http://localhost/api/bulletins/${created.id}`, { headers: { cookie } }));
+      expect((await read.json()).composition).toEqual(composition);
+      const emptied = await call(`/api/bulletins/${created.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 2, composition: { cover: [], flow: [] } });
+      expect(emptied.status).toBe(200);
+      expect((await (await call(`/api/bulletins/${created.id}`)).json()).composition).toEqual({ cover: [], flow: [] });
+    } finally {
+      await database.close();
+      await setup.query(`DROP SCHEMA ${schema} CASCADE`);
+      await setup.end();
+    }
+  });
 });
