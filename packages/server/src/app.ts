@@ -7,10 +7,12 @@ import { assetRoutes } from "./assets";
 import { authenticateMcpKey, keyRoutes } from "./keys";
 import { invitationRoutes } from "./invitations";
 import { songRoutes } from "./songs";
+import { createMcpEndpoint } from "./mcp";
 
 export function createApp(db: Database, config: { secret: string; baseURL: string }) {
   const auth = createAuth(db, config);
   const keys = keyRoutes(db, auth);
+  const mcp = createMcpEndpoint(db);
   return new Elysia()
     .onRequest(async ({ request }) => {
       const pathname = new URL(request.url).pathname;
@@ -18,10 +20,15 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         if (!await auth.api.getSession({ headers: request.headers })) return Response.json({ error: "Sign in required" }, { status: 401 });
       }
       if (pathname === "/mcp" || pathname.startsWith("/mcp/")) {
-        if (!await authenticateMcpKey(db, request.headers.get("authorization"))) {
-          return Response.json({ error: "Valid MCP key required" }, { status: 401 });
+        if (pathname !== "/mcp") return Response.json({ error: "Unknown MCP route" }, { status: 404 });
+        const origin = new URL(config.baseURL).origin;
+        if (request.headers.get("origin") && request.headers.get("origin") !== origin || new URL(request.url).host !== new URL(config.baseURL).host) {
+          return Response.json({ error: "Invalid MCP origin" }, { status: 403 });
         }
-        return Response.json({ error: "MCP is not implemented" }, { status: 501 });
+        if (!await authenticateMcpKey(db, request.headers.get("authorization"))) {
+          return Response.json({ error: "Valid MCP key required" }, { status: 401, headers: { "cache-control": "no-store" } });
+        }
+        return mcp.fetch(request);
       }
       // Only these Better Auth endpoints are public; signup is exclusively
       // performed server-side after atomically claiming an invitation.

@@ -4,7 +4,8 @@ import type { Database } from "./db";
 import type { createAuth } from "./auth";
 import { imageAsset } from "./schema";
 
-const limit = 5 * 1024 * 1024;
+export const assetLimit = 5 * 1024 * 1024;
+const limit = assetLimit;
 const kinds = new Set(["branding", "image", "qr"]);
 
 function detectedType(bytes: Uint8Array): string | undefined {
@@ -14,8 +15,34 @@ function detectedType(bytes: Uint8Array): string | undefined {
   if (bytes.length >= 12 && Buffer.from(bytes.subarray(0, 4)).toString("ascii") === "RIFF" && Buffer.from(bytes.subarray(8, 12)).toString("ascii") === "WEBP") return "image/webp";
 }
 
-const metadata = (row: Pick<typeof imageAsset.$inferSelect, "id" | "name" | "kind" | "mimeType" | "size" | "createdAt">) => ({ id: row.id, name: row.name, kind: row.kind, mimeType: row.mimeType, size: row.size, createdAt: row.createdAt.toISOString() });
+export const metadata = (row: Pick<typeof imageAsset.$inferSelect, "id" | "name" | "kind" | "mimeType" | "size" | "createdAt">) => ({ id: row.id, name: row.name, kind: row.kind, mimeType: row.mimeType, size: row.size, createdAt: row.createdAt.toISOString() });
 const columns = { id: imageAsset.id, name: imageAsset.name, kind: imageAsset.kind, mimeType: imageAsset.mimeType, size: imageAsset.size, createdAt: imageAsset.createdAt };
+
+export class AssetError extends Error {
+  constructor(message: string, public readonly status: number) { super(message); }
+}
+
+export function validateAsset(name: string, kind: string, mimeType: string, bytes: Buffer) {
+  if (!name.trim() || name.trim().length > 160 || !kinds.has(kind)) throw new AssetError("Enter a name (up to 160 characters) and choose branding, image, or QR.", 400);
+  if (!bytes.length) throw new AssetError("Choose an image to upload.", 400);
+  if (bytes.length > limit) throw new AssetError("Image is too large. Choose a file under 5 MB.", 413);
+  if (!detectedType(bytes) || detectedType(bytes) !== mimeType) throw new AssetError("Choose a PNG, JPEG, GIF, or WebP image. The file must match its format.", 415);
+  return { name: name.trim(), kind, mimeType, bytes, size: bytes.length };
+}
+
+export const assetStore = (db: Database) => ({
+  list: async () => (await db.select(columns).from(imageAsset).orderBy(desc(imageAsset.createdAt), imageAsset.name)).map(metadata),
+  get: async (id: string) => (await db.select().from(imageAsset).where(eq(imageAsset.id, id)))[0],
+  add: async (name: string, kind: string, mimeType: string, bytes: Buffer) => {
+    const [row] = await db.insert(imageAsset).values({ id: crypto.randomUUID(), ...validateAsset(name, kind, mimeType, bytes) }).returning();
+    return metadata(row);
+  },
+  rename: async (id: string, name: string) => {
+    const [row] = await db.update(imageAsset).set({ name: name.trim() }).where(eq(imageAsset.id, id)).returning();
+    return row && metadata(row);
+  },
+  remove: async (id: string) => (await db.delete(imageAsset).where(eq(imageAsset.id, id)).returning({ id: imageAsset.id }))[0],
+});
 
 async function boundedForm(request: Request): Promise<FormData | "large" | "invalid"> {
   if (!request.body) return "invalid";
@@ -39,10 +66,11 @@ async function boundedForm(request: Request): Promise<FormData | "large" | "inva
 
 export function assetRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
   const authorized = (headers: Headers) => auth.api.getSession({ headers });
+  const store = assetStore(db);
   return new Elysia()
     .get("/api/assets", async ({ request, set }) => {
       if (!await authorized(request.headers)) { set.status = 401; return { error: "Sign in required" }; }
-      return { assets: (await db.select(columns).from(imageAsset).orderBy(desc(imageAsset.createdAt), imageAsset.name)).map(metadata) };
+      return { assets: await store.list() };
     })
     .post("/api/assets", async ({ request, set }) => {
       if (!await authorized(request.headers)) { set.status = 401; return { error: "Sign in required" }; }
@@ -61,16 +89,20 @@ export function assetRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
         return { error: file instanceof File && file.size > limit ? "Image is too large. Choose a file under 5 MB." : "Choose an image to upload." };
       }
       const bytes = Buffer.from(await file.arrayBuffer());
-      const mimeType = detectedType(bytes);
-      if (!mimeType || file.type !== mimeType) { set.status = 415; return { error: "Choose a PNG, JPEG, GIF, or WebP image. The file must match its format." }; }
-      const [row] = await db.insert(imageAsset).values({ id: crypto.randomUUID(), name: name.trim(), kind, mimeType, size: bytes.length, bytes }).returning();
+      let asset;
+      try { asset = await store.add(name, kind, file.type, bytes); }
+      catch (error) {
+        if (!(error instanceof AssetError)) throw error;
+        set.status = error.status;
+        return { error: error.message };
+      }
       set.status = 201;
-      return metadata(row);
+      return asset;
     })
     .get("/api/assets/:id/image", async ({ request, params, set }) => {
       if (!await authorized(request.headers)) { set.status = 401; return { error: "Sign in required" }; }
       if (!/^[0-9a-f-]{36}$/i.test(params.id)) { set.status = 404; return { error: "Image not found" }; }
-      const [row] = await db.select().from(imageAsset).where(eq(imageAsset.id, params.id));
+      const row = await store.get(params.id);
       if (!row) { set.status = 404; return { error: "Image not found" }; }
       return new Response(new Uint8Array(row.bytes), { headers: { "Content-Type": row.mimeType, "Content-Disposition": "inline", "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
     })
@@ -81,14 +113,14 @@ export function assetRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
       const name = typeof input === "object" && input !== null && "name" in input ? input.name : null;
       if (typeof name !== "string" || !name.trim() || name.trim().length > 160) { set.status = 400; return { error: "Enter an image name (up to 160 characters)." }; }
       if (!/^[0-9a-f-]{36}$/i.test(params.id)) { set.status = 404; return { error: "Image not found" }; }
-      const [row] = await db.update(imageAsset).set({ name: name.trim() }).where(eq(imageAsset.id, params.id)).returning();
+      const row = await store.rename(params.id, name);
       if (!row) { set.status = 404; return { error: "Image not found" }; }
-      return metadata(row);
+      return row;
     })
     .delete("/api/assets/:id", async ({ request, params, set }) => {
       if (!await authorized(request.headers)) { set.status = 401; return { error: "Sign in required" }; }
       if (!/^[0-9a-f-]{36}$/i.test(params.id)) { set.status = 404; return { error: "Image not found" }; }
-      const [row] = await db.delete(imageAsset).where(eq(imageAsset.id, params.id)).returning({ id: imageAsset.id });
+      const row = await store.remove(params.id);
       if (!row) { set.status = 404; return { error: "Image not found" }; }
       return { id: row.id };
     });

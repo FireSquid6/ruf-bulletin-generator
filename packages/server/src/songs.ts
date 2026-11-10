@@ -15,28 +15,42 @@ const payload = t.Object({
   scale: t.Optional(t.Nullable(t.Number({ minimum: 0, exclusiveMinimum: 0 }))),
 });
 
-function duplicate(error: unknown) {
+export function duplicate(error: unknown) {
   return typeof error === "object" && error !== null && "code" in error && error.code === "23505" ||
     typeof error === "object" && error !== null && "cause" in error &&
     typeof error.cause === "object" && error.cause !== null && "code" in error.cause && error.cause.code === "23505";
 }
 
+export type SongInput = typeof song.$inferInsert;
+
+export const songStore = (db: Database) => ({
+  find: async (search?: string) => {
+    const term = search?.trim();
+    const pattern = `%${(term ?? "").replace(/[\\%_]/g, "\\$&")}%`;
+    return db.select().from(song).where(term ? or(ilike(song.key, pattern), ilike(song.title, pattern)) : undefined)
+      .orderBy(asc(song.title), asc(song.key));
+  },
+  get: async (key: string) => (await db.select().from(song).where(eq(song.key, key)))[0],
+  save: async (input: SongInput, previousKey?: string) => previousKey === undefined
+    ? (await db.insert(song).values({ ...input, columns: input.columns ?? null, scale: input.scale ?? null }).returning())[0]
+    : (await db.update(song).set({ ...input, columns: input.columns ?? null, scale: input.scale ?? null })
+      .where(eq(song.key, previousKey)).returning())[0],
+  remove: async (key: string) => (await db.delete(song).where(eq(song.key, key)).returning({ key: song.key }))[0],
+});
+
 export function songRoutes(db: Database) {
+  const store = songStore(db);
   return new Elysia({ prefix: "/api/songs" })
     .get("/", async ({ query }) => {
-      const search = query.search?.trim();
-      const pattern = `%${(search ?? "").replace(/[\\%_]/g, "\\$&")}%`;
-      return { songs: await db.select().from(song)
-        .where(search ? or(ilike(song.key, pattern), ilike(song.title, pattern)) : undefined)
-        .orderBy(asc(song.title), asc(song.key)) };
+      return { songs: await store.find(query.search) };
     }, { query: t.Object({ search: t.Optional(t.String()) }) })
     .get("/:key", async ({ params, status }) => {
-      const [found] = await db.select().from(song).where(eq(song.key, params.key));
+      const found = await store.get(params.key);
       return found ? { song: found } : status(404, { error: "Song not found" });
     })
     .post("/", async ({ body, status }) => {
       try {
-        const [created] = await db.insert(song).values({ ...body, columns: body.columns ?? null, scale: body.scale ?? null }).returning();
+        const created = await store.save(body);
         return status(201, { song: created });
       } catch (error) {
         if (duplicate(error)) return status(409, { error: "Song key already exists" });
@@ -45,8 +59,7 @@ export function songRoutes(db: Database) {
     }, { body: payload })
     .put("/:key", async ({ params, body, status }) => {
       try {
-        const [updated] = await db.update(song).set({ ...body, columns: body.columns ?? null, scale: body.scale ?? null })
-          .where(eq(song.key, params.key)).returning();
+        const updated = await store.save(body, params.key);
         return updated ? { song: updated } : status(404, { error: "Song not found" });
       } catch (error) {
         if (duplicate(error)) return status(409, { error: "Song key already exists" });
@@ -54,7 +67,7 @@ export function songRoutes(db: Database) {
       }
     }, { body: payload })
     .delete("/:key", async ({ params, status }) => {
-      const [deleted] = await db.delete(song).where(eq(song.key, params.key)).returning({ key: song.key });
+      const deleted = await store.remove(params.key);
       return deleted ? { deleted: deleted.key } : status(404, { error: "Song not found" });
     });
 }
