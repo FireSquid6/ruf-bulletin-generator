@@ -18,7 +18,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
       ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
       if ((pathname === "/api" || pathname.startsWith("/api/")) &&
-        !["/api/health"].includes(pathname) && !pathname.startsWith("/api/bulletins") && !pathname.startsWith("/api/auth/")) {
+        pathname !== "/api/health" && pathname !== "/api/bulletins" && !pathname.startsWith("/api/bulletins/") && !pathname.startsWith("/api/auth/")) {
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
