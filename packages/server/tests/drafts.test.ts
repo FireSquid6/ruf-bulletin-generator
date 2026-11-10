@@ -10,13 +10,15 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
     const schema = `draft_test_${crypto.randomUUID().replaceAll("-", "")}`;
     const setup = new Client({ connectionString: url! });
     await setup.connect();
+    const logoId = "00000000-0000-4000-8000-000000000004";
+    expect((await setup.query("SELECT name FROM schema_migration WHERE name = '0002_drafts'")).rowCount).toBe(1);
+    expect((await setup.query("SELECT id FROM image_asset WHERE id = $1", [logoId])).rowCount).toBe(1);
     await setup.query(`CREATE SCHEMA ${schema}`);
     await setup.query(`SET search_path TO ${schema}`);
     for (const name of ["0001_workspace", "0002_drafts", "0004_assets"]) {
       await setup.query(await Bun.file(new URL(`../migrations/${name}.sql`, import.meta.url)).text());
     }
     const logoBytes = Buffer.from(await Bun.file(new URL("../../../assets/ruf-baylor-logo.png", import.meta.url)).arrayBuffer());
-    const logoId = "00000000-0000-4000-8000-000000000004";
     await setup.query("INSERT INTO image_asset (id, name, kind, mime_type, size, bytes) VALUES ($1, $2, $3, $4, $5, $6)",
       [logoId, "RUF Baylor logo", "branding", "image/png", logoBytes.length, logoBytes]);
     const testUrl = new URL(url!);

@@ -110,3 +110,16 @@ a { color: #2563eb; text-underline-offset: 3px; }
 .key-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .key-actions .revoked { color: #b42323; }
 @media (max-width: 760px) { .credential-fields { grid-template-columns: 1fr; gap: 0; } .credential-list li { align-items: flex-start; flex-direction: column; } .account a { white-space: nowrap; } }
+.bar a, .form-followup a { color: #2563eb; text-underline-offset: 3px; }
+.form-followup { margin-top: 24px; }
+.success { color: #257045; margin: 0 0 16px; }
+.invitation-page { max-width: 760px; }
+.invitation-issue { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 24px 0; border-top: 1px solid #d4d4d8; border-bottom: 1px solid #d4d4d8; }
+.invitation-issue p { max-width: 38ch; }
+.invitation-result { padding: 24px; background: #fff; border: 1px solid #d4d4d8; margin: 24px 0; display: grid; gap: 10px; }
+.invitation-result code { font-size: 1.35rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; user-select: all; }
+.invitation-history { margin-top: 32px; }
+.invitation-history ul { list-style: none; padding: 0; margin: 16px 0; border-top: 1px solid #d4d4d8; }
+.invitation-history li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #d4d4d8; }
+.available { color: #257045; }.used { color: #52525b; }
+@media (max-width: 760px) { .invitation-issue { align-items: flex-start; flex-direction: column; } .invitation-history li { gap: 8px; } }

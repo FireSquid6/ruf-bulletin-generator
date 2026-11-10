@@ -5,6 +5,7 @@ import { createAuth } from "./auth";
 import { draftRoutes } from "./drafts";
 import { assetRoutes } from "./assets";
 import { authenticateMcpKey, keyRoutes } from "./keys";
+import { invitationRoutes } from "./invitations";
 
 export function createApp(db: Database, config: { secret: string; baseURL: string }) {
   const auth = createAuth(db, config);
@@ -18,18 +19,20 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         }
         return Response.json({ error: "MCP is not implemented" }, { status: 501 });
       }
-      // Invitation-only registration is a later feature. Better Auth's generic
-      // signup (and all other unreviewed auth endpoints) must never become public.
+      // Only these Better Auth endpoints are public; signup is exclusively
+      // performed server-side after atomically claiming an invitation.
       if (pathname.startsWith("/api/auth/") && ![
         "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
       ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
       if ((pathname === "/api" || pathname.startsWith("/api/")) &&
         pathname !== "/api/health" && pathname !== "/api/bulletins" && !pathname.startsWith("/api/bulletins/") && !pathname.startsWith("/api/auth/") &&
         !/^\/api\/assets(?:\/[0-9a-f-]{36}(?:\/image)?)?$/i.test(pathname) &&
-        !["/api/staff", "/api/keys"].includes(pathname) && !/^\/api\/keys\/[^/]+\/revoke$/.test(pathname)) {
+        !["/api/staff", "/api/keys", "/api/register", "/api/invitations"].includes(pathname) &&
+        !/^\/api\/keys\/[^/]+\/revoke$/.test(pathname)) {
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
+      if (pathname === "/api/register" && request.method !== "POST" || pathname === "/api/invitations" && !["GET", "POST"].includes(request.method)) return Response.json({ error: "Unknown API route" }, { status: 404 });
     })
     .get("/api/health", () => ({ status: "ok" }))
     .all("/api/auth/*", ({ request }) => auth.handler(request))
@@ -39,9 +42,10 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     .get("/api/keys", ({ request, set }) => keys.list(request.headers, set))
     .post("/api/keys", ({ request, body, set }) => keys.issue(request.headers, body as { userId?: string; label?: string }, set, new URL(config.baseURL).origin))
     .post("/api/keys/:id/revoke", ({ request, params, set }) => keys.revoke(request.headers, params.id, set, new URL(config.baseURL).origin))
+    .use(invitationRoutes(db, auth, new URL(config.baseURL).origin))
     .get("/*", async ({ request }) => {
       const pathname = new URL(request.url).pathname;
-      if (pathname !== "/sign-in" && !pathname.includes(".") &&
+      if (pathname !== "/sign-in" && pathname !== "/register" && !pathname.includes(".") &&
         !(await auth.api.getSession({ headers: request.headers }))) {
         return Response.redirect(new URL("/sign-in", request.url), 302);
       }

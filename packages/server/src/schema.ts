@@ -54,6 +54,14 @@ export const verification = pgTable("verification", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+export const invitation = pgTable("invitation", {
+  id: text("id").primaryKey(),
+  keyHash: text("key_hash").notNull().unique(),
+  issuedBy: text("issued_by").notNull().references(() => user.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  consumedAt: timestamp("consumed_at"),
+  consumedBy: text("consumed_by").references(() => user.id),
+});
 export const bulletin = pgTable("bulletin", {
   id: text("id").primaryKey(),
   gatheringDate: date("gathering_date").notNull().unique(),
