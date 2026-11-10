@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router";
-import { api } from "./api";
+import { api } from "../lib/api";
 
 export function SongPicker({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
   const [search, setSearch] = useState("");

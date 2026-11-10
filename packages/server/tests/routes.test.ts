@@ -26,6 +26,27 @@ describe("server route boundaries", () => {
     expect((await request("/mcp/example", "POST")).status).toBe(404);
   });
 
+  test("MCP rejects foreign origins and hosts before key authentication", async () => {
+    for (const [url, origin] of [
+      ["http://localhost/mcp", "https://foreign.example"],
+      ["http://foreign.example/mcp", "http://localhost"],
+    ]) {
+      const response = await app.handle(new Request(url, { method: "POST", headers: { origin } }));
+      expect(response.status).toBe(403);
+      expect(await response.json()).toEqual({ error: "Invalid MCP origin" });
+    }
+  });
+
+  test("reserved API methods do not reach the React fallback", async () => {
+    for (const [path, method] of [["/api/register", "GET"], ["/api/invitations", "DELETE"]]) {
+      const response = await request(path, method);
+      expect(response.status).toBe(404);
+      expect(await response.json()).toEqual({ error: "Unknown API route" });
+    }
+    expect((await request("/api/auth/change-password", "POST")).status).toBe(403);
+    expect((await request("/api/songs", "POST")).status).toBe(401);
+  });
+
   test("frontend serves sign-in but redirects protected navigation", async () => {
     const page = await request("/");
     expect(page.status).toBe(302);

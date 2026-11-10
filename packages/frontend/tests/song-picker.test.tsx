@@ -4,12 +4,12 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router";
 import { useForm } from "react-hook-form";
-import type { DraftForm } from "../src/BlockEditor";
+import type { DraftForm } from "../src/components/BlockEditor";
 
 const { render, screen, cleanup, waitFor } = await import("@testing-library/react");
 const userEvent = (await import("@testing-library/user-event")).default;
-const { BlockEditor } = await import("../src/BlockEditor");
-const { SongStore } = await import("../src/SongStore");
+const { BlockEditor } = await import("../src/components/BlockEditor");
+const { SongStore } = await import("../src/pages/SongStore");
 const originalFetch = globalThis.fetch;
 afterEach(() => { cleanup(); window.document.body.innerHTML = ""; globalThis.fetch = originalFetch; });
 

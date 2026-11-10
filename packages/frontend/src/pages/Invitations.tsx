@@ -1,7 +1,7 @@
 import { Link, Navigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "./api";
-import { session } from "./session";
+import { api } from "../lib/api";
+import { session } from "../lib/session";
 
 export function Invitations() {
   const current = useQuery({ queryKey: ["session"], queryFn: session, retry: false });

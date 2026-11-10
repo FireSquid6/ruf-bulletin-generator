@@ -38,6 +38,7 @@ jobs:
       - run: bun run typecheck
       - run: bun test packages/generator/tests
       - run: bun test packages/frontend/tests
+      - run: bun test packages/server/tests/asset-validation.test.ts
       # Bootstrap's one-time empty-database contract runs before other tests add accounts.
       - run: bun test packages/server/tests/auth.test.ts
       - run: bun test packages/server/tests/routes.test.ts packages/server/tests/drafts.test.ts packages/server/tests/pdf.test.ts packages/server/tests/keys.test.ts packages/server/tests/z-assets.test.ts packages/server/tests/mcp-libraries.test.ts packages/server/tests/mcp-bulletins.test.ts packages/server/tests/place-assets.test.ts

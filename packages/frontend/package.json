@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/assets.ts"
+    ".": "./src/lib/assets.ts"
   },
   "scripts": {
     "build": "bun run build.ts"

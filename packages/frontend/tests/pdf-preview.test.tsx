@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const { render, screen, cleanup, waitFor } = await import("@testing-library/react");
 const userEvent = (await import("@testing-library/user-event")).default;
-const { DraftEditor } = await import("../src/drafts");
+const { DraftEditor } = await import("../src/pages/drafts");
 const originalFetch = globalThis.fetch;
 const originalCreate = URL.createObjectURL;
 const originalRevoke = URL.revokeObjectURL;

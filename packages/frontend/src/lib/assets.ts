@@ -1,7 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import path from "node:path";
 
-const dist = path.resolve(import.meta.dirname, "../dist");
+const dist = path.resolve(import.meta.dirname, "../../dist");
 
 // The server imports this module, not the browser-only React entry point.
 export function frontendResponse(pathname: string): Response {

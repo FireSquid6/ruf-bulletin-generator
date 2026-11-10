@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api } from "./api";
+import { api } from "../lib/api";
 
 type Part = { text: string; label?: string; style?: "chorus" };
 type Song = { key: string; title: string; parts: Part[]; columns: 1 | 2 | null; scale: number | null };

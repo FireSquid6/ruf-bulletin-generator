@@ -14,16 +14,24 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
   const auth = createAuth(db, config);
   const keys = keyRoutes(db, auth);
   const mcp = createMcpEndpoint(db);
+  const appURL = new URL(config.baseURL);
   return new Elysia()
+    // Runs before body parsing/route validation. Returning a Response ends the
+    // request; returning nothing lets the registered routes below handle it.
     .onRequest(async ({ request }) => {
       const pathname = new URL(request.url).pathname;
+      // 1. Reject anonymous song requests before Elysia validates their bodies.
+      // The song routes use the shared store without their own session guard.
       if (pathname === "/api/songs" || pathname.startsWith("/api/songs/")) {
         if (!await auth.api.getSession({ headers: request.headers })) return Response.json({ error: "Sign in required" }, { status: 401 });
       }
       if (pathname === "/mcp" || pathname.startsWith("/mcp/")) {
+        // 2. MCP is a separate protocol, handled entirely by the SDK. Check the
+        // host/origin (DNS-rebinding protection), then a key on EVERY request
+        // so revoking a key also blocks clients that already connected.
         if (pathname !== "/mcp") return Response.json({ error: "Unknown MCP route" }, { status: 404 });
-        const origin = new URL(config.baseURL).origin;
-        if (request.headers.get("origin") && request.headers.get("origin") !== origin || new URL(request.url).host !== new URL(config.baseURL).host) {
+        const origin = request.headers.get("origin");
+        if ((origin && origin !== appURL.origin) || new URL(request.url).host !== appURL.host) {
           return Response.json({ error: "Invalid MCP origin" }, { status: 403 });
         }
         const authorization = request.headers.get("authorization");
@@ -33,11 +41,14 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         }
         return mcp.fetch(request, { authInfo: { token: authorization!.slice(7), clientId: identity.id, scopes: [] } });
       }
-      // Only these Better Auth endpoints are public; signup is exclusively
-      // performed server-side after atomically claiming an invitation.
+      // 3. Limit the Better Auth wildcard route below to these public endpoints.
+      // Signup is only called server-side after atomically claiming an invitation.
       if (pathname.startsWith("/api/auth/") && ![
         "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
       ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
+      // 4. Reserve the API namespace: unknown paths must return JSON 404, not
+      // index.html from the GET /* React fallback. This is a routing allowlist,
+      // NOT authorization; each API module still enforces its session/role rules.
       if ((pathname === "/api" || pathname.startsWith("/api/")) &&
         pathname !== "/api/health" && pathname !== "/api/bulletins" && !pathname.startsWith("/api/bulletins/") && !pathname.startsWith("/api/auth/") &&
         !/^\/api\/assets(?:\/[0-9a-f-]{36}(?:\/image)?)?$/i.test(pathname) &&
@@ -47,7 +58,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
-      if (pathname === "/api/register" && request.method !== "POST" || pathname === "/api/invitations" && !["GET", "POST"].includes(request.method)) return Response.json({ error: "Unknown API route" }, { status: 404 });
+      if ((pathname === "/api/register" && request.method !== "POST") || (pathname === "/api/invitations" && !["GET", "POST"].includes(request.method))) return Response.json({ error: "Unknown API route" }, { status: 404 });
     })
     .get("/api/health", () => ({ status: "ok" }))
     .all("/api/auth/*", ({ request }) => auth.handler(request))

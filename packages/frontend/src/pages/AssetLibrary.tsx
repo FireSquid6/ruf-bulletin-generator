@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { api } from "./api";
-import "./assets.css";
+import { api } from "../lib/api";
+import "../styles/assets.css";
 
 type Asset = { id: string; name: string; kind: string; mimeType: string; size: number; createdAt: string };
 type Upload = { name: string; kind: "branding" | "image" | "qr"; file: FileList };

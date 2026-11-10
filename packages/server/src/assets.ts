@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { eq, desc } from "drizzle-orm";
+import sharp from "sharp";
 import type { Database } from "./db";
 import type { createAuth } from "./auth";
 import { imageAsset } from "./schema";
@@ -8,12 +9,7 @@ export const assetLimit = 5 * 1024 * 1024;
 const limit = assetLimit;
 const kinds = new Set(["branding", "image", "qr"]);
 
-function detectedType(bytes: Uint8Array): string | undefined {
-  if (bytes.length >= 8 && [137, 80, 78, 71, 13, 10, 26, 10].every((n, i) => bytes[i] === n)) return "image/png";
-  if (bytes.length >= 4 && bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 && bytes.at(-2) === 255 && bytes.at(-1) === 217) return "image/jpeg";
-  if (bytes.length >= 6 && ["GIF87a", "GIF89a"].includes(Buffer.from(bytes.subarray(0, 6)).toString("ascii"))) return "image/gif";
-  if (bytes.length >= 12 && Buffer.from(bytes.subarray(0, 4)).toString("ascii") === "RIFF" && Buffer.from(bytes.subarray(8, 12)).toString("ascii") === "WEBP") return "image/webp";
-}
+const imageTypes = new Set(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 
 export const metadata = (row: Pick<typeof imageAsset.$inferSelect, "id" | "name" | "kind" | "mimeType" | "size" | "createdAt">) => ({ id: row.id, name: row.name, kind: row.kind, mimeType: row.mimeType, size: row.size, createdAt: row.createdAt.toISOString() });
 const columns = { id: imageAsset.id, name: imageAsset.name, kind: imageAsset.kind, mimeType: imageAsset.mimeType, size: imageAsset.size, createdAt: imageAsset.createdAt };
@@ -22,11 +18,20 @@ export class AssetError extends Error {
   constructor(message: string, public readonly status: number) { super(message); }
 }
 
-export function validateAsset(name: string, kind: string, mimeType: string, bytes: Buffer) {
+export async function validateAsset(name: string, kind: string, mimeType: string, bytes: Buffer) {
   if (!name.trim() || name.trim().length > 160 || !kinds.has(kind)) throw new AssetError("Enter a name (up to 160 characters) and choose branding, image, or QR.", 400);
   if (!bytes.length) throw new AssetError("Choose an image to upload.", 400);
   if (bytes.length > limit) throw new AssetError("Image is too large. Choose a file under 5 MB.", 413);
-  if (!detectedType(bytes) || detectedType(bytes) !== mimeType) throw new AssetError("Choose a PNG, JPEG, GIF, or WebP image. The file must match its format.", 415);
+  const invalidFormat = () => new AssetError("Choose a PNG, JPEG, GIF, or WebP image. The file must match its format.", 415);
+  if (!imageTypes.has(mimeType)) throw invalidFormat();
+  try {
+    // Reuse the PDF image decoder for header detection, not the client MIME claim.
+    // metadata() does not fully decode pixels; PDF generation still checks that.
+    const detected = await sharp(bytes, { animated: false, limitInputPixels: 20_000_000 }).metadata();
+    if (detected.mediaType !== mimeType) throw invalidFormat();
+  } catch {
+    throw invalidFormat();
+  }
   return { name: name.trim(), kind, mimeType, bytes, size: bytes.length };
 }
 
@@ -34,7 +39,8 @@ export const assetStore = (db: Database) => ({
   list: async () => (await db.select(columns).from(imageAsset).orderBy(desc(imageAsset.createdAt), imageAsset.name)).map(metadata),
   get: async (id: string) => (await db.select().from(imageAsset).where(eq(imageAsset.id, id)))[0],
   add: async (name: string, kind: string, mimeType: string, bytes: Buffer) => {
-    const [row] = await db.insert(imageAsset).values({ id: crypto.randomUUID(), ...validateAsset(name, kind, mimeType, bytes) }).returning();
+    const input = await validateAsset(name, kind, mimeType, bytes);
+    const [row] = await db.insert(imageAsset).values({ id: crypto.randomUUID(), ...input }).returning();
     return metadata(row);
   },
   rename: async (id: string, name: string) => {

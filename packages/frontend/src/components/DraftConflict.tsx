@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./draft-conflict.css";
+import "../styles/draft-conflict.css";
 
 export type DraftSnapshot = {
   id: string;

@@ -6,7 +6,7 @@ These are the libraries chosen for future product implementation; installing the
 
 - Use **React Router** (`react-router`) for multi-page navigation and route state.
 - Use **React Hook Form** (`react-hook-form`) for editable forms and draft field arrays. Apply draft-permissive validation; PDF generation errors are a separate concern.
-- Use **Elysia Eden Treaty** (`@elysiajs/eden`) from `src/api.ts` for type-safe calls to Elysia routes. Export the server's `App` type and import it **type-only** in the frontend, so browser bundles never import server runtime code. The server currently imports the frontend package to serve its assets; keep that runtime dependency one-way.
+- Use **Elysia Eden Treaty** (`@elysiajs/eden`) from `src/lib/api.ts` for type-safe calls to Elysia routes. Export the server's `App` type and import it **type-only** in the frontend, so browser bundles never import server runtime code. The server currently imports the frontend package to serve its assets; keep that runtime dependency one-way.
 - Use **TanStack Query** (`@tanstack/react-query`) for async server-state queries, mutations, invalidation, pending/error states, and refetching. Call the typed Eden client from query/mutation functions. React Router handles URL navigation; TanStack Query handles server state. Neither is the source of truth for draft revisions or conflict detection: the server must enforce those.
 
 ## Server (`packages/server`)

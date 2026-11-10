@@ -1,8 +1,8 @@
 import { Link, Navigate, useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { api } from "./api";
-import { session } from "./session";
+import { api } from "../lib/api";
+import { session } from "../lib/session";
 
 type Fields = { email: string; password: string; invitationKey: string };
 

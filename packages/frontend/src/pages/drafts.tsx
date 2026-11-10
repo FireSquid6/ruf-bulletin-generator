@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { api } from "./api";
-import { DraftConflict, type DraftSnapshot } from "./DraftConflict";
-import { BlockEditor, type DraftForm } from "./BlockEditor";
+import { api } from "../lib/api";
+import { DraftConflict, type DraftSnapshot } from "../components/DraftConflict";
+import { BlockEditor, type DraftForm } from "../components/BlockEditor";
 
 type Draft = { id: string; gatheringDate: string; revision: number; composition: DraftForm["composition"] };
 function dateString(value: string | Date) { return value instanceof Date ? value.toISOString().slice(0, 10) : value; }

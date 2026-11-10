@@ -3,12 +3,12 @@ import { window } from "./dom";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import type { DraftForm } from "../src/BlockEditor";
+import type { DraftForm } from "../src/components/BlockEditor";
 
 const { render, screen, cleanup } = await import("@testing-library/react");
 const userEvent = (await import("@testing-library/user-event")).default;
-const { BlockEditor } = await import("../src/BlockEditor");
-const { AssetPreview } = await import("../src/AssetPreview");
+const { BlockEditor } = await import("../src/components/BlockEditor");
+const { AssetPreview } = await import("../src/components/AssetPreview");
 afterEach(() => { cleanup(); window.document.body.innerHTML = ""; });
 
 function Editor({ initial, onSave }: { initial: DraftForm; onSave: (draft: DraftForm) => void }) {
