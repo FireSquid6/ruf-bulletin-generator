@@ -16,9 +16,11 @@
     "better-auth": "^1.7.20",
     "drizzle-orm": "^0.44.0",
     "elysia": "^1.4.0",
-    "pg": "^8.16.0"
+    "pg": "^8.16.0",
+    "zod": "^4.2.0"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "^2.4.0",
     "@types/pg": "^8.15.0"
   }
 }

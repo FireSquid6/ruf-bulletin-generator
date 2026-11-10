@@ -19,12 +19,11 @@ describe("server route boundaries", () => {
     expect((await request("/api/assets/unknown")).status).toBe(404);
   });
 
-  test("MCP is explicit about being unavailable", async () => {
-    for (const url of ["/mcp", "/mcp/example"]) {
-      const response = await request(url, "POST");
-      expect(response.status).toBe(401);
-      expect(await response.json()).toEqual({ error: "Valid MCP key required" });
-    }
+  test("MCP requires a bearer key and unknown paths do not fall through", async () => {
+    const response = await request("/mcp", "POST");
+    expect(response.status).toBe(401);
+    expect(await response.json()).toEqual({ error: "Valid MCP key required" });
+    expect((await request("/mcp/example", "POST")).status).toBe(404);
   });
 
   test("frontend serves sign-in but redirects protected navigation", async () => {
