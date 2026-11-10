@@ -15,6 +15,8 @@ describe("server route boundaries", () => {
     expect((await request("/api")).status).toBe(404);
     expect((await request("/api/health", "POST")).status).toBe(404);
     expect((await request("/api/auth/sign-up/email", "POST")).status).toBe(403);
+    expect((await request("/api/assets")).status).toBe(401);
+    expect((await request("/api/assets/unknown")).status).toBe(404);
   });
 
   test("MCP is explicit about being unavailable", async () => {

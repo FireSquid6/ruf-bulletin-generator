@@ -1,9 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router";
+import { BrowserRouter, Link, Navigate, Route, Routes, useNavigate } from "react-router";
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { BulletinIndex, DraftEditor, NewDraft } from "./drafts";
+import { AssetLibrary } from "./AssetLibrary";
 import "./style.css";
 
 const queryClient = new QueryClient();
@@ -34,9 +35,9 @@ function Workspace() {
   if (!current.data) return <Navigate to="/sign-in" replace />;
 
   return <>
-    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
+    <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link></nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
     {logout.isError && <p role="alert" className="error workspace">{logout.error.message}</p>}
-    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
+    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </>;
 }
 
