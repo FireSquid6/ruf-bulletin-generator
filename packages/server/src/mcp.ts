@@ -3,6 +3,8 @@ import { z } from "zod";
 import type { Database } from "./db";
 import { AssetError, assetStore, assetLimit, metadata } from "./assets";
 import { duplicate, songStore } from "./songs";
+import { DraftError, draftStore } from "./draft-service";
+import { PdfError, PdfGenerationError, renderPersistedBulletinPdf } from "./pdf";
 
 const part = z.object({ text: z.string().trim().min(1), label: z.string().optional(), style: z.literal("chorus").optional() });
 const songInput = z.object({
@@ -14,6 +16,10 @@ const uuid = z.uuid();
 
 const success = (value: Record<string, unknown>) => ({ content: [{ type: "text" as const, text: JSON.stringify(value) }], structuredContent: value });
 const failure = (message: string) => ({ isError: true, content: [{ type: "text" as const, text: message }] });
+const draftFailure = (error: DraftError) => {
+  const value = { status: error.status, ...error.toJSON() };
+  return { ...success(value), isError: true };
+};
 class ToolError extends Error {}
 const safe = async (operation: () => Promise<Record<string, unknown>>) => {
   try { return success(await operation()); }
@@ -54,10 +60,44 @@ export function registerLibraryTools(server: McpServer, db: Database) {
     async ({ id }) => { const removed = await assets.remove(id); return removed ? success({ id: removed.id }) : failure("Image not found"); });
 }
 
+/** Bulletin operations use the same persistence and validation service as HTTP drafts. */
+export function registerBulletinTools(server: McpServer, db: Database) {
+  const drafts = draftStore(db);
+  const run = async (operation: () => Promise<Record<string, unknown>>) => {
+    try { return success(await operation()); }
+    catch (error) { if (error instanceof DraftError) return draftFailure(error); throw error; }
+  };
+  server.registerTool("list_bulletins", { description: "List bulletins by gathering date, optionally filtering to one date", inputSchema: z.object({ date: z.string().optional() }) },
+    async ({ date }) => run(async () => ({ bulletins: await drafts.list(date) })));
+  server.registerTool("get_bulletin", { description: "Find a bulletin by its ID, including its complete ordered cover and reading-order blocks", inputSchema: z.object({ id: z.string() }) },
+    async ({ id }) => run(async () => { const bulletin = await drafts.get(id); if (!bulletin) throw new DraftError(404, "Bulletin not found"); return { bulletin }; }));
+  server.registerTool("create_bulletin", { description: "Create a dated bulletin with the editable starter composition; only one bulletin per gathering date", inputSchema: z.object({ gatheringDate: z.string() }) },
+    async ({ gatheringDate }) => run(async () => ({ bulletin: await drafts.create(gatheringDate) })));
+  server.registerTool("save_bulletin", { description: "Replace the full ordered cover and reading-order composition and optionally change its date. Supply the expected revision; on conflict the latest persisted bulletin is returned without changing it.", inputSchema: z.object({ id: z.string(), gatheringDate: z.string(), revision: z.number(), composition: z.unknown() }) },
+    async ({ id, gatheringDate, revision, composition }) => run(async () => ({ bulletin: await drafts.save(id, { gatheringDate, revision, composition }) })));
+  server.registerTool("delete_bulletin", { description: "Delete a bulletin by ID", inputSchema: z.object({ id: z.string() }) },
+    async ({ id }) => run(async () => ({ deleted: await drafts.remove(id) })));
+  server.registerTool("get_bulletin_pdf", { description: "Generate the complete PDF from the persisted bulletin and live song/asset libraries; returns base64 bytes, MIME type, filename and gathering date, or a located generation error", inputSchema: z.object({ id: z.string() }) },
+    async ({ id }) => {
+      try {
+        const rendered = await renderPersistedBulletinPdf(db, id);
+        if (!rendered) throw new DraftError(404, "Bulletin not found");
+        return success({ mimeType: "application/pdf", filename: `ruf-bulletin-${rendered.date}.pdf`, gatheringDate: rendered.date, base64: rendered.bytes.toString("base64") });
+      } catch (error) {
+        if (error instanceof DraftError) return draftFailure(error);
+        if (error instanceof PdfError || error instanceof PdfGenerationError) {
+          return { ...success({ error: error.message, ...(error instanceof PdfError ? { block: error.block } : {}) }), isError: true };
+        }
+        throw error;
+      }
+    });
+}
+
 export function createMcpEndpoint(db: Database) {
   return createMcpHandler(() => {
     const server = new McpServer({ name: "ruf-bulletin-studio", version: "0.1.0" });
     registerLibraryTools(server, db);
+    registerBulletinTools(server, db);
     return server;
   }, { maxRequestBodySize: 8 * 1024 * 1024 });
 }
