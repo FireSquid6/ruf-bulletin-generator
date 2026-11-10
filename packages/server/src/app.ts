@@ -3,6 +3,7 @@ import { frontendResponse } from "@ruf/frontend";
 import type { Database } from "./db";
 import { createAuth } from "./auth";
 import { draftRoutes } from "./drafts";
+import { pdfRoutes } from "./pdf";
 import { assetRoutes } from "./assets";
 import { authenticateMcpKey, keyRoutes } from "./keys";
 import { invitationRoutes } from "./invitations";
@@ -52,6 +53,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     .all("/api/auth/*", ({ request }) => auth.handler(request))
     .use(assetRoutes(db, auth))
     .use(draftRoutes(db, auth))
+    .use(pdfRoutes(db, auth))
     .get("/api/staff", ({ request, set }) => keys.staff(request.headers, set))
     .get("/api/keys", ({ request, set }) => keys.list(request.headers, set))
     .post("/api/keys", ({ request, body, set }) => keys.issue(request.headers, body as { userId?: string; label?: string }, set, new URL(config.baseURL).origin))

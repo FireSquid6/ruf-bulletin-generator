@@ -1,6 +1,7 @@
 import { Controller, useFieldArray, type UseFormReturn } from "react-hook-form";
 import { AssetPicker } from "./AssetPicker";
 import { GroupedItems } from "./GroupedItems";
+import { AssetPreview } from "./AssetPreview";
 import { SongPicker } from "./SongPicker";
 
 export type Block = {
@@ -45,6 +46,7 @@ function BlockFields({ block, area, index, form }: { block: Block; area: Area; i
     {block.type === "scripture" && <><label>Role<select aria-label={`Passage ${index + 1} role`} {...form.register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input aria-label={`Passage ${index + 1} reference`} {...form.register(`${prefix}.reference`)} /></label><label>Passage text<textarea aria-label={`Passage ${index + 1} text`} rows={4} {...form.register(`${prefix}.text`)} /></label></>}
     {block.type === "song" && <Controller name={`${prefix}.songKey`} control={form.control} render={({ field }) => <SongPicker value={field.value as string | undefined} onChange={field.onChange} />} />}
     {(block.type === "announcements" || block.type === "contacts" || block.type === "qr") && <GroupedItems area={area} index={index} type={block.type} form={form} />}
+    {(block.type === "branding" || block.type === "image" || block.type === "qr") && <div className="draft-asset-preview"><p>Selected draft image · Not a PDF fit check</p><AssetPreview block={form.watch(prefix)} /></div>}
     {block.type === "spacer" && <p className="field-note">A blank space in the composition.</p>}
   </>;
 }
@@ -64,7 +66,7 @@ export function BlockEditor({ form }: { form: Form }) {
     return <section className="block-group" key={area} aria-label={area === "cover" ? "Cover blocks" : "Reading-order blocks"}>
       <h2>{area === "cover" ? "Cover" : "Reading order"}</h2><p>{area === "cover" ? "The right-hand outside panel" : "The remaining content, in sequence"}</p>
       {list.fields.length === 0 && <p className="block-empty">No blocks yet. Add a block below or move one here.</p>}
-      {list.fields.map((block, index) => <div className="block-edit" key={block.id}>
+      {list.fields.map((block, index) => <div className="block-edit" id={`block-${area}-${index}`} tabIndex={-1} key={block.id}>
         <div className="block-title"><strong>{index + 1}. {blockLabel(block)}</strong><div className="block-order"><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} up in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === 0} onClick={() => list.move(index, index - 1)}>Up</button><button type="button" aria-label={`Move ${blockLabel(block)} ${index + 1} down in ${area === "cover" ? "cover" : "reading order"}`} disabled={index === list.fields.length - 1} onClick={() => list.move(index, index + 1)}>Down</button></div></div>
         <BlockFields key={`${area}.${index}.${block.id}`} block={block} area={area} index={index} form={form} />
         <div className="block-actions"><button type="button" onClick={() => moveBetween(area, index)}>Move to {area === "cover" ? "reading order" : "cover"}</button><button type="button" aria-label={`Remove ${blockLabel(block)} ${index + 1} from ${area === "cover" ? "cover" : "reading order"}`} onClick={() => list.remove(index)}>Remove</button></div>

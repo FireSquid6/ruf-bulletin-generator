@@ -6,6 +6,12 @@ import { renderPdf, type Spec } from "../src";
 const asset = fs.readFileSync(path.resolve(import.meta.dirname, "../../../assets/ruf-baylor-logo.png"));
 
 describe("renderPdf from bulletin data", () => {
+  test("dated bulletins produce identical preview and download bytes", async () => {
+    const spec: Spec = { metadata: { title: "RUF Bulletin — 2034-05-21", date: "2034-05-21" }, cover: [{ type: "heading", text: "May 21, 2034" }], flow: [] };
+    const preview = await renderPdf(spec);
+    expect(await renderPdf(spec)).toEqual(preview);
+    expect(preview.toString("latin1")).toContain("D:20340521000000Z");
+  });
   test("renders PDF bytes from a validated in-memory bulletin without an input or output file", async () => {
     const spec: Spec = {
       metadata: { title: "In-memory bulletin" },

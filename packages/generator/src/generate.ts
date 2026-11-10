@@ -79,8 +79,13 @@ async function renderDocument(spec: Spec, imageSource: ImageSource, debug: boole
   const gutter = Number(spec.layout?.gutter_mm ?? DEFAULT_GUTTER_MM) * MM;
   const contentHeight = PAGE_H - 2 * verticalMargin;
 
-  const doc = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0, compress: true }) as Doc;
   const metadata = spec.metadata ?? {};
+  // A dated persisted bulletin must yield identical bytes for preview and download.
+  const creationDate = metadata.date && /^\d{4}-\d{2}-\d{2}$/.test(metadata.date)
+    ? new Date(`${metadata.date}T00:00:00Z`) : undefined;
+  const doc = new PDFDocument({ size: [PAGE_W, PAGE_H], margin: 0, compress: true,
+    ...(creationDate ? { info: { CreationDate: creationDate } } : {}),
+  }) as Doc;
   doc.info.Title = metadata.title ?? "RUF Bulletin";
   doc.info.Author = metadata.author ?? "Reformed University Fellowship";
   doc.info.Subject = metadata.subject ?? "Weekly bulletin";
