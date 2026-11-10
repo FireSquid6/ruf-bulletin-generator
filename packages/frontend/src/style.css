@@ -135,7 +135,7 @@ a { color: #2563eb; text-underline-offset: 3px; }
 .song-list { list-style: none; margin: 0; padding: 0; }
 .song-list li { border-bottom: 1px solid #d4d4d8; }
 .song-list button { display: flex; flex-direction: column; width: 100%; text-align: left; gap: 4px; border: 0; border-radius: 0; padding: 14px 10px; background: transparent; overflow-wrap: anywhere; }
-.song-list button.selected { background: #eaf1ff; box-shadow: inset 2px 0 #2563eb; }
+.song-list button.selected { background: #fafafa; box-shadow: inset 2px 0 #2563eb; }
 .song-list button span { color: #52525b; }
 .catalog-empty { padding: 12px 0; }
 .song-editor { max-width: 650px; }
@@ -159,7 +159,7 @@ a { color: #2563eb; text-underline-offset: 3px; }
 .part-fields > div { min-width: 0; }
 .song-editor label { display: block; }
 .add-part { align-self: flex-start; }
-.notice { color: #92400e; border: 1px solid #e5c995; background: #fffbeb; padding: 10px 12px; margin: -8px 0 18px; }
+.notice { color: #92400e; border: 1px solid #d4d4d8; background: #fafafa; padding: 10px 12px; margin: -8px 0 18px; }
 .field-hint { margin: -6px 0 18px; }
 .form-actions { justify-content: flex-start; margin-top: 8px; }
 .danger { color: #b42323; border-color: #b42323; }
@@ -172,4 +172,5 @@ a { color: #2563eb; text-underline-offset: 3px; }
   .parts-heading span { display: none; }
   .editor-title { align-items: flex-start; }
   .song-catalog input { max-width: none; }
+  .song-editor select { min-height: 44px; }
 }
