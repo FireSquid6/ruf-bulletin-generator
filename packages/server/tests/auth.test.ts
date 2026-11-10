@@ -37,6 +37,7 @@ describe.skipIf(!url)("authentication at the HTTP boundary (Postgres)", () => {
       expect(staffLogin.status).toBe(200);
       const staffCookie = staffLogin.headers.get("set-cookie")!.split(";")[0];
       expect((await call("/api/bulletins", { headers: { cookie: staffCookie } })).status).toBe(200);
+      expect((await call("/api/assets", { headers: { cookie: staffCookie } })).status).toBe(200);
       expect((await call("/api/invitations", json({}, staffCookie))).status).toBe(403);
       expect((await call("/api/invitations", { headers: { cookie: staffCookie } })).status).toBe(403);
       const retry = await call("/api/invitations", json({}, cookie));
