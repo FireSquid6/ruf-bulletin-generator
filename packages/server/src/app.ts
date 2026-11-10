@@ -25,10 +25,12 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         if (request.headers.get("origin") && request.headers.get("origin") !== origin || new URL(request.url).host !== new URL(config.baseURL).host) {
           return Response.json({ error: "Invalid MCP origin" }, { status: 403 });
         }
-        if (!await authenticateMcpKey(db, request.headers.get("authorization"))) {
+        const authorization = request.headers.get("authorization");
+        const identity = await authenticateMcpKey(db, authorization);
+        if (!identity) {
           return Response.json({ error: "Valid MCP key required" }, { status: 401, headers: { "cache-control": "no-store" } });
         }
-        return mcp.fetch(request);
+        return mcp.fetch(request, { authInfo: { token: authorization!.slice(7), clientId: identity.id, scopes: [] } });
       }
       // Only these Better Auth endpoints are public; signup is exclusively
       // performed server-side after atomically claiming an invitation.
