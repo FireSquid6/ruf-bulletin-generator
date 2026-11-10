@@ -133,9 +133,9 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
           { type: "branding", assetId: "missing-branding" },
           { type: "scripture", role: "sermon", reference: "John 1", text: "More sermon words" },
           { type: "text", text: "A note" },
-          { type: "announcements", title: "News", items: [{ text: "Two" }, { text: "One" }] },
-          { type: "contacts", items: [{ name: "Pat", detail: "pat@example.org" }] },
-          { type: "qr", items: [{ caption: "Join", assetId: "missing-qr" }] },
+          { type: "announcements", title: "News", items: [{ title: "Two", text: "Second notice" }, { title: "One", text: "First notice" }] },
+          { type: "contacts", items: [{ name: "Pat", detail: "pat@example.org" }, { name: "Lee", detail: "lee@example.org" }] },
+          { type: "qr", items: [{ caption: "Join", size_mm: 20 }, { caption: "Sign up", assetId: "missing-qr", size_mm: 28 }] },
           { type: "song", songKey: "missing-song" },
         ],
       };
@@ -145,7 +145,11 @@ describe.skipIf(!url)("dated drafts at the authenticated HTTP boundary (Postgres
       const reopened = createApp(database.db, config);
       const read = await reopened.handle(new Request(`http://localhost/api/bulletins/${created.id}`, { headers: { cookie } }));
       expect((await read.json()).composition).toEqual(composition);
-      const emptied = await call(`/api/bulletins/${created.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 2, composition: { cover: [], flow: [] } });
+      const reordered = { cover: composition.cover, flow: composition.flow.map((block) => "items" in block && block.items ? { ...block, items: [...block.items].reverse() } : block) };
+      const updated = await call(`/api/bulletins/${created.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 2, composition: reordered });
+      expect(updated.status).toBe(200);
+      expect((await (await call(`/api/bulletins/${created.id}`)).json()).composition).toEqual(reordered);
+      const emptied = await call(`/api/bulletins/${created.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 3, composition: { cover: [], flow: [] } });
       expect(emptied.status).toBe(200);
       expect((await (await call(`/api/bulletins/${created.id}`)).json()).composition).toEqual({ cover: [], flow: [] });
     } finally {
