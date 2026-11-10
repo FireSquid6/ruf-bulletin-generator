@@ -1,6 +1,7 @@
 import { Controller, useFieldArray, type UseFormReturn } from "react-hook-form";
 import { AssetPicker } from "./AssetPicker";
 import { GroupedItems } from "./GroupedItems";
+import { AssetPreview } from "./AssetPreview";
 import { SongPicker } from "./SongPicker";
 
 export type Block = {
@@ -45,6 +46,7 @@ function BlockFields({ block, area, index, form }: { block: Block; area: Area; i
     {block.type === "scripture" && <><label>Role<select aria-label={`Passage ${index + 1} role`} {...form.register(`${prefix}.role`)}><option value="sermon">Sermon passage</option><option value="reading">Scripture reading</option></select></label><label>Reference<input aria-label={`Passage ${index + 1} reference`} {...form.register(`${prefix}.reference`)} /></label><label>Passage text<textarea aria-label={`Passage ${index + 1} text`} rows={4} {...form.register(`${prefix}.text`)} /></label></>}
     {block.type === "song" && <Controller name={`${prefix}.songKey`} control={form.control} render={({ field }) => <SongPicker value={field.value as string | undefined} onChange={field.onChange} />} />}
     {(block.type === "announcements" || block.type === "contacts" || block.type === "qr") && <GroupedItems area={area} index={index} type={block.type} form={form} />}
+    {(block.type === "branding" || block.type === "image" || block.type === "qr") && <div className="draft-asset-preview"><p>Selected draft image · Not a PDF fit check</p><AssetPreview block={form.watch(prefix)} /></div>}
     {block.type === "spacer" && <p className="field-note">A blank space in the composition.</p>}
   </>;
 }
