@@ -4,6 +4,8 @@ For web, editor, account, asset, song-store, or MCP-facing UX work, read [PRODUC
 
 For bulletin vocabulary read [GLOSSARY.md](GLOSSARY.md). The existing [README.md](README.md) describes the **current YAML CLI**, not the planned database-backed application. Where a prototype fixture or flow differs from PRODUCT.md, the confirmed product scope takes precedence. Do not treat browser storage, browser print, example lyrics, or illustrative access screens as production designs.
 
+For frontend routes/forms/data fetching, server auth/API/MCP, or PDF integration, follow [docs/agents/application-stack.md](docs/agents/application-stack.md) for the adopted libraries and package boundaries.
+
 ## Agent skills
 
 ### Issue tracker

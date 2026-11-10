@@ -3,13 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": {"start": "bun run src/index.ts"},
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
   "dependencies": {
-    "@ruf/generator": "workspace:*",
+    "@modelcontextprotocol/server": "^2.4.0",
     "@ruf/frontend": "workspace:*",
+    "@ruf/generator": "workspace:*",
+    "better-auth": "^1.7.20",
     "drizzle-orm": "^0.44.0",
     "elysia": "^1.4.0",
     "pg": "^8.16.0"
   },
-  "devDependencies": {"@types/pg": "^8.15.0"}
+  "devDependencies": {
+    "@types/pg": "^8.15.0"
+  }
 }

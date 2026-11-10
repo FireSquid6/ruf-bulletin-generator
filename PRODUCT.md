@@ -42,7 +42,7 @@ Keep the current RUF Baylor logo available as a reusable starter asset. The edit
 ## Evidence on Hand
 
 - `assets/ruf-baylor-logo.png` and `assets/groupme-qr.png` are real project assets.
-- `README.md`, `src/`, `store/song-store.yaml`, and `bulletins/` describe the current YAML CLI and its supported blocks.
+- `README.md`, `packages/generator/src/`, `packages/cli/src/`, `store/song-store.yaml`, and `bulletins/` describe the current YAML CLI and its supported blocks.
 - The revised prototype's source is at `~/design/ruf-bulletin-web-editor/src/`. Its demo lyrics, names, announcements, date, and tagline are **sample content**, not approved weekly bulletin copy.
 - The prototype stores data in browser localStorage, approximates pagination in HTML, and uses browser print. These are demonstrations, not persistence, PDF, authorization, or concurrency implementations.
 

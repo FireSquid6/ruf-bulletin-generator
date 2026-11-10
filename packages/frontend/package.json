@@ -3,10 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": {".": "./src/assets.ts"},
-  "scripts": {"build": "bun run build.ts"},
+  "exports": {
+    ".": "./src/assets.ts"
+  },
+  "scripts": {
+    "build": "bun run build.ts"
+  },
   "dependencies": {
+    "@elysiajs/eden": "^1.4.9",
+    "@tanstack/react-query": "^5.107.1",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.91.0",
+    "react-router": "^8.5.1"
   }
 }
