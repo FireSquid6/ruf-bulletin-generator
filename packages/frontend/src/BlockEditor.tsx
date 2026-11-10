@@ -1,9 +1,7 @@
 import { Controller, useFieldArray, type UseFormReturn } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { api } from "./api";
 import { AssetPicker } from "./AssetPicker";
 import { GroupedItems } from "./GroupedItems";
+import { SongPicker } from "./SongPicker";
 
 export type Block = {
   type: string;
@@ -36,26 +34,6 @@ function newBlock(type: string): Block {
     case "text": return { type, text: "" };
     default: return { type };
   }
-}
-
-function SongPicker({ value, onChange }: { value?: string; onChange: (value: string) => void }) {
-  const [search, setSearch] = useState("");
-  const songs = useQuery({ queryKey: ["songs", ""], queryFn: async () => {
-    const response = await api.api.songs.get({ query: { search: "" } });
-    if (response.error || !response.data || !("songs" in response.data)) throw new Error("Could not load songs. You can still enter a key below.");
-    return response.data.songs;
-  }, retry: false });
-  const choices = songs.data ?? [];
-  const missing = !!value && !choices.some((song) => song.key === value);
-  const matches = choices.filter((song) => song.key === value || `${song.key} ${song.title}`.toLowerCase().includes(search.toLowerCase()));
-  return <div className="song-picker">
-    {songs.isPending ? <p>Loading songs…</p> : songs.isError ? <p role="alert" className="error">{songs.error.message} <button type="button" onClick={() => songs.refetch()}>Try again</button></p> : <>
-      {missing && <p className="field-warning" role="status">Song key “{value}” is not in the song store. This draft can still be saved.</p>}
-      <label>Find a song<input aria-label="Find a song" type="search" value={search} placeholder="Search by key or title" onChange={(event) => setSearch(event.target.value)} /></label>
-      <label>Select song<select aria-label="Select song" value={value && !missing ? value : ""} onChange={(event) => onChange(event.target.value)}><option value="">{value && missing ? "Keep missing key" : "Choose a song…"}</option>{matches.map((song) => <option key={song.key} value={song.key}>{song.title} · {song.key}</option>)}</select></label>
-    </>}
-    <label>Song key<input aria-label="Song key" value={value ?? ""} onChange={(event) => onChange(event.target.value)} placeholder="Enter a key or select a song" /></label>
-  </div>;
 }
 
 function BlockFields({ block, area, index, form }: { block: Block; area: Area; index: number; form: Form }) {

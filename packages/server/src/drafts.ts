@@ -30,8 +30,12 @@ function validDate(value: string) {
 function validComposition(value: unknown): value is Composition {
   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
   const content = value as Record<string, unknown>;
-  return [content.cover, content.flow].every((blocks) => Array.isArray(blocks) && blocks.every((block) =>
-    block && typeof block === "object" && !Array.isArray(block) && typeof block.type === "string" && block.type.length > 0));
+  return [content.cover, content.flow].every((blocks) => Array.isArray(blocks) && blocks.every((block) => {
+    if (!block || typeof block !== "object" || Array.isArray(block) || typeof block.type !== "string" || !block.type) return false;
+    // Lyrics and store metadata belong to the song store, not a draft snapshot.
+    if (block.type === "song") return typeof block.songKey === "string" && Object.keys(block).every((key) => key === "type" || key === "songKey");
+    return true;
+  }));
 }
 function uniqueViolation(error: unknown) {
   const dbError = error as { code?: string; cause?: { code?: string } } | null;

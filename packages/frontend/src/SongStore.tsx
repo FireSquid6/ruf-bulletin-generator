@@ -18,8 +18,9 @@ function message(error: { status?: number } | null, fallback: string) {
 
 export function SongStore() {
   const [params, setParams] = useSearchParams();
-  const selected = params.get("key");
   const creating = params.has("new");
+  const selected = creating ? null : params.get("key");
+  const newKey = creating ? params.get("key") ?? "" : "";
   const [search, setSearch] = useState("");
   const client = useQueryClient();
   const songs = useQuery({
@@ -43,8 +44,8 @@ export function SongStore() {
   const { fields, append, move, remove } = useFieldArray({ control, name: "parts" });
   const key = watch("key");
   useEffect(() => {
-    if (creating) reset(blank);
-  }, [creating, reset]);
+    if (creating) reset({ ...blank, key: newKey });
+  }, [creating, newKey, reset]);
   useEffect(() => {
     if (!creating && !isDirty && detail.data && detail.data.key === selected) reset({
       key: detail.data.key, title: detail.data.title, parts: detail.data.parts,
