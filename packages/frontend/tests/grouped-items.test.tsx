@@ -1,12 +1,10 @@
 import { afterEach, expect, test } from "bun:test";
-import { Window } from "happy-dom";
+import { window } from "./dom";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import type { DraftForm } from "../src/BlockEditor";
 
-const window = new Window();
-Object.assign(globalThis, { window, document: window.document, navigator: window.navigator, HTMLElement: window.HTMLElement, MutationObserver: window.MutationObserver });
 const { render, screen, cleanup } = await import("@testing-library/react");
 const userEvent = (await import("@testing-library/user-event")).default;
 const { BlockEditor } = await import("../src/BlockEditor");
