@@ -87,6 +87,14 @@ describe.skipIf(!url)("dated PDF at the authenticated HTTP boundary", () => {
       const coverOverflow = await call(`/api/bulletins/${draft.id}/pdf`);
       expect(coverOverflow.status).toBe(422);
       expect(await coverOverflow.json()).toMatchObject({ block: { area: "cover", index: 0, type: "text" } });
+      expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 9, composition: { cover: [], flow: [{ type: "contacts", items: [{ name: "Pat", detail: "pat@example.org" }] }] } })).status).toBe(200);
+      const contacts = await call(`/api/bulletins/${draft.id}/pdf`);
+      expect(contacts.status).toBe(422);
+      expect(await contacts.json()).toMatchObject({ error: expect.stringContaining("Contact"), block: { area: "flow", index: 0, type: "contacts" } });
+      expect((await call(`/api/bulletins/${draft.id}`, "PUT", { gatheringDate: "2034-05-21", revision: 10, composition: { cover: [{ type: "spacer" }], flow: [] } })).status).toBe(200);
+      const spacer = await call(`/api/bulletins/${draft.id}/pdf`);
+      expect(spacer.status).toBe(422);
+      expect(await spacer.json()).toMatchObject({ error: expect.stringContaining("Spacer"), block: { area: "cover", index: 0, type: "spacer" } });
     } finally {
       await database.close();
       await setup.query(`DROP SCHEMA ${schema} CASCADE`);

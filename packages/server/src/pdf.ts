@@ -11,6 +11,7 @@ type Location = { area: Area; index: number; type: string };
 class PdfError extends Error {
   constructor(message: string, readonly block: Location) { super(message); }
 }
+class PdfGenerationError extends Error {}
 
 // The persisted composition describes reading order, not PDFKit columns or pages.
 function toSpec(composition: Composition, date: string): Spec {
@@ -42,6 +43,8 @@ function toSpec(composition: Composition, date: string): Spec {
       case "qr": return fail("QR images and their captions/sizes are not supported in basic PDF generation yet. Your draft is unchanged.");
       case "song": return fail("Song references are not supported in basic PDF generation yet. Your draft is unchanged.");
       case "image": case "branding": return fail("Images are not supported in basic PDF generation yet. Your draft is unchanged.");
+      case "contacts": return fail("Contact names and details are not supported in basic PDF generation yet. Your draft is unchanged.");
+      case "spacer": return fail("Spacer blocks are not supported in basic PDF generation yet. Your draft is unchanged.");
       default: return fail("This block is not supported in basic PDF generation yet. Your draft is unchanged.");
     }
   });
@@ -75,6 +78,11 @@ async function renderDatedPdf(composition: Composition, date: string): Promise<B
         }
       }
     }
+    // An aggregate fit failure may not have a uniquely attributable block.
+    // It is still a generation error, never a server crash or a partial PDF.
+    if (message.includes("does not fit")) {
+      throw new PdfGenerationError("Bulletin content does not fit on the folded A4 sheet. Shorten or rearrange the cover and reading-order blocks.");
+    }
     throw error;
   }
 }
@@ -94,9 +102,9 @@ export function pdfRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
           "x-content-type-options": "nosniff",
         } });
       } catch (error) {
-        if (!(error instanceof PdfError)) throw error;
+        if (!(error instanceof PdfError || error instanceof PdfGenerationError)) throw error;
         set.status = 422;
-        return { error: error.message, block: error.block };
+        return { error: error.message, ...(error instanceof PdfError ? { block: error.block } : {}) };
       }
     }, { query: t.Object({ download: t.Optional(t.String()) }) });
 }
