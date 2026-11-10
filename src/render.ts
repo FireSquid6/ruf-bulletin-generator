@@ -82,18 +82,21 @@ function partWeight(part: SongPart): number {
   return Math.max(1, Math.floor(text.length / 42) + text.split("\n").length);
 }
 
-function balancedParts(parts: SongPart[], count: number): SongPart[][] {
-  const columns: SongPart[][] = Array.from({ length: count }, () => []);
-  const weights = new Array(count).fill(0);
-  for (const part of parts) {
-    let target = 0;
-    for (let index = 1; index < count; index++) {
-      if (weights[index] < weights[target]) target = index;
+function balancedParts(parts: SongPart[]): [SongPart[], SongPart[]] {
+  const weights = parts.map(partWeight);
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  let leftWeight = 0;
+  let split = 1;
+  let bestDifference = Infinity;
+  for (let index = 1; index < parts.length; index++) {
+    leftWeight += weights[index - 1];
+    const difference = Math.abs(totalWeight - 2 * leftWeight);
+    if (difference <= bestDifference) {
+      split = index;
+      bestDifference = difference;
     }
-    columns[target].push(part);
-    weights[target] += partWeight(part);
   }
-  return columns;
+  return [parts.slice(0, split), parts.slice(split)];
 }
 
 function renderPart(
@@ -139,7 +142,7 @@ function renderSong(doc: Doc, block: Block, x: number, y: number, width: number,
 
   const gap = 4 * MM;
   const subWidth = (width - gap) / 2;
-  const groups = balancedParts(parts, 2);
+  const groups = balancedParts(parts);
   let leftY = cursor;
   let rightY = cursor;
   for (const part of groups[0]) leftY = renderPart(doc, part, x, leftY, subWidth, "body", effectiveScale);
