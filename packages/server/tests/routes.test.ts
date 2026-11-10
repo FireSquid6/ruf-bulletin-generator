@@ -35,7 +35,15 @@ describe("server route boundaries", () => {
     expect(html).toContain("RUF Bulletin Studio");
     const script = html.match(/src="([^"]+\.js)"/);
     expect(script).not.toBeNull();
-    expect((await request(script![1])).status).toBe(200);
+    const bundle = await request(script![1]);
+    expect(bundle.status).toBe(200);
+    const source = await bundle.text();
+    // The HTML entrypoint must ship the new draft screens alongside the
+    // existing image, invitation, and MCP credential navigation.
+    for (const label of ["Create draft", "/bulletins/new", "/api/assets/", "Staff invitations", "MCP credentials", "/register"]) {
+      expect(source).toContain(label);
+    }
+    expect(source).not.toContain("/ruf-baylor-logo.png");
     expect((await request("/bulletins/new")).status).toBe(302);
     expect((await request("/missing.js")).status).toBe(404);
   });
