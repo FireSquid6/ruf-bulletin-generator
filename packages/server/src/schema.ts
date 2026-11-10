@@ -47,5 +47,5 @@ export const bulletin = pgTable("bulletin", {
   id: text("id").primaryKey(),
   gatheringDate: date("gathering_date").notNull().unique(),
   revision: integer("revision").notNull().default(1),
-  composition: text("composition").notNull().default("[]"),
+  composition: text("composition").notNull().default('{"cover":[],"flow":[]}'),
 });

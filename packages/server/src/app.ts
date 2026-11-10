@@ -2,7 +2,7 @@ import { Elysia } from "elysia";
 import { frontendResponse } from "@ruf/frontend";
 import type { Database } from "./db";
 import { createAuth } from "./auth";
-import { bulletin } from "./schema";
+import { draftRoutes } from "./drafts";
 
 export function createApp(db: Database, config: { secret: string; baseURL: string }) {
   const auth = createAuth(db, config);
@@ -18,22 +18,14 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
         "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
       ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
       if ((pathname === "/api" || pathname.startsWith("/api/")) &&
-        !["/api/health", "/api/bulletins"].includes(pathname) && !pathname.startsWith("/api/auth/")) {
+        !["/api/health"].includes(pathname) && !pathname.startsWith("/api/bulletins") && !pathname.startsWith("/api/auth/")) {
         return Response.json({ error: "Unknown API route" }, { status: 404 });
       }
       if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
     })
     .get("/api/health", () => ({ status: "ok" }))
     .all("/api/auth/*", ({ request }) => auth.handler(request))
-    .get("/api/bulletins", async ({ request, set }) => {
-      const session = await auth.api.getSession({ headers: request.headers });
-      if (!session) {
-        set.status = 401;
-        return { error: "Sign in required" };
-      }
-      const rows = await db.select({ id: bulletin.id, gatheringDate: bulletin.gatheringDate }).from(bulletin);
-      return { bulletins: rows };
-    })
+    .use(draftRoutes(db, auth))
     .get("/*", async ({ request }) => {
       const pathname = new URL(request.url).pathname;
       if (pathname !== "/sign-in" && !pathname.includes(".") &&

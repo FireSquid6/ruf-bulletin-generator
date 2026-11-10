@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router";
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { api } from "./api";
+import { BulletinIndex, DraftEditor, NewDraft } from "./drafts";
 import "./style.css";
 
 const queryClient = new QueryClient();
@@ -18,16 +18,6 @@ function Workspace() {
   const navigate = useNavigate();
   const client = useQueryClient();
   const current = useQuery({ queryKey: ["session"], queryFn: session, retry: false });
-  const bulletins = useQuery({
-    queryKey: ["bulletins"],
-    queryFn: async () => {
-      const result = await api.api.bulletins.get();
-      if (result.error || !result.data || !("bulletins" in result.data) || !Array.isArray(result.data.bulletins)) throw new Error("Could not load bulletins. Try again.");
-      return result.data as { bulletins: { id: string; gatheringDate: string }[] };
-    },
-    enabled: Boolean(current.data),
-    retry: false,
-  });
   const logout = useMutation({
     mutationFn: async () => {
       const response = await fetch("/api/auth/sign-out", { method: "POST", credentials: "same-origin" });
@@ -45,13 +35,8 @@ function Workspace() {
 
   return <>
     <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
-    <main className="workspace">
-      <div className="workspace-heading"><div><h1>Bulletins</h1><p>Gathering dates and saved drafts</p></div></div>
-      {logout.isError && <p role="alert" className="error">{logout.error.message}</p>}
-      {bulletins.isPending ? <p>Loading bulletins…</p> : bulletins.isError ? <p role="alert">{bulletins.error.message} <button onClick={() => bulletins.refetch()}>Try again</button></p> : bulletins.data?.bulletins.length === 0 ?
-        <section className="empty"><h2>No bulletins yet</h2><p>This workspace is ready for your first gathering bulletin. Bulletin creation is coming next; the YAML generator remains available from the command line.</p></section> :
-        <ul className="bulletin-list">{bulletins.data?.bulletins.map((item) => <li key={item.id}>{item.gatheringDate}</li>)}</ul>}
-    </main>
+    {logout.isError && <p role="alert" className="error workspace">{logout.error.message}</p>}
+    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </>;
 }
 
