@@ -7,6 +7,62 @@ import { eq } from "drizzle-orm";
 
 const url = process.env.TEST_DATABASE_URL;
 describe.skipIf(!url)("song store over authenticated HTTP (Postgres)", () => {
+  test("a draft keeps only a song key while store edits, renames, deletion and key reuse change resolution", async () => {
+    const database = createDatabase(url!);
+    const config = { secret: "test-secret-at-least-thirty-two-characters", baseURL: "http://localhost" };
+    const app = createApp(database.db, config);
+    const email = `song-draft-${crypto.randomUUID()}@example.org`;
+    const key = `hymn-${crypto.randomUUID()}`;
+    const renamed = `${key}-renamed`;
+    const gatheringDate = `20${String(Math.floor(Math.random() * 50) + 50)}-01-13`;
+    let draftId: string | undefined;
+    let cookie = "";
+    const call = (path: string, method = "GET", body?: unknown) => app.handle(new Request(`http://localhost${path}`, {
+      method, headers: { ...(cookie ? { cookie } : {}), ...(body ? { "content-type": "application/json", origin: "http://localhost" } : {}) },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    }));
+    const songAt = async (songKey: string) => {
+      const response = await call(`/api/songs/${encodeURIComponent(songKey)}`);
+      return response.status === 404 ? null : (await response.json()).song;
+    };
+    try {
+      await createAuth(database.db, config).api.signUpEmail({ body: { email, name: "Song tester", password: "test-password-123" } });
+      const login = await call("/api/auth/sign-in/email", "POST", { email, password: "test-password-123" });
+      cookie = login.headers.get("set-cookie")!.split(";")[0];
+      const first = { key, title: "First title", parts: [{ text: "First lyrics" }] };
+      expect((await call("/api/songs", "POST", first)).status).toBe(201);
+      const created = await (await call("/api/bulletins", "POST", { gatheringDate })).json();
+      draftId = created.id;
+      const composition = { cover: [], flow: [{ type: "song", songKey: key }] };
+      expect((await call(`/api/bulletins/${draftId}`, "PUT", { gatheringDate, revision: 1, composition: { cover: [], flow: [{ ...composition.flow[0], parts: first.parts }] } })).status).toBe(400);
+      const saved = await call(`/api/bulletins/${draftId}`, "PUT", { gatheringDate, revision: 1, composition });
+      expect(saved.status).toBe(200);
+      expect((await saved.json()).composition).toEqual(composition);
+      expect((await songAt(key)).parts).toEqual(first.parts);
+      expect((await call(`/api/songs/${encodeURIComponent(key)}`, "PUT", { ...first, title: "Edited title", parts: [{ text: "New lyrics" }] })).status).toBe(200);
+      expect((await songAt(key)).parts).toEqual([{ text: "New lyrics" }]);
+      expect((await call(`/api/songs/${encodeURIComponent(key)}`, "PUT", { ...first, key: renamed })).status).toBe(200);
+      expect(await songAt(key)).toBeNull();
+      expect((await call(`/api/songs/${encodeURIComponent(renamed)}`, "DELETE")).status).toBe(200);
+      expect(await songAt(renamed)).toBeNull();
+      expect((await call("/api/songs", "POST", { ...first, title: "Reconnected", parts: [{ text: "Reused key lyrics" }] })).status).toBe(201);
+      expect((await songAt(key)).title).toBe("Reconnected");
+      expect((await call(`/api/songs/${encodeURIComponent(key)}`, "DELETE")).status).toBe(200);
+      expect(await songAt(key)).toBeNull();
+      expect((await call("/api/songs", "POST", { ...first, title: "Reconnected again" })).status).toBe(201);
+      expect((await songAt(key)).title).toBe("Reconnected again");
+      const reopened = await (await call(`/api/bulletins/${draftId}`)).json();
+      expect(reopened.revision).toBe(2);
+      expect(reopened.composition).toEqual(composition);
+      expect(JSON.stringify(reopened.composition)).not.toContain("lyrics");
+    } finally {
+      if (draftId) await call(`/api/bulletins/${draftId}`, "DELETE");
+      await database.db.delete(song).where(eq(song.key, key));
+      await database.db.delete(song).where(eq(song.key, renamed));
+      await database.db.delete(user).where(eq(user.email, email));
+      await database.close();
+    }
+  });
   test("search, ordered parts, defaults, unique keys, rename and delete leave draft references untouched", async () => {
     const database = createDatabase(url!);
     const config = { secret: "test-secret-at-least-thirty-two-characters", baseURL: "http://localhost" };
