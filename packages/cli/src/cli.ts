@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { Command } from "commander";
-import { generate } from "./generate";
+import { generate } from "@ruf/generator";
 
 interface CliOptions {
   output?: string;

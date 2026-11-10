@@ -1,22 +1,21 @@
 {
-  "name": "ruf-bulletin-generator",
+  "name": "ruf-bulletin-workspace",
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "workspaces": ["packages/*"],
   "scripts": {
-    "bulletin": "bun run src/cli.ts --store store/song-store.yaml",
-    "generate": "bun run src/cli.ts example/example-dummy.yaml",
-    "test": "bun test"
-  },
-  "dependencies": {
-    "commander": "^15.0.0",
-    "js-yaml": "^4.1.0",
-    "pdfkit": "^0.15.0"
+    "bulletin": "bun run packages/cli/src/cli.ts --store store/song-store.yaml",
+    "generate": "bun run packages/cli/src/cli.ts example/example-dummy.yaml",
+    "test": "bun test packages/generator/tests packages/server/tests",
+    "typecheck": "tsc -p tsconfig.json",
+    "build": "bun run --cwd packages/frontend build",
+    "start": "bun run packages/server/src/index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/js-yaml": "^4.0.9",
-    "@types/pdfkit": "^0.13.4",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "typescript": "^5.5.4"
   }
 }

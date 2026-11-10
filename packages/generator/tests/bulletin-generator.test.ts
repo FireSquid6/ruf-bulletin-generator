@@ -13,7 +13,7 @@ import {
   validateSpec,
 } from "../src";
 
-const EXAMPLE_YAML = path.resolve(import.meta.dirname, "../example/example-dummy.yaml");
+const EXAMPLE_YAML = path.resolve(import.meta.dirname, "../../../example/example-dummy.yaml");
 
 function writeSpec(dir: string, specText: string): string {
   const filePath = path.join(dir, "spec.yaml");
@@ -77,7 +77,7 @@ describe("generate", () => {
 
 describe("song store", () => {
   test("covers existing weekly songs with numbered verses and unnumbered choruses", () => {
-    const root = path.resolve(import.meta.dirname, "..");
+    const root = path.resolve(import.meta.dirname, "../../..");
     const store = loadSongStore(path.join(root, "store/song-store.yaml"));
     const referenced = new Set<string>();
 
@@ -113,7 +113,7 @@ describe("song store", () => {
   });
 
   test("future bulletins follow the worship plan, with missing songs left as references", () => {
-    const root = path.resolve(import.meta.dirname, "..");
+    const root = path.resolve(import.meta.dirname, "../../..");
     const store = loadSongStore(path.join(root, "store/song-store.yaml"));
     const notInSheet = new Set(["here_is_love", "be_unto_your_name"]);
     const weeks = [
@@ -148,7 +148,7 @@ describe("song store", () => {
   });
 
   test("imports the distinct songs from the song sheet without replacing weekly entries", () => {
-    const store = loadSongStore(path.resolve(import.meta.dirname, "../store/song-store.yaml"));
+    const store = loadSongStore(path.resolve(import.meta.dirname, "../../../store/song-store.yaml"));
     expect(Object.keys(store.songs)).toHaveLength(83);
     for (const key of [
       "build_my_life", "praise_to_the_lord_joyful_joyful", "he_will_hold_me_fast",
@@ -417,7 +417,7 @@ describe("generate", () => {
     const result = Bun.spawnSync([
       process.execPath,
       "run",
-      path.resolve(import.meta.dirname, "../src/cli.ts"),
+      path.resolve(import.meta.dirname, "../../cli/src/cli.ts"),
       spec,
       "--output",
       out,
@@ -439,9 +439,9 @@ describe("generate", () => {
         "      - - type: qr",
         "          items:",
         "            - caption: GroupMe",
-        `              path: ${path.resolve(import.meta.dirname, "../assets/groupme-qr.png")}`,
+        `              path: ${path.resolve(import.meta.dirname, "../../../assets/groupme-qr.png")}`,
         "            - caption: Prayer Requests",
-        `              path: ${path.resolve(import.meta.dirname, "../assets/prayer-group-qr.png")}`,
+        `              path: ${path.resolve(import.meta.dirname, "../../../assets/prayer-group-qr.png")}`,
         "",
       ].join("\n"),
     );
