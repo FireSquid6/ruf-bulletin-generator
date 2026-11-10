@@ -27,7 +27,7 @@ export function Invitations() {
   if (!current.data) return <Navigate to="/sign-in" replace />;
   if (current.data.user.role !== "admin") return <Navigate to="/" replace />;
 
-  return <><header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link><Link to="/invitations" aria-current="page">Staff invitations</Link></nav></div></header>
+  return <><header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/assets">Images</Link><Link to="/invitations" aria-current="page">Staff invitations</Link><Link to="/credentials">MCP credentials</Link></nav></div></header>
     <main className="workspace invitation-page"><div className="workspace-heading"><div><h1>Staff invitations</h1><p>Issue a single-use key for a staff member to create an account.</p></div></div>
       <section className="invitation-issue" aria-label="Issue an invitation"><button className="primary" type="button" disabled={issue.isPending} onClick={() => issue.mutate()}>{issue.isPending ? "Generating…" : "Generate invitation"}</button><p>Share the key directly with the staff member. It will not be shown again.</p></section>
       {issue.isError && <p role="alert" className="error">{issue.error.message}</p>}

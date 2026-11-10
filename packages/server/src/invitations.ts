@@ -26,6 +26,7 @@ export function invitationRoutes(db: Database, auth: ReturnType<typeof createAut
       const key = randomBytes(12).toString("base64url");
       await db.insert(invitation).values({ id: randomUUID(), keyHash: hash(key), issuedBy: session.user.id });
       set.status = 201;
+      set.headers["cache-control"] = "no-store";
       return { key };
     })
     .post("/api/register", async ({ request, body, set }) => {

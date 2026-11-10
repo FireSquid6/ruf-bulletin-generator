@@ -25,6 +25,7 @@ describe.skipIf(!url)("authentication at the HTTP boundary (Postgres)", () => {
       expect((await call("/api/register", json({ email: `guess-${crypto.randomUUID()}@example.org`, password: "valid-password-123", invitationKey: "AAAAAAAAAAAAAAAA" }))).status).toBe(400);
       const issued = await call("/api/invitations", json({}, cookie));
       expect(issued.status).toBe(201);
+      expect(issued.headers.get("cache-control")).toContain("no-store");
       const { key } = await issued.json() as { key: string };
       expect(key).toMatch(/^[A-Za-z0-9_-]{16}$/);
       expect(JSON.stringify(await (await call("/api/invitations", { headers: { cookie } })).json())).not.toContain(key);
@@ -38,6 +39,10 @@ describe.skipIf(!url)("authentication at the HTTP boundary (Postgres)", () => {
       const staffCookie = staffLogin.headers.get("set-cookie")!.split(";")[0];
       expect((await call("/api/bulletins", { headers: { cookie: staffCookie } })).status).toBe(200);
       expect((await call("/api/assets", { headers: { cookie: staffCookie } })).status).toBe(200);
+      const staff = await (await call("/api/staff", { headers: { cookie } })).json() as { staff: { id: string; email: string }[] };
+      const invitedStaff = staff.staff.find(person => person.email === staffEmail);
+      expect(invitedStaff?.id).toBeTruthy();
+      expect((await call("/api/keys", json({ userId: invitedStaff!.id, label: "Invited staff laptop" }, cookie))).status).toBe(201);
       expect((await call("/api/invitations", json({}, staffCookie))).status).toBe(403);
       expect((await call("/api/invitations", { headers: { cookie: staffCookie } })).status).toBe(403);
       const retry = await call("/api/invitations", json({}, cookie));
