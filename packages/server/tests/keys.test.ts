@@ -56,12 +56,16 @@ describe.skipIf(!url)("MCP credentials at the Postgres HTTP boundary", () => {
       expect(listing).not.toContain(second.secret);
       expect(listing).not.toContain("hash");
       expect((await call("/api/keys", { headers: { authorization: `Bearer ${issued.secret}` } })).status).toBe(401);
+      expect((await call("/api/auth/sign-up/email", { method: "POST", headers: { authorization: `Bearer ${issued.secret}`, origin: config.baseURL, "content-type": "application/json" }, body: JSON.stringify({ email: "unauthorized@example.org", password, name: "Unauthorized" }) })).status).toBe(403);
 
       // Content tools do not exist yet, but the MCP boundary must authenticate before the 501 placeholder.
       expect((await call("/mcp", { method: "POST" })).status).toBe(401);
       expect((await call("/mcp", { method: "POST", headers: { authorization: "Bearer invalid" } })).status).toBe(401);
       expect((await call("/mcp", { method: "POST", headers: { authorization: `Bearer ${issued.secret}` } })).status).toBe(501);
       expect(await authenticateMcpKey(database.db, `Bearer ${issued.secret}`)).toEqual({ id: staff.user.id, name: "Staff Member", email: staffEmail });
+      const adminOwned = await (await post("/api/keys", adminCookie, { userId: admin.user.id, label: "Admin's laptop" })).json();
+      expect(await authenticateMcpKey(database.db, `Bearer ${adminOwned.secret}`)).toEqual({ id: admin.user.id, name: "Admin", email: adminEmail });
+      expect((await call("/api/keys", { headers: { authorization: `Bearer ${adminOwned.secret}` } })).status).toBe(401);
       expect((await post(`/api/keys/${issued.key.id}/revoke`, staffCookie)).status).toBe(403);
       expect((await post(`/api/keys/${issued.key.id}/revoke`, adminCookie)).status).toBe(200);
       expect((await call("/mcp", { method: "POST", headers: { authorization: `Bearer ${issued.secret}` } })).status).toBe(401);

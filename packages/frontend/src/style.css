@@ -43,7 +43,7 @@ small { color: #b42323; margin-bottom: 16px; }
 .credentials section > h2 { font-size: 1rem; margin-bottom: 16px; }
 .credential-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .credential-fields label { display: block; }
-.secret-once { background: #fafafa; border: 1px solid #d4d4d8 !important; padding: 24px !important; margin-bottom: 32px; }
+.credentials .secret-once { background: #fafafa; border: 1px solid #d4d4d8; padding: 24px; margin-bottom: 32px; }
 .secret-once p { margin-bottom: 16px; color: #257045; }
 .secret-value { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
 .secret-value code { background: #fff; padding: 12px; border: 1px solid #d4d4d8; overflow-wrap: anywhere; max-width: 100%; user-select: all; }
