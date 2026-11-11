@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { frontendResponse } from "@ruf/frontend";
 import type { Database } from "./db";
 import { createAuth } from "./auth";
+import type { AuthConfig } from "./auth";
 import { draftRoutes } from "./drafts";
 import { pdfRoutes } from "./pdf";
 import { assetRoutes } from "./assets";
@@ -10,9 +11,9 @@ import { invitationRoutes } from "./invitations";
 import { songRoutes } from "./songs";
 import { createMcpEndpoint } from "./mcp";
 
-export function createApp(db: Database, config: { secret: string; baseURL: string }) {
+export function createApp(db: Database, config: AuthConfig) {
   const auth = createAuth(db, config);
-  const keys = keyRoutes(db, auth);
+  const keys = keyRoutes(db, auth, config.emailConfirmation);
   const mcp = createMcpEndpoint(db);
   const appURL = new URL(config.baseURL);
 
@@ -34,7 +35,7 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
       return Response.json({ error: "Invalid MCP origin" }, { status: 403 });
     }
     const authorization = request.headers.get("authorization");
-    const identity = await authenticateMcpKey(db, authorization);
+    const identity = await authenticateMcpKey(db, authorization, config.emailConfirmation);
     if (!identity) {
       return Response.json({ error: "Valid MCP key required" }, { status: 401, headers: { "cache-control": "no-store" } });
     }
@@ -42,9 +43,12 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
   }
 
   // Signup is only called server-side after atomically claiming an invitation.
-  function restrictAuthEndpoints(pathname: string) {
+  function restrictAuthEndpoints(pathname: string, method: string) {
+    if (method === "GET" && /^\/api\/auth\/reset-password\/[^/]+$/.test(pathname)) return;
     if (pathname.startsWith("/api/auth/") && ![
       "/api/auth/sign-in/email", "/api/auth/sign-out", "/api/auth/get-session",
+      "/api/auth/request-password-reset", "/api/auth/reset-password",
+      ...(config.emailConfirmation ? ["/api/auth/send-verification-email", "/api/auth/verify-email"] : []),
     ].includes(pathname)) return Response.json({ error: "Registration requires an invitation" }, { status: 403 });
   }
 
@@ -54,12 +58,12 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     if ((pathname === "/api" || pathname.startsWith("/api/")) &&
       pathname !== "/api/health" && pathname !== "/api/bulletins" && !pathname.startsWith("/api/bulletins/") && !pathname.startsWith("/api/auth/") &&
       !/^\/api\/assets(?:\/[0-9a-f-]{36}(?:\/image)?)?$/i.test(pathname) &&
-      !["/api/staff", "/api/keys", "/api/register", "/api/invitations"].includes(pathname) &&
+      !["/api/account-policy", "/api/session", "/api/staff", "/api/keys", "/api/register", "/api/invitations"].includes(pathname) &&
       !/^\/api\/keys\/[^/]+\/revoke$/.test(pathname) &&
       pathname !== "/api/songs" && !pathname.startsWith("/api/songs/")) {
       return Response.json({ error: "Unknown API route" }, { status: 404 });
     }
-    if (pathname === "/api/health" && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
+    if (["/api/health", "/api/account-policy", "/api/session"].includes(pathname) && request.method !== "GET") return Response.json({ error: "Unknown API route" }, { status: 404 });
     if ((pathname === "/api/register" && request.method !== "POST") || (pathname === "/api/invitations" && !["GET", "POST"].includes(request.method))) return Response.json({ error: "Unknown API route" }, { status: 404 });
   }
 
@@ -68,12 +72,30 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     // request; returning nothing lets the registered routes below handle it.
     .onRequest(async ({ request }) => {
       const pathname = new URL(request.url).pathname;
+      const blockedAuth = restrictAuthEndpoints(pathname, request.method);
+      if (blockedAuth) return blockedAuth;
+      // A session and an MCP key both remain unusable until email confirmation.
+      // Keep only recovery, confirmation and public access flows available.
+      if (config.emailConfirmation && pathname.startsWith("/api/") && ![
+        "/api/health", "/api/account-policy", "/api/session", "/api/register", "/api/auth/sign-in/email", "/api/auth/sign-out",
+        "/api/auth/get-session", "/api/auth/request-password-reset", "/api/auth/reset-password",
+        "/api/auth/send-verification-email", "/api/auth/verify-email",
+      ].includes(pathname)) {
+        if (!/^\/api\/auth\/reset-password\/[^/]+$/.test(pathname)) {
+          const staff = await auth.api.getSession({ headers: request.headers });
+          if (staff && !staff.user.emailVerified) return Response.json({ error: "Confirm your email address before using the workspace" }, { status: 403 });
+        }
+      }
       return await requireSongSession(request, pathname)
         ?? await handleMcpRequest(request, pathname)
-        ?? restrictAuthEndpoints(pathname)
         ?? rejectUnknownApiRoutes(request, pathname);
     })
     .get("/api/health", () => ({ status: "ok" }))
+    .get("/api/account-policy", () => ({ emailConfirmation: config.emailConfirmation === true }))
+    .get("/api/session", async ({ request }) => {
+      const staff = await auth.api.getSession({ headers: request.headers });
+      return Response.json(staff ? { user: staff.user, confirmationRequired: config.emailConfirmation === true } : null, { headers: { "cache-control": "no-store" } });
+    })
     .all("/api/auth/*", ({ request }) => auth.handler(request))
     .use(assetRoutes(db, auth))
     .use(draftRoutes(db, auth))
@@ -86,9 +108,10 @@ export function createApp(db: Database, config: { secret: string; baseURL: strin
     .use(songRoutes(db))
     .get("/*", async ({ request }) => {
       const pathname = new URL(request.url).pathname;
-      if (pathname !== "/sign-in" && pathname !== "/register" && !pathname.includes(".") &&
-        !(await auth.api.getSession({ headers: request.headers }))) {
-        return Response.redirect(new URL("/sign-in", request.url), 302);
+      if (!["/sign-in", "/register", "/forgot-password", "/reset-password", "/verify-email"].includes(pathname) && !pathname.includes(".")) {
+        const staff = await auth.api.getSession({ headers: request.headers });
+        if (!staff) return Response.redirect(new URL("/sign-in", request.url), 302);
+        if (config.emailConfirmation && !staff.user.emailVerified) return Response.redirect(new URL("/verify-email", request.url), 302);
       }
       return frontendResponse(pathname);
     });
