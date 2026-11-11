@@ -10,7 +10,7 @@ branding are all data; the generator handles the layout.
 bun install
 
 # Generate the example bulletin (dummy song text)
-bun run src/cli.ts example/example-dummy.yaml
+bun run generate
 
 # Output: output/bulletin.pdf
 ```
@@ -18,19 +18,33 @@ bun run src/cli.ts example/example-dummy.yaml
 CLI options:
 
 ```bash
-bun run src/cli.ts bulletin.yaml    # write to spec's output: path
-bun run src/cli.ts bulletin.yaml -o out.pdf
-bun run src/cli.ts bulletin.yaml --store path/to/song-store.yaml
-bun run src/cli.ts bulletin.yaml --debug   # draw column guides
+bun run packages/cli/src/cli.ts bulletin.yaml    # write to spec's output: path
+bun run packages/cli/src/cli.ts bulletin.yaml -o out.pdf
+bun run packages/cli/src/cli.ts bulletin.yaml --store path/to/song-store.yaml
+bun run packages/cli/src/cli.ts bulletin.yaml --debug   # draw column guides
 bun run bulletin bulletins/2026-10-07.yaml # use the bundled song store
 ```
 
 Type-check and run tests:
 
 ```bash
-bunx tsc -p tsconfig.json
-bun test
+bun run typecheck
+bun run build
+bun run test
 ```
+
+## Workspace
+
+This is a Bun workspace with four packages:
+
+- `packages/generator`: PDF generator and bulletin specification types (`@ruf/generator`).
+- `packages/cli`: existing YAML Commander entry point, importing the generator.
+- `packages/frontend`: minimal Bun-built React shell; the [revised prototype](docs/design/EDITOR.md) is a design reference, not production persistence or PDF rendering.
+- `packages/server`: Elysia HTTP server, Drizzle/Postgres connection factory, and reserved MCP routes.
+
+Future app work uses the [chosen application libraries and package conventions](docs/agents/application-stack.md); installing them does not make auth or MCP available yet.
+
+Run `bun run build` before `bun run start` to serve the React bundle at `/` (including SPA navigation). `GET /api/health` checks the HTTP process only, not Postgres. `/api/*` is reserved for the future application API; `/mcp/*` returns 501 until MCP is implemented. Set `PORT` to change the default port (3000). The database connection factory needs a Postgres connection string when a later feature starts using it; this scaffold does not yet create a schema, connect to a database, or claim authenticated content operations. See [PRODUCT.md](PRODUCT.md) for the confirmed scope.
 
 ## Layout model
 
@@ -74,6 +88,30 @@ flow:
 Existing two-page, two-column files can set `folded: true`. The generator treats
 page 1 right as the cover and combines the other blocks in physical reading order
 before redistributing them automatically.
+
+## Render from in-memory data
+
+`@ruf/generator` also exports `renderPdf(spec, options): Promise<Buffer>` for callers
+that already hold bulletin data. It uses the same layout and PDFKit renderer as
+the YAML CLI, but does not read a YAML file, implicitly load a song store, or
+write a PDF file. Supply song-store data when using `song_ref`, and supply image
+bytes keyed by the `path` value in each image, branding, or QR block:
+
+```ts
+import { renderPdf, type Spec } from "@ruf/generator";
+
+const bulletin: Spec = {
+  cover: [{ type: "branding", path: "logo" }],
+  flow: [{ type: "text", text: "Welcome" }],
+};
+const pdf = await renderPdf(bulletin, { assets: { logo: logoBytes } });
+// Return pdf as application/pdf to the caller, or save it elsewhere.
+```
+
+`logoBytes` is a `Buffer` supplied by the caller (for example, from an asset
+record). Missing songs/assets, invalid blocks, and content that does not fit
+reject generation rather than returning a partial PDF. The input `output` field
+is only used by the YAML API; in-memory callers own their output destination.
 
 ## Song store
 
@@ -158,18 +196,11 @@ directory, so weekly YAMLs in `bulletins/` can share the same `../assets/`. CLI
 ## Files
 
 ```
-src/cli.ts                    # Commander CLI entry point
-src/index.ts                  # public generator API
-src/generate.ts               # YAML-to-PDF orchestration
-src/song-store.ts             # song store validation and reference resolution
-src/layout.ts                 # fitting, scaling, and folded flow
-src/render.ts                 # PDF block and column rendering
-src/validation.ts             # YAML specification validation
-src/constants.ts              # page dimensions and typography
-src/types.ts                  # shared specification types
-src/paths.ts                  # YAML-relative path resolution
-src/images.ts                 # image dimension detection
-tests/bulletin-generator.test.ts
+packages/cli/src/cli.ts       # Commander CLI entry point
+packages/generator/src/       # public generator interface, renderer and specification types
+packages/generator/tests/     # generator and CLI integration tests
+packages/server/src/         # Elysia routes and Drizzle/Postgres connection factory
+packages/frontend/src/       # minimal React shell and built asset adapter
 example/example-dummy.yaml    # example weekly spec (dummy song text)
 store/song-store.yaml         # default reusable song store
 assets/ruf-baylor-logo.png    # extracted from the example bulletin

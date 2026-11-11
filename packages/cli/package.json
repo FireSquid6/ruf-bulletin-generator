@@ -1,0 +1,11 @@
+{
+  "name": "@ruf/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {"bulletin-generator": "./src/cli.ts"},
+  "dependencies": {
+    "@ruf/generator": "workspace:*",
+    "commander": "^15.0.0"
+  }
+}

@@ -1,0 +1,46 @@
+name: Server authentication
+on:
+  push:
+    paths:
+      - 'packages/server/**'
+      - 'packages/frontend/**'
+      - '.github/workflows/server-auth.yml'
+      - 'bun.lock'
+  pull_request:
+    paths:
+      - 'packages/server/**'
+      - 'packages/frontend/**'
+      - '.github/workflows/server-auth.yml'
+      - 'bun.lock'
+jobs:
+  postgres-auth:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ruf
+          POSTGRES_PASSWORD: ruf_test_only
+          POSTGRES_DB: ruf_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ruf -d ruf_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://ruf:ruf_test_only@localhost:5432/ruf_test
+      TEST_DATABASE_URL: postgres://ruf:ruf_test_only@localhost:5432/ruf_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run --cwd packages/server migrate
+      - run: bun run build
+      - run: bun run typecheck
+      - run: bun test packages/generator/tests
+      - run: bun test packages/frontend/tests
+      - run: bun test packages/server/tests/asset-validation.test.ts
+      # Bootstrap's one-time empty-database contract runs before other tests add accounts.
+      - run: bun test packages/server/tests/auth.test.ts
+      - run: bun test packages/server/tests/routes.test.ts packages/server/tests/drafts.test.ts packages/server/tests/pdf.test.ts packages/server/tests/keys.test.ts packages/server/tests/z-assets.test.ts packages/server/tests/mcp-libraries.test.ts packages/server/tests/mcp-bulletins.test.ts packages/server/tests/place-assets.test.ts
+      - run: bun test packages/server/tests/songs.test.ts
+      - run: bun test packages/server/tests/import-songs.test.ts
