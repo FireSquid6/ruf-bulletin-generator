@@ -21,7 +21,7 @@ export function Register() {
       navigate("/sign-in?registered=1", { replace: true });
     },
   });
-  if (current.data) return <Navigate to="/" replace />;
+  if (current.data && (!current.data.confirmationRequired || current.data.user.emailVerified)) return <Navigate to="/" replace />;
   return <><header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong></div></header>
     <main className="sign-in"><h1>Create a staff account</h1><p>Enter the invitation key given to you by an administrator. Each key can be used once.</p>
       <form onSubmit={handleSubmit(values => registration.mutateAsync(values))}>
