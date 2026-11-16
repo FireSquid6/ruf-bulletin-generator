@@ -6,22 +6,24 @@ import { mcpKey, user } from "./schema";
 
 const digest = (secret: string) => createHash("sha256").update(secret).digest("hex");
 
-export async function authenticateMcpKey(db: Database, authorization: string | null) {
+export async function authenticateMcpKey(db: Database, authorization: string | null, emailConfirmation = false) {
   if (!authorization?.startsWith("Bearer ")) return null;
   const secret = authorization.slice(7);
   if (!/^ruf_mcp_[A-Za-z0-9_-]{43}$/.test(secret)) return null;
-  const [identity] = await db.select({ id: user.id, name: user.name, email: user.email })
+  const [identity] = await db.select({ id: user.id, name: user.name, email: user.email, emailVerified: user.emailVerified })
     .from(mcpKey).innerJoin(user, eq(mcpKey.userId, user.id))
     .where(and(eq(mcpKey.secretHash, digest(secret)), isNull(mcpKey.revokedAt)));
   // Intentionally no role or session: an MCP credential cannot carry admin authority.
-  return identity ?? null;
+  if (!identity || (emailConfirmation && !identity.emailVerified)) return null;
+  const { emailVerified: _verified, ...staff } = identity;
+  return staff;
 }
 
-export function keyRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
+export function keyRoutes(db: Database, auth: ReturnType<typeof createAuth>, emailConfirmation = false) {
   type RouteSet = { status?: number | string; headers: { [key: string]: string | number | undefined } };
   const admin = async (headers: Headers) => {
     const session = await auth.api.getSession({ headers });
-    if (!session) return 401 as const;
+    if (!session || (emailConfirmation && !session.user.emailVerified)) return 401 as const;
     const [account] = await db.select({ role: user.role }).from(user).where(eq(user.id, session.user.id));
     return account?.role === "admin" ? null : 403 as const;
   };
@@ -53,8 +55,8 @@ export function keyRoutes(db: Database, auth: ReturnType<typeof createAuth>) {
         set.status = 400;
         return { error: "Choose a staff account and enter a key name (1–100 characters)." };
       }
-      const [account] = await db.select({ id: user.id }).from(user).where(eq(user.id, body.userId));
-      if (!account) { set.status = 400; return { error: "Staff account not found." }; }
+      const [account] = await db.select({ id: user.id, emailVerified: user.emailVerified }).from(user).where(eq(user.id, body.userId));
+      if (!account || (emailConfirmation && !account.emailVerified)) { set.status = 400; return { error: "Choose a staff account with a confirmed email." }; }
       const secret = `ruf_mcp_${randomBytes(32).toString("base64url")}`;
       const [key] = await db.insert(mcpKey).values({ id: randomUUID(), userId: account.id, label, secretHash: digest(secret) })
         .returning({ id: mcpKey.id, label: mcpKey.label, userId: mcpKey.userId, createdAt: mcpKey.createdAt, revokedAt: mcpKey.revokedAt });

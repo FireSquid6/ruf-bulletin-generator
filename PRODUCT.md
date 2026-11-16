@@ -56,4 +56,4 @@ Keep the current RUF Baylor logo available as a reusable starter asset. The edit
 
 ## Deferred
 
-Email verification and self-service password recovery require outbound email and are post-MVP. Changing the one-sheet PDF format is likely later. Password-reset UX and detailed hosting/technology choices are not part of the current design brief.
+Email confirmation and self-service password recovery use outbound email. Confirmation can be disabled by server flag in development; when enabled, unconfirmed accounts cannot use the workspace or MCP. Changing the one-sheet PDF format is likely later. Detailed hosting choices are not part of the current design brief.

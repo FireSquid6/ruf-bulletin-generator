@@ -3,7 +3,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { Elysia } from "elysia";
 import type { Database } from "./db";
 import type { createAuth } from "./auth";
-import { invitation } from "./schema";
+import { invitation, user } from "./schema";
 
 const keyPattern = /^[A-Za-z0-9_-]{16}$/;
 const hash = (key: string) => createHash("sha256").update(key).digest("hex");
@@ -45,7 +45,13 @@ export function invitationRoutes(db: Database, auth: ReturnType<typeof createAut
             .where(and(eq(invitation.keyHash, hash(invitationKey)), isNull(invitation.consumedAt)))
             .returning({ id: invitation.id });
           if (!claimed) return false;
+          // Better Auth intentionally returns a synthetic success for duplicate
+          // emails when verification is required. Never spend an invitation on it.
+          const [existing] = await tx.select({ id: user.id }).from(user).where(eq(user.email, email.toLowerCase()));
+          if (existing) throw new Error("Account already exists");
           const account = await auth.api.signUpEmail({ body: { email, password, name: email } });
+          const [persisted] = await tx.select({ id: user.id }).from(user).where(eq(user.id, account.user.id));
+          if (!persisted) throw new Error("Account already exists");
           await tx.update(invitation).set({ consumedBy: account.user.id }).where(eq(invitation.id, claimed.id));
           return true;
         });
@@ -55,7 +61,7 @@ export function invitationRoutes(db: Database, auth: ReturnType<typeof createAut
       } catch (error) {
         // Better Auth rejects duplicate emails/invalid credentials. Don't consume
         // the invitation or reveal whether the email already has an account.
-        if (error && typeof error === "object" && "statusCode" in error && typeof error.statusCode === "number" && error.statusCode >= 400 && error.statusCode < 500) {
+        if ((error instanceof Error && error.message === "Account already exists") || (error && typeof error === "object" && "statusCode" in error && typeof error.statusCode === "number" && error.statusCode >= 400 && error.statusCode < 500)) {
           set.status = 400;
           return { error: "Could not register with these details. Check your email and password." };
         }

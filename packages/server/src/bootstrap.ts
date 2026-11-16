@@ -16,7 +16,8 @@ export async function bootstrapAdmin(db: Database, credentials: { email: string;
     if (existing.total !== 0) throw new Error("An account already exists; bootstrap is disabled");
     const auth = createAuth(db, config);
     const created = await auth.api.signUpEmail({ body: credentials });
-    await tx.update(user).set({ role: "admin" }).where(eq(user.id, created.user.id));
+    // Bootstrap is an operator-controlled command, not an email invitation.
+    await tx.update(user).set({ role: "admin", emailVerified: true }).where(eq(user.id, created.user.id));
     return created.user.id;
   });
 }

@@ -24,6 +24,7 @@ export function Workspace({ credentials = false }: { credentials?: boolean }) {
   if (current.isPending) return <main className="center"><p>Checking your session…</p></main>;
   if (current.isError) return <main className="center"><p role="alert">{current.error.message}</p><button onClick={() => current.refetch()}>Try again</button></main>;
   if (!current.data) return <Navigate to="/sign-in" replace />;
+  if (current.data.confirmationRequired && !current.data.user.emailVerified) return <Navigate to="/verify-email" replace />;
   if (credentials && current.data.user.role !== "admin") return <Navigate to="/" replace />;
 
   return <>
