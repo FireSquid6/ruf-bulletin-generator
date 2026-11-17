@@ -30,7 +30,15 @@ pages:
         - type: announcements
           title: Announcements
           date: November 18, 2026
-          items: []
+          items:
+            - "RUF Lunch - Fridays 11am - 1pm in the SUB!"
+            - "GroupMe - join the RUF Squad, RUF 4Gals, or RUF Dudes via the QR code on the back."
+            - "Redeemer Waco - text Remington for rides at (970) 939-3493"
+            - "Prayer group: Foster at 7 PM"
+            - "Girls Bible Study (Ruth) - Wednesdays 4:30 PM at Pinewood"
+            - "Freshman Bible Study with Way - Mondays 4:00 PM at Elliston Chapel"
+            - "Co-ed Psalm Study - Thursdays 5:30 PM at Caroline's House"
+            - "Guys Bible Study (Ecclesiastes) - Friday 4 PM in the SUB"
         - type: contacts
           items:
             - name: Way Rutherford
@@ -41,7 +49,7 @@ pages:
               detail: (254) 239-7227
   - columns:
       - - type: song
-          song_ref: be_unto_your_name
+          song_ref: be_thou_my_vision
         - type: heading
           text: Welcome and Announcements
         - type: heading
@@ -56,4 +64,4 @@ pages:
         - type: heading
           text: Prayer
         - type: song
-          song_ref: arise_my_soul_arise
+          song_ref: i_am_not_my_own

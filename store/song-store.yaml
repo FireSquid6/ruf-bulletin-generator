@@ -706,6 +706,12 @@ songs:
           My soul, be not afraid
           For the promised morning, O how long?
           O God of Jacob, be my strength
+      - label: "3."
+        text: |
+          Every vow we’ve broken and betrayed
+          You are the faithful One
+          And from the garden to the grave
+          Bind us together, bring shalom
   goodness_of_jesus:
     title: Goodness of Jesus
     columns: 2
@@ -1962,6 +1968,8 @@ songs:
           Send none unhealed away
   be_thou_my_vision:
     title: Be Thou My Vision
+    columns: 2
+    scale: 1.1
     parts:
       - label: "1."
         text: |
@@ -2436,7 +2444,8 @@ songs:
           How great is our God
   i_am_not_my_own:
     title: I Am Not My Own
-    columns: 1
+    columns: 2
+    scale: 1.1
     parts:
       - label: "1."
         text: |

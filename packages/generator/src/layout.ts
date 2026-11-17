@@ -47,21 +47,42 @@ function partitionFlow(
   scale: number,
 ): [Block[], Block[], Block[]] | null {
   const columns: Block[][] = [];
-  let start = 0;
+  const remaining = [...flow];
 
   for (let columnIndex = 0; columnIndex < 3; columnIndex++) {
-    let end = start;
-    while (
-      end < flow.length &&
-      columnFits(flow.slice(start, end + 1), x, yTop, width, height, imageSource, scale)
-    ) {
-      end++;
+    const column: Block[] = [];
+    while (remaining.length > 0) {
+      const block = remaining[0];
+      const fits = (candidate: Block) =>
+        columnFits([...column, candidate], x, yTop, width, height, imageSource, scale);
+      if (fits(block)) {
+        column.push(remaining.shift()!);
+        continue;
+      }
+      if (block.type === "scripture" && typeof block.text === "string" && columnIndex < 2) {
+        const words = block.text.trim().split(/\s+/);
+        let low = 0;
+        let high = words.length - 1;
+        while (low < high) {
+          const end = Math.ceil((low + high) / 2);
+          if (fits({ ...block, text: words.slice(0, end).join(" ") })) low = end;
+          else high = end - 1;
+        }
+        if (low > 0) {
+          column.push({ ...block, text: words.slice(0, low).join(" ") });
+          remaining[0] = {
+            ...block,
+            text: words.slice(low).join(" "),
+            label: `${((block.label as string | undefined) ?? "Scripture Reading").replace(/ \(continued\)$/, "")} (continued)`,
+          };
+        }
+      }
+      break;
     }
-    columns.push(flow.slice(start, end));
-    start = end;
+    columns.push(column);
   }
 
-  return start === flow.length ? columns as [Block[], Block[], Block[]] : null;
+  return remaining.length === 0 ? columns as [Block[], Block[], Block[]] : null;
 }
 
 function foldedPlanAtScale(

@@ -116,13 +116,13 @@ describe("song store", () => {
   test("later weekly examples retain their passages and song references", () => {
     const root = path.resolve(import.meta.dirname, "../../..");
     const store = loadSongStore(path.join(root, "store/song-store.yaml"));
-    const notInSheet = new Set(["here_is_love", "be_unto_your_name"]);
+    const notInSheet = new Set(["here_is_love"]);
     const weeks = [
       ["2026-10-21", "James 4:11-17", "Jeremiah 9:23-24", "how_deep_the_father_s_love", "his_mercy_is_more", "sweet_comfort", "yet_not_i_but_through_christ_in_me"],
       ["2026-10-28", "James 5:1-6", "1 Timothy 6:6-10", "he_will_hold_me_fast", "great_is_thy_faithfulness", "in_christ_alone", "hast_thou_heard_him"],
       ["2026-11-04", "James 5:7-12", "Psalm 37:7-9", "come_behold_the_wondrous_mystery", "o_love_that_will_not_let_me_go", "a_christian_s_daily_prayer", "all_praise_to_him"],
       ["2026-11-11", "James 5:13-20", "1 Kings 17:17-24", "goodness_of_jesus", "all_sufficient_merit", "how_firm_a_foundation", "jesus_paid_it_all"],
-      ["2026-11-18", "Jude 1-25", "2 Peter 1:3-8", "we_will_feast_in_the_house_of_zion", "be_unto_your_name", "sweet_comfort", "arise_my_soul_arise"],
+      ["2026-11-18", "Jude 1-25", "2 Peter 1:3-8", "we_will_feast_in_the_house_of_zion", "be_thou_my_vision", "sweet_comfort", "i_am_not_my_own"],
     ];
 
     for (const [date, sermon, reading, ...songs] of weeks) {
@@ -250,6 +250,31 @@ describe("folded flow", () => {
       [4],
     ]);
   });
+
+  for (const label of ["Scripture Reading", "Sermon"]) {
+    test(`splits ${label} across panels without losing text or changing other blocks`, () => {
+      const text = "(1) In the beginning was the Word. ".repeat(80).trim();
+      const passage = { type: "scripture", label, reference: "John 1:1", text, scale: 1.1 };
+      const before = { type: "heading", text: "Before" };
+      const after = { type: "heading", text: "After" };
+      const plan = planFoldedFlow([], [before, passage, after], 0, 0, 200, 180, import.meta.dirname);
+      const blocks = plan.columns.flat();
+      const fragments = blocks.filter((block) => block.type === "scripture");
+
+      expect(fragments.length).toBeGreaterThan(1);
+      expect(fragments.map((block) => block.text).join(" ")).toBe(text);
+      expect(fragments[0].label).toBe(label);
+      for (const fragment of fragments.slice(1)) {
+        expect(fragment.label).toBe(`${label} (continued)`);
+        expect(fragment.reference).toBe(passage.reference);
+        expect(fragment.scale).toBe(1.1);
+      }
+      expect(blocks[0]).toBe(before);
+      expect(blocks.at(-1)).toBe(after);
+      expect(passage.text).toBe(text);
+      expect(passage.label).toBe(label);
+    });
+  }
 
   test("grows text beyond its base size when the panels have room", () => {
     const plan = planFoldedFlow(

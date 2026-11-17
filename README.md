@@ -51,8 +51,9 @@ Run `bun run build` before `bun run start` to serve the React bundle at `/` (inc
 - One physical sheet, landscape A4 (297 x 210 mm), printable duplex.
 - Folded bulletins have a fixed cover at page 1 right. Content then reads through
   page 2 left, page 2 right, and page 1 left.
-- Flowing blocks stay intact and automatically move between the three content
-  panels. Songs, scripture, and other blocks are never split midway.
+- Flowing blocks automatically move between the three content panels. Scripture
+  readings and sermon passages may split between words, repeating the reference
+  with a “continued” label on the next panel. Songs and other blocks stay intact.
 - The generator finds the largest common font scale that fits the cover and all
   three content panels. This keeps body text consistent throughout a given week
   while preserving the size ratios between body text, titles, and headings.
