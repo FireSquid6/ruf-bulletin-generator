@@ -6,7 +6,7 @@ import { Credentials } from "../pages/Credentials";
 import { SongStore } from "../pages/SongStore";
 import { session } from "../lib/session";
 
-export function Workspace({ credentials = false }: { credentials?: boolean }) {
+export function Workspace() {
   const navigate = useNavigate();
   const client = useQueryClient();
   const current = useQuery({ queryKey: ["session"], queryFn: session, retry: false });
@@ -25,11 +25,10 @@ export function Workspace({ credentials = false }: { credentials?: boolean }) {
   if (current.isError) return <main className="center"><p role="alert">{current.error.message}</p><button onClick={() => current.refetch()}>Try again</button></main>;
   if (!current.data) return <Navigate to="/sign-in" replace />;
   if (current.data.confirmationRequired && !current.data.user.emailVerified) return <Navigate to="/verify-email" replace />;
-  if (credentials && current.data.user.role !== "admin") return <Navigate to="/" replace />;
 
   return <>
     <header className="bar"><div className="bar-inner"><strong>RUF Bulletin Studio</strong><nav aria-label="Workspace"><Link to="/">Bulletins</Link><Link to="/songs">Song store</Link><Link to="/assets">Images</Link>{current.data.user.role === "admin" && <><Link to="/invitations">Staff invitations</Link><Link to="/credentials">MCP credentials</Link></>}</nav><div className="account"><span>{current.data.user.email}</span><button className="quiet" disabled={logout.isPending} onClick={() => logout.mutate()}>Sign out</button></div></div></header>
     {logout.isError && <p role="alert" className="error workspace">{logout.error.message}</p>}
-    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/songs" element={<SongStore />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="/credentials" element={<Credentials />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
+    <Routes><Route path="/" element={<BulletinIndex />} /><Route path="/bulletins/new" element={<NewDraft />} /><Route path="/bulletins/:id" element={<DraftEditor />} /><Route path="/songs" element={<SongStore />} /><Route path="/assets" element={<AssetLibrary />} /><Route path="/credentials" element={current.data.user.role === "admin" ? <Credentials /> : <Navigate to="/" replace />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>
   </>;
 }

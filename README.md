@@ -4,6 +4,11 @@ Generate a one-sheet, duplex (front + back), landscape-A4 RUF bulletin from a
 single YAML file. Songs, scripture, announcements, contacts, QR codes, and
 branding are all data; the generator handles the layout.
 
+## Deploy the web app
+
+See [Fly.io deployment](docs/deploy-fly.md) for the Docker image, database setup,
+secrets, migrations, and initial administrator setup.
+
 ## Quick start
 
 ```bash

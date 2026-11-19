@@ -1,0 +1,11 @@
+.git
+.github
+.pi
+node_modules
+**/node_modules
+packages/frontend/dist
+output
+.env
+.env.*
+*.pem
+*.key
